@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.leber</groupId>
+    <groupId>org.leber.basetools</groupId>
     <artifactId>JavaBaseUtils</artifactId>
     <version>1.0-SNAPSHOT</version>
     <build>
@@ -67,7 +67,7 @@
         <version>1.3</version>
     </dependency>
         <dependency>
-            <groupId>org.leber.log</groupId>
+            <groupId>org.leber.basetools.log</groupId>
             <artifactId>SLF4JLoggerExtension</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
