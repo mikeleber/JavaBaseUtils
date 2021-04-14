@@ -5,15 +5,15 @@ import java.util.Stack;
 public abstract class StackedTreeVisitor<T> {
     protected Stack<T> builderStack = new Stack();
 
-    T peek() {
+    protected T peek() {
         return builderStack.peek();
     }
 
-    T pop() {
+    protected T pop() {
         return builderStack.pop();
     }
 
-    T push(T item) {
+    protected T push(T item) {
         return builderStack.push(item);
     }
 }
