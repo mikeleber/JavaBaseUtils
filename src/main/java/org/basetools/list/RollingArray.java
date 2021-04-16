@@ -143,11 +143,13 @@ public class RollingArray<T> {
             pos = increment(pos);
         }
     }
+
     public synchronized void drainOut(Consumer<T> consumer) {
-       traverse(consumer);
+        traverse(consumer);
         makeEmpty();
     }
-    public  void drainOutAsync(final Consumer<T> consumer) {
-        new Thread( () -> drainOut(consumer)).start();
+
+    public void drainOutAsync(Consumer<T> consumer) {
+        new Thread(() -> drainOut(consumer)).start();
     }
 }

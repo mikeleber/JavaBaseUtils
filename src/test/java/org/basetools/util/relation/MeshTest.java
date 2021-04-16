@@ -7,7 +7,9 @@ import org.basetools.util.mesh.RelationalTreeNode;
 import org.basetools.util.mesh.creator.RelationalJSONNodeCreator;
 import org.basetools.util.mesh.cytoscape.CytoscapeTreeVisitor;
 import org.basetools.util.mesh.graphviz.GraphvizTreeVisitor;
+import org.basetools.util.mesh.mermaid.MermaidSubsystemTreeVisitor;
 import org.basetools.util.mesh.springy.SpringyTreeVisitor;
+import org.basetools.util.tree.xpath.TreeNodeXPathExecuterImpl;
 import org.junit.jupiter.api.Test;
 
 import javax.json.JsonObject;

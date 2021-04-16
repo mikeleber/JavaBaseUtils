@@ -1,7 +1,7 @@
 package org.basetools.util.tree;
 
+import org.basetools.util.json.JSONUtilities;
 import org.junit.jupiter.api.Test;
-import org.modelui.util.json.JSONUtilities;
 
 import javax.json.JsonObject;
 

@@ -1,6 +1,9 @@
 package org.basetools.util.mesh;
 
+import org.basetools.util.tree.TreeNode;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class RelationalTreeNodeTest {
 

@@ -33,9 +33,9 @@ public class RollingArrayTest {
         while (!q.isEmpty()) {
             sb.append(q.pop());
         }
-        Assertions.assertEquals(0,q.size());
-
+        Assertions.assertEquals(0, q.size());
     }
+
     @Test
     void testTraverse() {
         RollingArray q = new RollingArray(String.class, 5);
@@ -53,7 +53,6 @@ public class RollingArrayTest {
         q.push("66");
         System.out.println(q.toString());
 
-       q.traverse(a-> System.out.println( a));
-
+        q.traverse(a -> System.out.println(a));
     }
 }

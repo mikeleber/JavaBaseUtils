@@ -1,6 +1,5 @@
 package org.basetools.util;
 
-
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
@@ -17,7 +16,6 @@ public class StringUtils {
         FROM_FLOATINGNUMBER_FORMAT.setDecimalFormatSymbols(symbols);
         FROM_FLOATINGNUMBER_FORMAT.setMaximumFractionDigits(340);
     }
-
 
     public static String replaceWhiteSpace(String toClean, char replacement, boolean collapseSpaces) {
         int size = toClean.length();

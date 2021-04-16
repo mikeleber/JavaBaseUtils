@@ -11,10 +11,10 @@ import javax.xml.transform.TransformerException;
 import java.util.List;
 
 public final class TreeNodeXPathExecuterImpl {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TreeNodeXPathExecuterImpl.class);
     public static long timeConsumption = 0;
     public static int counter = 0;
     private static TreeNodeXPathExecuterImpl _singleton = null;
-    private static final Logger LOGGER = LoggerFactory.getLogger(TreeNodeXPathExecuterImpl.class);
 
     /**
      * XPathExecuterImpl constructor comment.

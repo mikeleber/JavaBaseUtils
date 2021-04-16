@@ -376,8 +376,6 @@ public final class FastQSort {
         }
     }
 
-
-
     public class StringArrComparator implements Comparator {
         Comparator _stringComp = String.CASE_INSENSITIVE_ORDER;
         boolean _asc = true;

@@ -9,7 +9,6 @@ public class XPathTreeNodeHandler {
     }
 
     public boolean acceptAttribute(TreeNode aChildType) {
-
         return false;
     }
 
