@@ -30,15 +30,15 @@ import java.util.Objects;
  * @see XPath
  * @see NamespaceNode
  */
-public final class DocumentNavigator extends DefaultNavigator {
-    private final static DocumentNavigator SINGLETON = new DocumentNavigator();
+public final class TreeDocumentNavigator extends DefaultNavigator {
+    private final static TreeDocumentNavigator SINGLETON = new TreeDocumentNavigator();
     private XPathTreeNodeHandler _nodeHandler;
 
-    public DocumentNavigator() {
+    public TreeDocumentNavigator() {
         super();
     }
 
-    public DocumentNavigator(XPathTreeNodeHandler handler) {
+    public TreeDocumentNavigator(XPathTreeNodeHandler handler) {
         super();
         _nodeHandler = handler;
     }

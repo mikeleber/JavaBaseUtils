@@ -43,8 +43,7 @@ public final class TreeNodeXPathExecuterImpl {
         try {
 
             XPathTreeNodeHandler handler = new XPathTreeNodeHandler();
-
-            DocumentNavigator navigator = new DocumentNavigator(handler);
+            TreeDocumentNavigator navigator = new TreeDocumentNavigator(handler);
             XPath typeXpath = new TreeNodeXPath(xpath, navigator);
             results = typeXpath.selectNodes(type);
         } catch (UnresolvableException e) {
