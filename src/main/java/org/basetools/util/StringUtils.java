@@ -17,7 +17,29 @@ public class StringUtils {
         FROM_FLOATINGNUMBER_FORMAT.setDecimalFormatSymbols(symbols);
         FROM_FLOATINGNUMBER_FORMAT.setMaximumFractionDigits(340);
     }
+    /**
+     * Pre-pend the given character to the String until the result is the desired length. If a String is longer than the desired length, it will not be truncated, however no padding will be added.
+     *
+     * @param text
+     * @param len
+     *           target length.
+     * @param character
+     * @return padded String.
+     * @throws NullPointerException
+     */
+    public static final String prepad(String text, int len, char character) {
 
+        int needed = len - text.length();
+        if (needed <= 0) {
+            return text;
+        }
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < needed; i++) {
+            sb.append(character);
+        }
+        sb.append(text);
+        return (sb.toString());
+    }
     public static String replaceWhiteSpace(String toClean, char replacement, boolean collapseSpaces) {
         int size = toClean.length();
         StringBuffer result = new StringBuffer(toClean.length());

@@ -340,4 +340,23 @@ public final class ArrayUtil {
         }
         return Arrays.copyOf(array, lastIdx, clazz);
     }
+    public static final boolean compare(Object[] a1, Object[] a2) {
+        if (a1 == a2) {
+            return true;
+        } else if (a1 == null && a2 != null) {
+            return false;
+        } else if (a2 == null && a1 != null) {
+            return false;
+        } else if (a1.length != a2.length) {
+            return false;
+        }
+        for (int i = 0; i < a1.length; i++) {
+            if (a1[i] == a2[i]) {} else if (a1[i] != null && !a1[i].equals(a2[i])) {
+                return false;
+            } else if (a1[i] == null && a2[i] != null) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
