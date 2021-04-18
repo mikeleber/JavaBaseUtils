@@ -7,6 +7,7 @@ public class StringUtils {
     public static final char CHAR_SPACE = (char) 0x20;
     public static final char CHAR_EMPTY = (char) 0x0;
     public static final char CHAR_NEWLINE = (char) 10;
+    public static final String newLine = System.getProperty("line.separator");
     public static final DecimalFormat FROM_FLOATINGNUMBER_FORMAT = new DecimalFormat();
 
     static {
