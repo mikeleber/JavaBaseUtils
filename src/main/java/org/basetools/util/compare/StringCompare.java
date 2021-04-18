@@ -57,6 +57,10 @@ public class StringCompare {
         return compareNatural(s, t, true, collator);
     }
 
+    public static final int compareNatural(String s, String t) {
+        return compareNatural(s, t, true, Collator.getInstance());
+    }
+
     /**
      * @param s             first string
      * @param t             second string
