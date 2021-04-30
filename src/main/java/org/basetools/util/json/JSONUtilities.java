@@ -2,6 +2,7 @@ package org.basetools.util.json;
 
 import javax.json.*;
 import javax.json.stream.JsonGenerator;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -144,6 +145,10 @@ public class JSONUtilities {
     public static JsonObject createJson(String source) {
         Objects.requireNonNull(source);
         return Json.createReader(new StringReader(source)).readObject();
+    }
+    public static JsonObject createJson(Reader source) {
+        Objects.requireNonNull(source);
+        return Json.createReader(source).readObject();
     }
 
     /**
