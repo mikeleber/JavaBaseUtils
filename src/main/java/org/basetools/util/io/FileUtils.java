@@ -90,6 +90,14 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
         }
     }
 
+    public static Reader readerFromClassloader(Class clazz, String filename) throws IOException {
+        URL input = clazz.getClassLoader().getResource(filename);
+        if (input == null) {
+            return null;
+        }
+        return new FileReader(input.getFile());
+    }
+
     /**
      * Reads the contents of a file into a String from the clazz.getResourceAsStream.
      * As fallback it tries to load it from clazz.getClassLoader().getResourceAsStream.
