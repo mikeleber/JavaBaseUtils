@@ -48,34 +48,6 @@ public final class ArrayUtil {
     }
 
     /**
-     * Search within an array for a given value. This method use Object.equals() to check for equality.
-     * If no value found -1 is returned
-     *
-     * @param array
-     * @param value
-     * @param <V>
-     * @return the index of the object or -1 if not found
-     */
-    public static final <V> int contains(V[] array, V value) {
-        int foundAt = -1;
-        if (array == null) {
-            return foundAt;
-        }
-        int s = array.length;
-        if (s <= 0) {
-            return foundAt;
-        }
-        int length = s - 1;
-        for (int y = length; y >= 0; y--) {
-            if (Objects.equals(value, array[y])) {
-                foundAt = y;
-                break;
-            }
-        }
-        return foundAt;
-    }
-
-    /**
      * Returns the object at the given postion. If t is out of the possible value range defaultValue will be returned.
      *
      * @param <T>          the type parameter
@@ -140,6 +112,41 @@ public final class ArrayUtil {
         return result;
     }
 
+    public static final <V> V[] add(Class clazz, V[] array, V o, int pos) {
+        if (pos > array.length) {
+            pos = array.length;
+        }
+        int s = array.length + 1;
+        V[] newArray = (V[]) Array.newInstance(clazz, s);
+        System.arraycopy(array, 0, newArray, 0, pos);
+        newArray[pos] = o;
+        System.arraycopy(array, pos, newArray, pos + 1, array.length - pos);
+        return newArray;
+    }
+
+    public static final <V> V[] add(V[] array, V o) {
+        if (array == null) {
+            V[] newArray = toGenericArray(o, 1);
+            newArray[0] = o;
+            return newArray;
+        }
+        int s = array.length;
+        V[] newArray = toGenericArray(o, s + 1);
+        System.arraycopy(array, 0, newArray, 0, s);
+        newArray[s] = o;
+        return newArray;
+    }
+
+    public static final <T> T[] toGenericArray(T t, int size) {
+        final T[] res = (T[]) Array.newInstance(t.getClass(), size);
+        return res;
+    }
+
+    @SafeVarargs
+    public static <T> T[] toGenericArray(T... elems) {
+        return elems;
+    }
+
     public static final Object[][] addToGrowArray(Object[][] array, Object[] o, int gf) {
         int w = o.length;
         if (array == null) {
@@ -194,17 +201,6 @@ public final class ArrayUtil {
         return array;
     }
 
-    public static final Object[] removeFromGrowArray(Object[] array, Object key) {
-        if (array == null || array.length == 0) {
-            return null;
-        }
-        int foundPos = contains(array, key);
-        if (foundPos != -1) {
-            array = removeFromGrowArray(array, foundPos);
-        }
-        return array;
-    }
-
     public static final int contains(Object[][] array, int col, Object value) {
         return contains(array, col, value, false);
     }
@@ -231,6 +227,45 @@ public final class ArrayUtil {
                     foundAt = r;
                     break;
                 }
+            }
+        }
+        return foundAt;
+    }
+
+    public static final Object[] removeFromGrowArray(Object[] array, Object key) {
+        if (array == null || array.length == 0) {
+            return null;
+        }
+        int foundPos = contains(array, key);
+        if (foundPos != -1) {
+            array = removeFromGrowArray(array, foundPos);
+        }
+        return array;
+    }
+
+    /**
+     * Search within an array for a given value. This method use Object.equals() to check for equality.
+     * If no value found -1 is returned
+     *
+     * @param array
+     * @param value
+     * @param <V>
+     * @return the index of the object or -1 if not found
+     */
+    public static final <V> int contains(V[] array, V value) {
+        int foundAt = -1;
+        if (array == null) {
+            return foundAt;
+        }
+        int s = array.length;
+        if (s <= 0) {
+            return foundAt;
+        }
+        int length = s - 1;
+        for (int y = length; y >= 0; y--) {
+            if (Objects.equals(value, array[y])) {
+                foundAt = y;
+                break;
             }
         }
         return foundAt;
@@ -340,6 +375,7 @@ public final class ArrayUtil {
         }
         return Arrays.copyOf(array, lastIdx, clazz);
     }
+
     public static final boolean compare(Object[] a1, Object[] a2) {
         if (a1 == a2) {
             return true;
@@ -351,7 +387,8 @@ public final class ArrayUtil {
             return false;
         }
         for (int i = 0; i < a1.length; i++) {
-            if (a1[i] == a2[i]) {} else if (a1[i] != null && !a1[i].equals(a2[i])) {
+            if (a1[i] == a2[i]) {
+            } else if (a1[i] != null && !a1[i].equals(a2[i])) {
                 return false;
             } else if (a1[i] == null && a2[i] != null) {
                 return false;
