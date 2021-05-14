@@ -2,6 +2,7 @@ package org.basetools.util;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Stack;
 
 public class StringUtils {
     public static final char CHAR_SPACE = (char) 0x20;
@@ -96,7 +97,15 @@ public class StringUtils {
             }
         }
     }
-
+    public static final String toPath(Stack stack) {
+        int sCount = stack.size();
+        StringBuffer result = new StringBuffer();
+        for (int s = (sCount - 1); s >= 0; s--) {
+            result.append("/");
+            result.append(stack.get(s));
+        }
+        return result.toString();
+    }
     public static String convertExponentialValue(String number) throws NumberFormatException {
         if (number != null && (number.indexOf("e") > -1 || number.indexOf("E") > -1)) {
             number = FROM_FLOATINGNUMBER_FORMAT.format(Double.parseDouble(number));
