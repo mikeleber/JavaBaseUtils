@@ -90,6 +90,9 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
         }
     }
 
+    public static InputStream streamFromClassloader(Class clazz, String filename) throws IOException {
+       return clazz.getClassLoader().getResourceAsStream(filename);
+    }
     public static Reader readerFromClassloader(Class clazz, String filename) throws IOException {
         URL input = clazz.getClassLoader().getResource(filename);
         if (input == null) {

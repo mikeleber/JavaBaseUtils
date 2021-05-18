@@ -6,6 +6,7 @@
 
     <groupId>org.leber.basetools</groupId>
     <artifactId>JavaBaseUtils</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <build>
         <plugins>
@@ -19,6 +20,9 @@
             </plugin>
         </plugins>
     </build>
+    <modules>
+        <module>Net</module>
+    </modules>
     <properties>
         <commons-collections.version>4.3</commons-collections.version>
         <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
