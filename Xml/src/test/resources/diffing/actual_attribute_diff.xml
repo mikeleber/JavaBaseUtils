@@ -1,0 +1,10 @@
+<Partner>
+    <PartnerNr>200000203</PartnerNr>
+    <Vorname>Corinne</Vorname>
+    <Nachname>Test_HIC</Nachname>
+    <Geschlecht>w</Geschlecht>
+    <Typ attr="someOtherValue">nat</Typ>
+    <ListNode attr="123">node1</ListNode>
+    <ListNode>node2</ListNode>
+    <ListNode>node3</ListNode>
+</Partner>

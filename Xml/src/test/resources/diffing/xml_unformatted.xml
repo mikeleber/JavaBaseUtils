@@ -1,0 +1,9 @@
+<Agenda type="gardening">
+    <Activity type="Watering">
+        <golf-course time="6:00"/>
+        <yard time="7:00"/>
+    </Activity>
+    <Activity type="cooking">
+        <lunch time="12:00"/>
+    </Activity>
+</Agenda>

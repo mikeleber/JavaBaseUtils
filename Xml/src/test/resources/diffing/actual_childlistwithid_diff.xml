@@ -1,0 +1,18 @@
+<Partner>
+    <PartnerNr>200000203</PartnerNr>
+    <Geschlecht>w</Geschlecht>
+    <Vorname>Corinne</Vorname>
+    <Typ attr="someValue">nat</Typ>
+    <Nachname>Test_HIC</Nachname>
+    <ListNode id="1">node1</ListNode>
+    <ListNode id="3">node2</ListNode>
+    <ListNode id="2">node3</ListNode>
+    <ListNode2 id="1">node1</ListNode2>
+    <ListNode2 id="3">node2</ListNode2>
+    <ListNode2 id="2">node3</ListNode2>
+    <ListHolder>
+        <ListNode2 id="1">node1</ListNode2>
+        <ListNode2 id="3">node2</ListNode2>
+        <ListNode2 id="2">node3</ListNode2>
+    </ListHolder>
+</Partner>
