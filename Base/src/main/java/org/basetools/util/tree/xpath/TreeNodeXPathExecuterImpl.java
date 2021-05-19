@@ -1,33 +1,20 @@
 package org.basetools.util.tree.xpath;
 
-import org.basetools.log.LoggerFactory;
 import org.basetools.util.tree.TreeNode;
 import org.jaxen.DefaultNavigator;
-import org.jaxen.JaxenException;
-import org.jaxen.UnresolvableException;
 import org.jaxen.XPath;
-import org.slf4j.Logger;
-
-import javax.xml.transform.TransformerException;
 import java.util.List;
 
 public final class TreeNodeXPathExecuterImpl {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TreeNodeXPathExecuterImpl.class);
     private static final XPathTreeNodeHandler DEFAULT_HANDLER = new XPathTreeNodeHandler();
     public static long timeConsumption = 0;
     public static int counter = 0;
     private static TreeNodeXPathExecuterImpl _singleton = null;
 
-    /**
-     * XPathExecuterImpl constructor comment.
-     */
     private TreeNodeXPathExecuterImpl() {
         super();
     }
 
-    /**
-     * processXPath method comment.
-     */
     public static TreeNodeXPathExecuterImpl getInstance() {
         if (_singleton == null) {
             _singleton = new TreeNodeXPathExecuterImpl();
@@ -37,30 +24,20 @@ public final class TreeNodeXPathExecuterImpl {
         }
     }
 
-    public List<? extends TreeNode> processXPathJaxen(String xpath, TreeNode type) throws TransformerException {
-
+    public List<? extends TreeNode> processXPathJaxen(String xpath, TreeNode type) {
         TreeDocumentNavigator navigator = new TreeDocumentNavigator(DEFAULT_HANDLER);
         return processXPathJaxen(navigator, xpath, type);
     }
 
-    public List<? extends TreeNode> processXPathJaxen(DefaultNavigator navigator, String xpath, TreeNode type)
-            throws TransformerException {
+    public List<? extends TreeNode> processXPathJaxen(DefaultNavigator navigator, String xpath, TreeNode type) {
         long start = System.currentTimeMillis();
         counter++;
         List<TreeNode> results = null;
         try {
             XPath typeXpath = new TreeNodeXPath(xpath, navigator);
             results = typeXpath.selectNodes(type);
-        } catch (UnresolvableException e) {
-            LOGGER.error("XPath not resolvable (" + xpath + ") Reason:" + e.getMessage());
-        } catch (org.jaxen.XPathSyntaxException e) {
-            LOGGER.error("XPath-Syntax Error for (" + xpath + ") Reason:" + e.getMultilineMessage());
-        } catch (JaxenException e) {
-            LOGGER.error(e.getMessage(), e);
-        } catch (ClassCastException e) {
-            LOGGER.error("Wrong result type! Get's not a  TreeNode with xpath:" + xpath);
         } catch (Exception e) {
-            LOGGER.error("XPath Error for (" + xpath + ") Reason:" + e.getMessage());
+            e.printStackTrace();
         }
 
         long stop = System.currentTimeMillis();

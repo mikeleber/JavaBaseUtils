@@ -1,9 +1,7 @@
 package org.basetools.util.concurrent.worker;
 
-import org.basetools.log.LoggerFactory;
 import org.basetools.util.Statistics;
 import org.basetools.util.concurrent.ThreadFactoryWithNamePrefix;
-import org.slf4j.Logger;
 
 import java.util.Queue;
 import java.util.concurrent.*;
@@ -14,7 +12,6 @@ import java.util.concurrent.*;
  * @param <I>
  */
 public class WorkService<I> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(WorkService.class);
     private int jobQueueSize = 10;
     private int corePoolSize = 10;
     private int maximumPoolSize = 100;
@@ -122,11 +119,9 @@ public class WorkService<I> {
                             if (toDo instanceof RunnableWrapper) {
                                 info = ((RunnableWrapper) toDo).getInfo();
                             }
-                            LOGGER.debug("execute new task{}", toDo.hashCode());
                             executorService.submit(toDo);
-                            LOGGER.debug("task executed:{}" + toDo.hashCode());
                         } catch (Exception e) {
-                            LOGGER.error("exception in worker thread: ", e);
+                            throw new RuntimeException(e);
                         }
                         long timeComsumption = System.currentTimeMillis() - start;
                         addToStatistic(timeComsumption, info);
@@ -219,7 +214,6 @@ public class WorkService<I> {
 
     public WorkService pushWorkUnit(Runnable work) {
         checkShutdowned();
-        LOGGER.debug("add work:");
         worklist.add(work);
         synchronized (worklist) {
             worklist.notifyAll();

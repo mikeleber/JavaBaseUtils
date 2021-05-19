@@ -1,8 +1,6 @@
 package org.basetools.util.sort;
 
-import org.basetools.log.LoggerFactory;
 import org.basetools.util.compare.StringCompare;
-import org.slf4j.Logger;
 
 import java.text.Collator;
 import java.util.Arrays;
@@ -53,7 +51,6 @@ public final class FastQSort {
     public static final int DES = 1;
     public static final int NATURAL = 2;
     private static final FastQSort _instance = new FastQSort();
-    private final Logger logger = LoggerFactory.getLogger(FastQSort.class);
     /**
      * This is a generic version of C.A.R Hoare's Quick Sort algorithm. This will handle arrays that are already sorted, and arrays with duplicate keys. <BR>
      * If you think of a one dimensional array as going from the lowest index on the left to the highest index on the right then the parameters to this function are lowest index or left and highest index or right. The first time you call this function it will be with the parameters 0, a.length - 1.
@@ -321,7 +318,7 @@ public final class FastQSort {
             QuickSort(a, 0, a.size() - 1);
             InsertionSort(a, 0, a.size() - 1);
         } catch (Exception e) {
-            logger.error("sortError", e);
+            throw new RuntimeException(e);
         }
         return _index;
     }

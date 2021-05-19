@@ -1,7 +1,5 @@
 package org.basetools.convert;
 
-import org.basetools.log.LoggerFactory;
-import org.slf4j.Logger;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -18,7 +16,6 @@ import java.util.GregorianCalendar;
  * Provides a converter used to transform {@link Date} into different other date formats.
  */
 public final class DateConverter {
-    private static final Logger logger = LoggerFactory.getLogger(DateConverter.class);
 
     private static final SimpleDateFormat ISO_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -65,12 +62,10 @@ public final class DateConverter {
      */
     public static String toIsoTimestampString(long timestamp) {
         try {
-
             return TimestampConverter.format(timestamp);
         } catch (ParseException pe) {
-            logger.error("Can't create TimestampString from long value", pe);
+            return null;
         }
-        return null;
     }
 
     /**

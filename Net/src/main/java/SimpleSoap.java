@@ -18,7 +18,6 @@ public class SimpleSoap {
     public void call(String soapEndpoint, String strSoapAction) throws IOException {
         //wsdl file :http://currencyconverter.kowabunga.net/converter.asmx?wsdl
         InputStream soapRequestFile = org.basetools.util.io.FileUtils.streamFromClassloader(getClass(), "SoapRequestFile.xml");
-
         CloseableHttpClient client = getCloseableHttpClient();
         HttpPost request = new HttpPost(soapEndpoint); //Create the request
         request.addHeader("Content-Type", "text/xml"); //adding header
