@@ -35,6 +35,7 @@
     <modules>
         <module>Net</module>
         <module>Base</module>
+        <module>Xml</module>
     </modules>
 
     <dependencyManagement>
