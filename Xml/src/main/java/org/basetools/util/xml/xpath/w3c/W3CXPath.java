@@ -1,4 +1,4 @@
-package org.basetools.util.util.xml.xpath.w3c;
+package org.basetools.util.xml.xpath.w3c;
 
 import org.jaxen.BaseXPath;
 import org.jaxen.Context;

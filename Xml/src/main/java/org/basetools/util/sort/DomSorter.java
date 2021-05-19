@@ -1,4 +1,4 @@
-package org.basetools.util.util.sort;
+package org.basetools.util.sort;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
@@ -6,7 +6,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.xpath.CachedXPathAPI;
 import org.apache.xpath.objects.XObject;
-import org.basetools.util.util.dom.W3CDomUtil;
+import org.basetools.util.dom.W3CDomUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;

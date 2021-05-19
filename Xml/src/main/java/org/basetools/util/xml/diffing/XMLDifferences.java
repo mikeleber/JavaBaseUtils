@@ -1,4 +1,4 @@
-package org.basetools.util.util.xml.diffing;
+package org.basetools.util.xml.diffing;
 
 import java.util.Collection;
 

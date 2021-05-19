@@ -1,4 +1,4 @@
-package org.basetools.list;
+package org.basetools.util.array;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;

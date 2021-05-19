@@ -1,4 +1,4 @@
-package org.basetools.util.util.xml.diffing;
+package org.basetools.util.xml.diffing;
 
 public class XmlDifferException extends Exception {
 

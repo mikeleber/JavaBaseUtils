@@ -1,4 +1,4 @@
-package org.basetools.util.collection;
+package org.basetools.util.array;
 
 import org.apache.commons.lang3.StringUtils;
 

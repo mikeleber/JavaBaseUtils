@@ -1,4 +1,4 @@
-package org.basetools.util.util.xml.xpath.w3c;
+package org.basetools.util.xml.xpath.w3c;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jaxen.Navigator;

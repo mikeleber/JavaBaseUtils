@@ -1,6 +1,6 @@
-package org.basetools.util.util.xml.xpath.w3c;
+package org.basetools.util.xml.xpath.w3c;
 
-import org.basetools.util.util.dom.W3CDomUtil;
+import org.basetools.util.dom.W3CDomUtil;
 import org.jaxen.JaxenException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

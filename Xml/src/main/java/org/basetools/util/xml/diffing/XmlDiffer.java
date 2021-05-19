@@ -1,6 +1,6 @@
-package org.basetools.util.util.xml.diffing;
+package org.basetools.util.xml.diffing;
 
-import org.basetools.util.util.xml.diffing.preprocessor.PreProcessor;
+import org.basetools.util.xml.diffing.preprocessor.PreProcessor;
 
 import java.util.Map;
 import java.util.TreeMap;

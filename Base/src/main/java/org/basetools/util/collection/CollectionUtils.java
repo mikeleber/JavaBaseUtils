@@ -1,5 +1,7 @@
 package org.basetools.util.collection;
 
+import org.basetools.util.array.ArrayUtil;
+
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;

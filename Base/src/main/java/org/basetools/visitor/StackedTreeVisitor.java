@@ -1,4 +1,4 @@
-package org.basetools.model.visitor;
+package org.basetools.visitor;
 
 import java.util.Stack;
 

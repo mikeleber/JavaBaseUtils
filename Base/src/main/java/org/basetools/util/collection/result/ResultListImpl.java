@@ -1,6 +1,6 @@
 package org.basetools.util.collection.result;
 
-import org.basetools.util.collection.ArrayUtil;
+import org.basetools.util.array.ArrayUtil;
 
 import java.util.*;
 import java.util.function.Function;

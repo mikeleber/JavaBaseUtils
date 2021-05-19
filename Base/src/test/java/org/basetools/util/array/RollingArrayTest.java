@@ -1,4 +1,4 @@
-package org.basetools.list;
+package org.basetools.util.array;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

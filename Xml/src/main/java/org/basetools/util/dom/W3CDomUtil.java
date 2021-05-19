@@ -1,4 +1,4 @@
-package org.basetools.util.util.dom;
+package org.basetools.util.dom;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;

@@ -1,9 +1,8 @@
-package org.basetools.util.collection;
+package org.basetools.util.array;
 
+import org.basetools.util.array.ArrayUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class ArrayUtilTest {
 
@@ -11,7 +10,7 @@ class ArrayUtilTest {
     void givenArrayAddElementAtPos0() {
         Object [] expected = new Object[]{"1","2","3","4","5","6"};
         Object [] src = new Object[]{"2","3","4","5","6"};
-        Object [] merged=ArrayUtil.add(Object.class,src,"1",0);
+        Object [] merged= ArrayUtil.add(Object.class,src,"1",0);
         Assertions.assertArrayEquals(expected,merged);
     }
     @Test

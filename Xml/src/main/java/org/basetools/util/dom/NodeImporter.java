@@ -4,10 +4,10 @@
  * To change the template for this generated file go to
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
-package org.basetools.util.util.dom;
+package org.basetools.util.dom;
 
 import org.apache.commons.lang3.StringUtils;
-import org.basetools.util.util.xml.xpath.w3c.W3CXPathExecuterImpl;
+import org.basetools.util.xml.xpath.w3c.W3CXPathExecuterImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.*;

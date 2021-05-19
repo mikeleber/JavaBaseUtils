@@ -1,6 +1,6 @@
 package org.basetools.util;
 
-import org.basetools.util.collection.ArrayUtil;
+import org.basetools.util.array.ArrayUtil;
 import org.basetools.util.collection.LimitedQueue;
 import org.basetools.util.json.JSONUtilities;
 
