@@ -18,12 +18,12 @@ public class StringUtils {
         FROM_FLOATINGNUMBER_FORMAT.setDecimalFormatSymbols(symbols);
         FROM_FLOATINGNUMBER_FORMAT.setMaximumFractionDigits(340);
     }
+
     /**
      * Pre-pend the given character to the String until the result is the desired length. If a String is longer than the desired length, it will not be truncated, however no padding will be added.
      *
      * @param text
-     * @param len
-     *           target length.
+     * @param len       target length.
      * @param character
      * @return padded String.
      * @throws NullPointerException
@@ -41,6 +41,7 @@ public class StringUtils {
         sb.append(text);
         return (sb.toString());
     }
+
     public static String replaceWhiteSpace(String toClean, char replacement, boolean collapseSpaces) {
         int size = toClean.length();
         StringBuffer result = new StringBuffer(toClean.length());
@@ -97,6 +98,7 @@ public class StringUtils {
             }
         }
     }
+
     public static final String toPath(Stack stack) {
         int sCount = stack.size();
         StringBuffer result = new StringBuffer();
@@ -106,6 +108,7 @@ public class StringUtils {
         }
         return result.toString();
     }
+
     public static String convertExponentialValue(String number) throws NumberFormatException {
         if (number != null && (number.indexOf("e") > -1 || number.indexOf("E") > -1)) {
             number = FROM_FLOATINGNUMBER_FORMAT.format(Double.parseDouble(number));
@@ -114,6 +117,10 @@ public class StringUtils {
             }
         }
         return number;
+    }
+
+    public static StringBuilder wrapQuoted(StringBuilder builder, CharSequence aString) {
+        return builder.append(wrapQuoted(aString));
     }
 
     public static CharSequence wrapQuoted(CharSequence aString) {
@@ -125,14 +132,54 @@ public class StringUtils {
         return "\"" + aString + "\"";
     }
 
-    public static StringBuilder wrapQuoted(StringBuilder builder, CharSequence aString) {
-        return builder.append(wrapQuoted(aString));
-    }
-
     public static final boolean isTrue(String val) {
         if (val == null || val.equalsIgnoreCase("false")) {
             return false;
         }
         return (val.equalsIgnoreCase("true") || val.equalsIgnoreCase("y") || val.equalsIgnoreCase("yes") || val.equalsIgnoreCase("1") || val.equalsIgnoreCase("1.0"));
+    }
+
+    public static final String removeBetween(String text, String startQuali, String endQuali) {
+        return removeBetween(text, startQuali, endQuali, false);
+    }
+
+    public static final String removeBetween(String text, String startQuali, String endQuali, boolean onlyNumeric) {
+        return removeBetween(text, startQuali, endQuali, onlyNumeric, false);
+    }
+
+    public static final String removeBetween(String text, String startQuali, String endQuali, boolean onlyNumeric, boolean retNullIfNotNumeric) {
+        int sqLen = startQuali.length();
+        int eqLen = endQuali.length();
+        int comStart = text.indexOf(startQuali);
+        if (comStart == -1) {
+            return text;
+        }
+        StringBuilder cleared = new StringBuilder(text.length());
+        int start = 0;
+        while (comStart != -1) {
+            cleared.append(text.substring(start, comStart));
+            int comEnd = text.indexOf(endQuali, comStart);
+            if (comEnd == -1) {
+                // no end forget about it!
+                break;
+            } else {
+                if (onlyNumeric) {
+                    String qualiContent = text.substring(comStart + sqLen, comEnd);
+                    if (!org.apache.commons.lang3.StringUtils.isNumeric(qualiContent)) {
+                        if (retNullIfNotNumeric) {
+                            return null;
+                        } else {
+                            cleared.append(text.substring(comStart, comEnd + eqLen));
+                        }
+                    }
+                }
+                comStart = text.indexOf(startQuali, comEnd + eqLen);
+                start = comEnd + eqLen;
+                if (comStart == -1) {
+                    cleared.append(text.substring(comEnd + eqLen));
+                }
+            }
+        }
+        return cleared.toString();
     }
 }
