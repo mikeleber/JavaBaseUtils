@@ -146,7 +146,34 @@ public final class ArrayUtil {
     public static <T> T[] toGenericArray(T... elems) {
         return elems;
     }
-
+    public static final Object[] addToGrowArray(Object[] array, Object o, int gf) {
+        if (gf <= 1) {
+            gf = 2;
+        }
+        if (array == null) {
+            array = new Object[gf];
+        }
+        int s = array.length;
+        int lastIdx = -1;
+        if (s > 0) {
+            Integer iVal = (Integer) array[s - 1];
+            lastIdx = (iVal != null ? iVal.intValue() : -1);
+            array[s - 1] = 0;
+        }
+        lastIdx++;
+        if (lastIdx < s - 1) {
+            array[lastIdx] = o;
+            array[s - 1] = lastIdx;
+            return array;
+        } else {
+            // need to expand array
+            Object[] newArray = new Object[s + gf];
+            System.arraycopy(array, 0, newArray, 0, s);
+            newArray[lastIdx] = o;
+            newArray[newArray.length - 1] = lastIdx;
+            return newArray;
+        }
+    }
     public static final Object[][] addToGrowArray(Object[][] array, Object[] o, int gf) {
         int w = o.length;
         if (array == null) {
