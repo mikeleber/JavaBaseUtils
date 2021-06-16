@@ -16,7 +16,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.apache.commons.lang3.StringUtils;
+import org.basetools.util.StringUtils;
 import org.basetools.util.xml.diffing.SimpleXMLDiff;
 import org.basetools.util.xml.diffing.XMLDifferences;
 import org.bitbucket.cowwoc.diffmatchpatch.DiffMatchPatch;
@@ -294,8 +294,8 @@ public class XMLDiffTestClient extends Application {
         public void handle(ActionEvent e) {
             try {
                 String[] blacklistStrings = (String[]) getBlackListView().getItems().stream().toArray(size -> new String[size]);
-                String leftXMLText = StringUtils.prependIfMissingIgnoreCase(expectedXML.getText(), xmlHeaderMarker, xmlHeader);
-                String rightXMLText = StringUtils.prependIfMissingIgnoreCase(actualXML.getText(), xmlHeaderMarker, xmlHeader);
+                String leftXMLText = StringUtils.prependIfMissing(expectedXML.getText(), xmlHeaderMarker, xmlHeader,true);
+                String rightXMLText = StringUtils.prependIfMissing(actualXML.getText(), xmlHeaderMarker, xmlHeader,true);
                 XMLDifferences aDifference = SimpleXMLDiff.builder().withBlacklistXPaths(blacklistStrings).build().diff(leftXMLText, rightXMLText);
                 String diff = aDifference.getDifferences().stream().map(Object::toString).collect(Collectors.joining("<br>"));
                 summary.getEngine().loadContent(diff);
@@ -310,8 +310,8 @@ public class XMLDiffTestClient extends Application {
         public void handle(ActionEvent e) {
             try {
                 String[] blacklistStrings = (String[]) getBlackListView().getItems().stream().toArray(size -> new String[size]);
-                String leftXMLText = StringUtils.prependIfMissingIgnoreCase(expectedXML.getText(), xmlHeaderMarker, xmlHeader);
-                String rightXMLText = StringUtils.prependIfMissingIgnoreCase(actualXML.getText(), xmlHeaderMarker, xmlHeader);
+                String leftXMLText = StringUtils.prependIfMissing(expectedXML.getText(), xmlHeaderMarker, xmlHeader,true);
+                String rightXMLText = StringUtils.prependIfMissing(actualXML.getText(), xmlHeaderMarker, xmlHeader,true);
 
                 XMLDifferences aDifference = SimpleXMLDiff.builder().withBlacklistXPaths(blacklistStrings).build().diff(leftXMLText, rightXMLText);
                 LinkedList<DiffMatchPatch.Diff> diffs = diffMatchPatch.diffMain(aDifference.getActualContent(), aDifference.getExpectedContent(), true);
