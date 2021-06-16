@@ -44,7 +44,7 @@ public class StringUtils {
 
     public static String replaceWhiteSpace(String toClean, char replacement, boolean collapseSpaces) {
         int size = toClean.length();
-        StringBuffer result = new StringBuffer(toClean.length());
+        StringBuilder result = new StringBuilder(toClean.length());
         char old = CHAR_EMPTY;
         for (int i = 0; i < size; i++) {
             boolean skip = false;
@@ -101,7 +101,7 @@ public class StringUtils {
 
     public static final String toPath(Stack stack) {
         int sCount = stack.size();
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         for (int s = (sCount - 1); s >= 0; s--) {
             result.append("/");
             result.append(stack.get(s));

@@ -22,4 +22,5 @@ public class EmptyUtil {
     public static final boolean isEmpty(Object[] x) {
         return (x == null || x.length == 0);
     }
+    public static boolean isEmpty(CharSequence cs) {return cs == null || cs.length() == 0; }
 }

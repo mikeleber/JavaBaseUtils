@@ -2,7 +2,7 @@ package xml;
 
 import javafx.application.Application;
 
-public class DiffStarter {
+public class XMLDiffClientStarter {
     public static void main(String[] args) throws Exception {
         Application.launch(XMLDiffTestClient.class);
     }

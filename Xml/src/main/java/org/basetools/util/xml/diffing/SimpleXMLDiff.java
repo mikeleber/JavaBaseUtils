@@ -4,10 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.basetools.util.xml.xpath.w3c.W3CXPathExecuterImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -345,6 +342,7 @@ public class SimpleXMLDiff extends XmlDiffer {
         do {
             if (node.getNodeType() == Node.ATTRIBUTE_NODE) {
                 pathStack.add("/@" + getNodeIdentification(node));
+                node=((Attr)node).getOwnerElement();
             } else {
                 pathStack.add("/" + getNodeIdentification(node));
             }
@@ -443,8 +441,6 @@ public class SimpleXMLDiff extends XmlDiffer {
         private boolean nodeValueDiff = true;
         private boolean normalizeCharSpacing = true;
         private boolean ignoreNS = true;
-        private String actualXML;
-        private String testXML;
         private Node actualNode;
         private Node expectedNode;
         private String[] blacklistXpaths;
@@ -472,10 +468,6 @@ public class SimpleXMLDiff extends XmlDiffer {
             return this;
         }
 
-        public SimpleXmlDiffBuilder withActualXml(String actualXml) {
-            this.actualXML = actualXml;
-            return this;
-        }
 
         public SimpleXmlDiffBuilder withNodes(Node actualNode, Node expectedNode) {
             Objects.requireNonNull(actualNode);

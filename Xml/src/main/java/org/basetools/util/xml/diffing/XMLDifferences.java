@@ -4,15 +4,13 @@ import java.util.Collection;
 
 public class XMLDifferences {
     private final Collection<XMLNodeDiff> diffList;
-    private final String uuid;
-    private final String currentContent;
-    private final String testContent;
+    private final String actualContent;
+    private final String expectedContent;
 
     private XMLDifferences(Builder builder) {
         diffList = builder.diffList;
-        uuid = builder.uuid;
-        currentContent = builder.currentContent;
-        testContent = builder.testContent;
+        actualContent = builder.actualContent;
+        expectedContent = builder.expectedContent;
     }
 
     public static Builder builder() {
@@ -23,37 +21,32 @@ public class XMLDifferences {
         return diffList;
     }
 
-    public String getCurrentContent() {
-        return currentContent;
+    public String getActualContent() {
+        return actualContent;
     }
 
     public boolean isDifferent() {
         return getDifferences() != null && getDifferences().size() > 0;
     }
 
-    public String getTestContent() {
-        return testContent;
+    public String getExpectedContent() {
+        return expectedContent;
     }
 
-    public String getUuid() {
-        return uuid;
-    }
 
     @Override
     public String toString() {
         return "XMLDifferences{" +
                 "diffList=" + diffList +
-                ", uuid='" + uuid + '\'' +
-                ", currentContent='" + currentContent + '\'' +
-                ", testContent='" + testContent + '\'' +
+                ", currentContent='" + actualContent + '\'' +
+                ", testContent='" + expectedContent + '\'' +
                 '}';
     }
 
     public static final class Builder {
         private Collection<XMLNodeDiff> diffList;
-        private String uuid;
-        private String currentContent;
-        private String testContent;
+        private String actualContent;
+        private String expectedContent;
 
         private Builder() {
         }
@@ -63,18 +56,14 @@ public class XMLDifferences {
             return this;
         }
 
-        public Builder withUuid(String val) {
-            uuid = val;
-            return this;
-        }
 
         public Builder withActual(String val) {
-            currentContent = val;
+            actualContent = val;
             return this;
         }
 
         public Builder withExpected(String val) {
-            testContent = val;
+            expectedContent = val;
             return this;
         }
 
