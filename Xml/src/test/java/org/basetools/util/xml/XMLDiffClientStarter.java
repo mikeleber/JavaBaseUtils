@@ -1,4 +1,4 @@
-package xml;
+package org.basetools.util.xml;
 
 import javafx.application.Application;
 

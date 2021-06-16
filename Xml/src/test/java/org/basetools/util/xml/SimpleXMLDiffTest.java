@@ -1,4 +1,4 @@
-package xml;
+package org.basetools.util.xml;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
