@@ -1,16 +1,24 @@
 package org.basetools.util.xml.diffing;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
-public class XMLDifferences {
-    private final Collection<XMLNodeDiff> diffList;
-    private final String actualContent;
-    private final String expectedContent;
+public class XMLDifferences<T> {
+    private Collection<XMLNodeDiff> diffList = new ArrayList<>();
+    private T actualContent;
+    private T expectedContent;
 
     private XMLDifferences(Builder builder) {
         diffList = builder.diffList;
-        actualContent = builder.actualContent;
-        expectedContent = builder.expectedContent;
+        actualContent = (T) builder.actualContent;
+        expectedContent = (T) builder.expectedContent;
+    }
+
+    public XMLDifferences(T actual, T expected) {
+        actualContent = actual;
+        expectedContent = expected;
+
     }
 
     public static Builder builder() {
@@ -21,7 +29,7 @@ public class XMLDifferences {
         return diffList;
     }
 
-    public String getActualContent() {
+    public T getActualContent() {
         return actualContent;
     }
 
@@ -29,7 +37,7 @@ public class XMLDifferences {
         return getDifferences() != null && getDifferences().size() > 0;
     }
 
-    public String getExpectedContent() {
+    public T getExpectedContent() {
         return expectedContent;
     }
 
@@ -40,13 +48,21 @@ public class XMLDifferences {
                 "diffList=" + diffList +
                 ", currentContent='" + actualContent + '\'' +
                 ", testContent='" + expectedContent + '\'' +
-                '}';
+                '}' + getDifferences().stream().map(Object::toString).collect(Collectors.joining("<br>"));
     }
 
-    public static final class Builder {
+    public void add(XMLNodeDiff diff) {
+        getDifferences().add(diff);
+    }
+
+    public long countErrors() {
+        return getDifferences().stream().filter(diff -> diff.getSeverity() == XMLNodeDiff.Servity.ERROR).count();
+    }
+
+    public static final class Builder<T> {
         private Collection<XMLNodeDiff> diffList;
-        private String actualContent;
-        private String expectedContent;
+        private T actualContent;
+        private T expectedContent;
 
         private Builder() {
         }
@@ -57,12 +73,12 @@ public class XMLDifferences {
         }
 
 
-        public Builder withActual(String val) {
+        public Builder withActual(T val) {
             actualContent = val;
             return this;
         }
 
-        public Builder withExpected(String val) {
+        public Builder withExpected(T val) {
             expectedContent = val;
             return this;
         }

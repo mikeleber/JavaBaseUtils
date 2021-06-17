@@ -1,6 +1,8 @@
 package org.basetools.util.xml.diffing;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.basetools.util.xml.xpath.w3c.W3CXPathExecuterImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,15 +48,16 @@ public class SimpleXMLDiff extends XmlDiffer {
     }
 
     public XMLDifferences difference(Node actualNode, Node expectedNode) {
-        List<XMLNodeDiff> differences = new ArrayList<>();
+
         if (actualRootNode == null) {
             actualRootNode = actualNode;
         }
         if (expectedRootNode == null) {
             expectedRootNode = expectedNode;
         }
+        XMLDifferences differences= new XMLDifferences(null,null);
         difference(actualNode, expectedNode, differences);
-        return XMLDifferences.builder().withDifferences(differences).build();
+        return differences;
     }
 
     public Set<Node> getBlacklistedNodes() {
@@ -82,7 +85,7 @@ public class SimpleXMLDiff extends XmlDiffer {
     /**
      * XMLNodeDiff 2 nodes and put the differences in the list
      */
-    public boolean difference(Node actualNode, Node expectedNode, List<XMLNodeDiff> differences) {
+    public boolean difference(Node actualNode, Node expectedNode,XMLDifferences differences) {
         if (getBlacklistedNodes().contains(actualNode)) {
             return false;
         }
@@ -106,49 +109,73 @@ public class SimpleXMLDiff extends XmlDiffer {
             diffAttributes(actualNode, expectedNode, differences);
             diffNodes(actualNode, expectedNode, differences);
         }
-        return differences.size() > 0;
+        return differences.countErrors() > 0;
     }
 
     /**
      * XMLNodeDiff the nodes
      */
-    public boolean diffNodes(Node actualNode, Node expectedNode, List<XMLNodeDiff> differences) {
+    public boolean diffNodes(Node actualNode, Node expectedNode, XMLDifferences differences) {
         //Sort by Name
-        Map<String, Node> actualChildren = new LinkedHashMap<>();
+        Map<String, Pair<Integer, Node>> actualChildren = new LinkedHashMap<>();
+        int pos = 0;
         for (Node child1 = actualNode.getFirstChild(); child1 != null; child1 = child1.getNextSibling()) {
-            actualChildren.put(getNodeIdentification(child1), child1);
+            if (!isTextNode(child1)) pos++;
+            actualChildren.put(getNodeIdentification(child1), new ImmutablePair<>(Integer.valueOf(pos), child1));
         }
 
         //Sort by Name
-        Map<String, Node> expectedChildren = new LinkedHashMap<>();
+        pos = 0;
+        Map<String, Pair<Integer, Node>> expectedChildren = new LinkedHashMap<>();
         for (Node child2 = expectedNode.getFirstChild(); child2 != null; child2 = child2.getNextSibling()) {
-            expectedChildren.put(getNodeIdentification(child2), child2);
+            if (!isTextNode(child2)) pos++;
+            expectedChildren.put(getNodeIdentification(child2), new ImmutablePair<>(Integer.valueOf(pos), child2));
         }
+
 
         Set<Node> mixedInBlackList = new HashSet<>(getMixinBlacklist(actualNode));
         mixedInBlackList.addAll(getMixinBlacklist(expectedNode));
         if (mixedInBlackList.size() > 0) {
-
             handleMixinListChilds(actualNode, expectedNode, differences);
         }
 
         //XMLNodeDiff all the children1
-        for (Node actualChild : actualChildren.values()) {
-            if (!mixedInBlackList.contains(actualChild)) {
-                Node expectedChild = expectedChildren.remove(getNodeIdentification(actualChild));
+        for (Pair<Integer, Node> actualChildPair : actualChildren.values()) {
+            if (!mixedInBlackList.contains(actualChildPair)) {
+                Pair<Integer, Node> expectedChildPair = expectedChildren.remove(getNodeIdentification(actualChildPair.getValue()));
+                Node actualChild = actualChildPair != null ? actualChildPair.getValue() : null;
+                Node expectedChild = expectedChildPair != null ? expectedChildPair.getValue() : null;
                 difference(actualChild, expectedChild, differences);
+                checkPosition(differences, expectedChildPair, actualChildPair);
             }
         }
 
         //XMLNodeDiff all the children2 left over
-        for (Node expectedChild : expectedChildren.values()) {
-            if (!mixedInBlackList.contains(expectedChild)) {
-                Node actualChild = actualChildren.get(getNodeIdentification(expectedChild));
+        for (Pair<Integer, Node> expectedChildPair : expectedChildren.values()) {
+            if (!mixedInBlackList.contains(expectedChildPair)) {
+                Pair<Integer, Node> actualChildPair = actualChildren.get(getNodeIdentification(expectedChildPair.getValue()));
+                Node actualChild = actualChildPair != null ? actualChildPair.getValue() : null;
+                Node expectedChild = expectedChildPair != null ? expectedChildPair.getValue() : null;
                 difference(actualChild, expectedChild, differences);
+                checkPosition(differences, expectedChildPair, actualChildPair);
             }
         }
 
-        return differences.size() > 0;
+        return differences.countErrors() > 0;
+    }
+
+    private void checkPosition(XMLDifferences differences, Pair<Integer, Node> expectedChildPair, Pair<Integer, Node> actualChildPair) {
+        if (actualChildPair != null && expectedChildPair != null && !isTextNode(actualChildPair.getValue()) && !isTextNode(expectedChildPair.getValue()) && actualChildPair.getKey() != expectedChildPair.getKey()) {
+            XMLNodeDiff.Builder diffBuilder = XMLNodeDiff.builder()
+                    .withXpath(getPath(actualChildPair.getValue()))
+                    .withActualNode(actualChildPair.getValue())
+                    .withActualValue(actualChildPair.getKey())
+                    .withExpectedNode(expectedChildPair.getValue())
+                    .withExpectedValue(expectedChildPair.getKey())
+                    .withSeverity(XMLNodeDiff.Servity.WARNING)
+                    .withDiffType(XMLNodeDiff.DiffType.POSITION);
+            differences.add(diffBuilder.build());
+        }
     }
 
     private Set<Node> getMixinBlacklist(Node node) {
@@ -175,7 +202,7 @@ public class SimpleXMLDiff extends XmlDiffer {
         return childs.stream().collect(Collectors.groupingBy(e -> e.getNodeName(), Collectors.counting()));
     }
 
-    private boolean handleMixinListChilds(Node actualNode, Node expectedNode, List<XMLNodeDiff> differences) {
+    private boolean handleMixinListChilds(Node actualNode, Node expectedNode, XMLDifferences differences) {
         Map<String, Long> groupingActualNodes = getChildGrouping(getElementsFrom(actualNode.getChildNodes()));
         Map<String, Long> groupingExpectedNodes = getChildGrouping(getElementsFrom(expectedNode.getChildNodes()));
         Set<Map.Entry<String, Long>> actualNodeEntries = groupingActualNodes.entrySet();
@@ -235,67 +262,65 @@ public class SimpleXMLDiff extends XmlDiffer {
     /**
      * XMLNodeDiff the nodes
      */
-    public boolean diffAttributes(Node currentNode, Node testNode, List<XMLNodeDiff> diffs) {
+    public boolean diffAttributes(Node actualNode, Node expectedNode, XMLDifferences diffs) {
         //Sort by Name
-        NamedNodeMap currentMap = currentNode.getAttributes();
+        NamedNodeMap currentMap = actualNode.getAttributes();
         Map<String, Node> currentAttributes = new LinkedHashMap<>();
         for (int index = 0; currentMap != null && index < currentMap.getLength(); index++) {
             currentAttributes.put(getNodeIdentification(currentMap.item(index)), currentMap.item(index));
         }
 
         //Sort by Name
-        NamedNodeMap testMap = testNode.getAttributes();
+        NamedNodeMap testMap = expectedNode.getAttributes();
         Map<String, Node> testAttributes = new LinkedHashMap<>();
         for (int index = 0; testMap != null && index < testMap.getLength(); index++) {
             testAttributes.put(getNodeIdentification(testMap.item(index)), testMap.item(index));
         }
 
-        //XMLNodeDiff all the currentAttributes
         for (Node currentAttribute : currentAttributes.values()) {
             Node testAttribute = testAttributes.remove(getNodeIdentification(currentAttribute));
             difference(currentAttribute, testAttribute, diffs);
         }
 
-        //XMLNodeDiff all the testAttributes left over
         for (Node testAttribute : testAttributes.values()) {
             Node currentAttribute = currentAttributes.get(getNodeIdentification(testAttribute));
             difference(currentAttribute, testAttribute, diffs);
         }
 
-        return diffs.size() > 0;
+        return diffs.countErrors() > 0;
     }
 
     /**
      * Check that the nodes exist
      */
-    public boolean diffNodeExists(Node nodeA, Node nodeB, List<XMLNodeDiff> differences) {
+    public boolean diffNodeExists(Node actualNode, Node expectedNode, XMLDifferences differences) {
 
-        if (handleNodeAsNull(nodeA)) {
-            nodeA = null;
+        if (handleNodeAsNull(actualNode)) {
+            actualNode = null;
         }
-        if (handleNodeAsNull(nodeB)) {
-            nodeB = null;
+        if (handleNodeAsNull(expectedNode)) {
+            expectedNode = null;
         }
-        if (nodeA == null && nodeB == null) {
+        if (actualNode == null && expectedNode == null) {
             return true;
         }
 
-        if (nodeA == null && nodeB != null) {
+        if (actualNode == null && expectedNode != null) {
             addToDiff(differences, XMLNodeDiff.builder()
-                    .withXpath(getPath(nodeB))
+                    .withXpath(getPath(expectedNode))
                     .withDiffType(XMLNodeDiff.DiffType.NODE_REMOVED)
-                    .withActualNode(nodeA)
-                    .withExpectedNode(nodeB)
+                    .withActualNode(actualNode)
+                    .withExpectedNode(expectedNode)
                     .build());
             return true;
         }
 
-        if (nodeA != null && nodeB == null) {
+        if (actualNode != null && expectedNode == null) {
             addToDiff(differences, XMLNodeDiff.builder()
-                    .withXpath(getPath(nodeA))
+                    .withXpath(getPath(actualNode))
                     .withDiffType(XMLNodeDiff.DiffType.NODE_ADDED)
-                    .withActualNode(nodeA)
-                    .withExpectedNode(nodeB)
+                    .withActualNode(actualNode)
+                    .withExpectedNode(expectedNode)
                     .build());
             return true;
         }
@@ -305,26 +330,30 @@ public class SimpleXMLDiff extends XmlDiffer {
 
     private boolean handleNodeAsNull(Node nodeA) {
         return nodeA == null
-                || (nodeA.getNodeType() == Node.TEXT_NODE
+                || (isTextNode(nodeA)
                 && StringUtils.isBlank(nodeA.getTextContent()));
     }
 
-    private void addToDiff(List<XMLNodeDiff> differences, XMLNodeDiff XMLNodeDiff) {
+    private boolean isTextNode(Node nodeA) {
+        return nodeA.getNodeType() == Node.TEXT_NODE;
+    }
+
+    private void addToDiff(XMLDifferences differences, XMLNodeDiff XMLNodeDiff) {
         differences.add(XMLNodeDiff);
     }
 
     /**
      * XMLNodeDiff the Node Type
      */
-    public boolean diffNodeType(Node currentNode, Node testNode, List<XMLNodeDiff> diffs) {
-        if (currentNode.getNodeType() != testNode.getNodeType()) {
+    public boolean diffNodeType(Node actualNode, Node expectedNode, XMLDifferences diffs) {
+        if (actualNode.getNodeType() != expectedNode.getNodeType()) {
             addToDiff(diffs, XMLNodeDiff.builder()
-                    .withXpath(getPath(currentNode))
-                    .withActualNode(currentNode)
-                    .withExpectedNode(testNode)
+                    .withXpath(getPath(actualNode))
+                    .withActualNode(actualNode)
+                    .withExpectedNode(expectedNode)
                     .withDiffType(XMLNodeDiff.DiffType.NODE_TYPE)
-                    .withActualValue(currentNode.getNodeType())
-                    .withExpectedValue(testNode.getNodeType())
+                    .withActualValue(actualNode.getNodeType())
+                    .withExpectedValue(expectedNode.getNodeType())
                     .build());
 
             return true;
@@ -342,7 +371,7 @@ public class SimpleXMLDiff extends XmlDiffer {
         do {
             if (node.getNodeType() == Node.ATTRIBUTE_NODE) {
                 pathStack.add("/@" + getNodeIdentification(node));
-                node=((Attr)node).getOwnerElement();
+                node = ((Attr) node).getOwnerElement();
             } else {
                 pathStack.add("/" + getNodeIdentification(node));
             }
@@ -359,31 +388,31 @@ public class SimpleXMLDiff extends XmlDiffer {
     /**
      * XMLNodeDiff the Node Value
      */
-    public boolean diffNodeValue(Node currentNode, Node testNode, List<XMLNodeDiff> diffs) {
-        String currentNodeValue = getNodeValue(currentNode);
-        String testNodeValue = getNodeValue(testNode);
+    public boolean diffNodeValue(Node actualNode, Node expectedNode, XMLDifferences diffs) {
+        String currentNodeValue = getNodeValue(actualNode);
+        String testNodeValue = getNodeValue(expectedNode);
 
         if (StringUtils.isBlank(currentNodeValue) && StringUtils.isBlank(testNodeValue)) {
             return false;
         }
         XMLNodeDiff.Builder diffBuilder = XMLNodeDiff.builder()
-                .withXpath(getPath(currentNode))
-                .withActualNode(currentNode)
-                .withExpectedNode(testNode)
+                .withXpath(getPath(actualNode))
+                .withActualNode(actualNode)
+                .withExpectedNode(expectedNode)
                 .withDiffType(XMLNodeDiff.DiffType.VALUE_CHANGED);
         if (currentNodeValue == null && testNodeValue != null) {
 
-            addToDiff(diffs, diffBuilder.withActualValue(currentNode).withExpectedValue(getNodeValue(testNode)).build());
+            addToDiff(diffs, diffBuilder.withActualValue(actualNode).withExpectedValue(getNodeValue(expectedNode)).build());
             return true;
         }
 
         if (currentNodeValue != null && testNodeValue == null) {
-            addToDiff(diffs, diffBuilder.withActualValue(currentNodeValue).withExpectedValue(testNode).build());
+            addToDiff(diffs, diffBuilder.withActualValue(currentNodeValue).withExpectedValue(expectedNode).build());
             return true;
         }
 
         if (!currentNodeValue.equals(testNodeValue)) {
-            addToDiff(diffs, diffBuilder.withActualValue(currentNodeValue).withExpectedValue(getNodeValue(testNode)).build());
+            addToDiff(diffs, diffBuilder.withActualValue(currentNodeValue).withExpectedValue(getNodeValue(expectedNode)).build());
             return true;
         }
 
@@ -420,20 +449,12 @@ public class SimpleXMLDiff extends XmlDiffer {
             currentDoc.normalizeDocument();
             testDoc.normalizeDocument();
 
-            List<XMLNodeDiff> XMLNodeDiffs = new ArrayList<>();
-            difference(currentDoc, testDoc, XMLNodeDiffs);
-            return XMLDifferences.builder()
-                    .withExpected(preProcessedExpected)
-                    .withActual(preProcessedActual)
-                    .withDifferences(compileDifferences(XMLNodeDiffs))
-                    .build();
+            XMLDifferences diffs = new XMLDifferences(expected,actual);
+            difference(currentDoc, testDoc, diffs);
+            return diffs;
         } catch (Exception e) {
             throw new XmlDifferException(e);
         }
-    }
-
-    private Set<XMLNodeDiff> compileDifferences(List<XMLNodeDiff> XMLNodeDiffs) {
-        return XMLNodeDiffs.stream().collect(Collectors.toSet());
     }
 
     public static final class SimpleXmlDiffBuilder {

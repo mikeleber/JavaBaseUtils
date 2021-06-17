@@ -296,7 +296,7 @@ public class XMLDiffTestClient extends Application {
                 String[] blacklistStrings = (String[]) getBlackListView().getItems().stream().toArray(size -> new String[size]);
                 String leftXMLText = StringUtils.prependIfMissing(expectedXML.getText(), xmlHeaderMarker, xmlHeader,true);
                 String rightXMLText = StringUtils.prependIfMissing(actualXML.getText(), xmlHeaderMarker, xmlHeader,true);
-                XMLDifferences aDifference = SimpleXMLDiff.builder().withBlacklistXPaths(blacklistStrings).build().diff(leftXMLText, rightXMLText);
+                XMLDifferences<String> aDifference = SimpleXMLDiff.builder().withBlacklistXPaths(blacklistStrings).build().diff(leftXMLText, rightXMLText);
                 String diff = aDifference.getDifferences().stream().map(Object::toString).collect(Collectors.joining("<br>"));
                 summary.getEngine().loadContent(diff);
             } catch (Exception ex) {
@@ -313,7 +313,7 @@ public class XMLDiffTestClient extends Application {
                 String leftXMLText = StringUtils.prependIfMissing(expectedXML.getText(), xmlHeaderMarker, xmlHeader,true);
                 String rightXMLText = StringUtils.prependIfMissing(actualXML.getText(), xmlHeaderMarker, xmlHeader,true);
 
-                XMLDifferences aDifference = SimpleXMLDiff.builder().withBlacklistXPaths(blacklistStrings).build().diff(leftXMLText, rightXMLText);
+                XMLDifferences <String>aDifference = SimpleXMLDiff.builder().withBlacklistXPaths(blacklistStrings).build().diff(leftXMLText, rightXMLText);
                 LinkedList<DiffMatchPatch.Diff> diffs = diffMatchPatch.diffMain(aDifference.getActualContent(), aDifference.getExpectedContent(), true);
                 summary.getEngine().loadContent(diffMatchPatch.diffPrettyHtml(diffs));
             } catch (Exception ex) {

@@ -12,6 +12,7 @@ public class XMLNodeDiff {
     private Node expectNode;
     private DiffType diffType;
     private String xpath;
+    private Servity severity;
 
     private XMLNodeDiff() {
 
@@ -36,10 +37,14 @@ public class XMLNodeDiff {
 
     @Override
     public String toString() {
-        return "<" + diffType +
-                "> " + toDisplayValue(currentValue != null ? currentValue : actualNode) +
+        return "" +severity+" Type:"+ diffType +
+                " " + toDisplayValue(currentValue != null ? currentValue : actualNode) +
                 " -> expected=" + toDisplayValue(expectedValue != null ? expectedValue : expectNode) +
                 ", " + xpath + "\n";
+    }
+
+    public Servity getSeverity() {
+        return severity;
     }
 
     public final String toDisplayValue(Object value) {
@@ -53,7 +58,7 @@ public class XMLNodeDiff {
                     break;
             }
         }
-        String stringValue = Objects.toString(value, "");
+        String stringValue = Objects.toString(value, "&lt;nothing&gt;");
         return cut(StringUtils.normalizeSpace(stringValue), 30, "...");
     }
 
@@ -78,9 +83,11 @@ public class XMLNodeDiff {
     }
 
     public enum DiffType {
-        VALUE_CHANGED, NODE_ADDED, NODE_TYPE, NODE_REMOVED, CHILD_COUNT, CHILD_REMOVED, CHILD_ADDED
+        VALUE_CHANGED, NODE_ADDED, NODE_TYPE, NODE_REMOVED, CHILD_COUNT,POSITION, CHILD_REMOVED, CHILD_ADDED
     }
-
+    public enum Servity {
+        ERROR,WARNING
+    }
     public static final class Builder {
         private Object actualValue;
         private Object expectedValue;
@@ -88,7 +95,7 @@ public class XMLNodeDiff {
         private Node expectedNode;
         private DiffType diffType;
         private String xpath;
-
+        private Servity severity=Servity.ERROR;
         private Builder() {
         }
 
@@ -134,7 +141,13 @@ public class XMLNodeDiff {
             diff.currentValue = this.actualValue;
             diff.expectNode = this.expectedNode;
             diff.actualNode = this.actualNode;
+            diff.severity = this.severity;
             return diff;
+        }
+
+        public Builder withSeverity(Servity severity) {
+            this.severity=severity;
+            return this;
         }
     }
 }
