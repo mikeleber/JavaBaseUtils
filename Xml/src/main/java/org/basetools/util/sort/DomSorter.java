@@ -25,63 +25,6 @@ public class DomSorter {
     public static final int INT_GREATER_THEN = 1;
     private static final CachedXPathAPI xPathAPI = new CachedXPathAPI();
 
-    public static void sortChildNodes(Node node, Pair<String, Comparator> preSelector,
-                                      List<Triple<String, Boolean, Comparator>> stringComparatorPair) throws TransformerException {
-        XObject result = xPathAPI.eval(node, preSelector.getKey());
-        List<Node> nodes = new ArrayList();
-        NodeList childNodeList = result.nodelist();
-
-        for (int i = INT_EQUAL; i < childNodeList.getLength(); i++) {
-            nodes.add(childNodeList.item(i));
-        }
-        Collections.reverse(nodes);
-        for (int i = 0; i < nodes.size(); i++) {
-            sortChildNodes(nodes.get(i), stringComparatorPair);
-        }
-    }
-
-    /**
-     * Sorts the children of the given node upto the specified depth if
-     * available
-     *
-     * @param node                 -
-     *                             node whose children will be sorted
-     * @param stringComparatorPair -
-     *                             list of pairs of xpaths and comparators used to sort, if null a default NodeName
-     */
-    public static void sortChildNodes(Node node,
-                                      List<Triple<String, Boolean, Comparator>> stringComparatorPair) throws TransformerException {
-
-        for (Triple<String, Boolean, Comparator> aPair : stringComparatorPair) {
-            boolean descending = aPair.getMiddle() == null || aPair.getMiddle().booleanValue();
-            XObject result = xPathAPI.eval(node, aPair.getLeft());
-
-            List nodes = new ArrayList();
-            NodeList childNodeList = result.nodelist();
-
-            for (int i = INT_EQUAL; i < childNodeList.getLength(); i++) {
-                nodes.add(childNodeList.item(i));
-            }
-
-            if (childNodeList.getLength() > INT_EQUAL) {
-                Comparator comp = (aPair.getRight() != null) ? aPair.getRight() : new DomSorter().new DefaultNodeNameComparator();
-                if (descending) {
-                    //if descending is true, get the reverse ordered comparator
-                    Collections.sort(nodes, Collections.reverseOrder(comp));
-                } else {
-                    Collections.sort(nodes, comp);
-                }
-
-                for (Iterator iter = nodes.iterator(); iter.hasNext(); ) {
-                    Node element = (Node) iter.next();
-                    Node parentNode = element.getParentNode();
-                    parentNode.removeChild(element);
-                    parentNode.appendChild(element);
-                }
-            }
-        }
-    }
-
     /**
      * Sorts the children of the given node upto the specified depth if
      * available
@@ -186,14 +129,6 @@ public class DomSorter {
         }
     }
 
-    public static void applySort(Node startNode) throws TransformerException {
-        Pair<String, Comparator> preSelector = new ImmutablePair<>("//*[count(child::*) > 0]", new DomSorter().new DefaultNodeNameComparator());
-        List<Triple<String, Boolean, Comparator>> comps = new ArrayList<>();
-        comps.add(new ImmutableTriple<>("./*", Boolean.FALSE, new DomSorter().new DefaultNodeNameComparator()));
-        DomSorter.sortChildNodes(startNode, preSelector, comps);
-        startNode.normalize();
-    }
-
     public static void applyLeafElementSort(Node startNode, String leafNameElement) throws TransformerException {
         Pair<String, Comparator> preSelector = new ImmutablePair<>("//*[count(child::*) > 0]", new DomSorter().new DefaultNodeNameComparator());
         List<Triple<String, Boolean, Comparator>> comps = new ArrayList<>();
@@ -201,6 +136,63 @@ public class DomSorter {
 
         DomSorter.sortChildNodes(startNode, preSelector, comps);
         startNode.normalize();
+    }
+
+    public static void sortChildNodes(Node node, Pair<String, Comparator> preSelector,
+                                      List<Triple<String, Boolean, Comparator>> stringComparatorPair) throws TransformerException {
+        XObject result = xPathAPI.eval(node, preSelector.getKey());
+        List<Node> nodes = new ArrayList();
+        NodeList childNodeList = result.nodelist();
+
+        for (int i = INT_EQUAL; i < childNodeList.getLength(); i++) {
+            nodes.add(childNodeList.item(i));
+        }
+        Collections.reverse(nodes);
+        for (int i = 0; i < nodes.size(); i++) {
+            sortChildNodes(nodes.get(i), stringComparatorPair);
+        }
+    }
+
+    /**
+     * Sorts the children of the given node upto the specified depth if
+     * available
+     *
+     * @param node                 -
+     *                             node whose children will be sorted
+     * @param stringComparatorPair -
+     *                             list of pairs of xpaths and comparators used to sort, if null a default NodeName
+     */
+    public static void sortChildNodes(Node node,
+                                      List<Triple<String, Boolean, Comparator>> stringComparatorPair) throws TransformerException {
+
+        for (Triple<String, Boolean, Comparator> aPair : stringComparatorPair) {
+            boolean descending = aPair.getMiddle() == null || aPair.getMiddle().booleanValue();
+            XObject result = xPathAPI.eval(node, aPair.getLeft());
+
+            List nodes = new ArrayList();
+            NodeList childNodeList = result.nodelist();
+
+            for (int i = INT_EQUAL; i < childNodeList.getLength(); i++) {
+                nodes.add(childNodeList.item(i));
+            }
+
+            if (childNodeList.getLength() > INT_EQUAL) {
+                Comparator comp = (aPair.getRight() != null) ? aPair.getRight() : new DomSorter().new DefaultNodeNameComparator();
+                if (descending) {
+                    //if descending is true, get the reverse ordered comparator
+                    Collections.sort(nodes, Collections.reverseOrder(comp));
+                } else {
+                    Collections.sort(nodes, comp);
+                }
+
+                for (Iterator iter = nodes.iterator(); iter.hasNext(); ) {
+                    Node element = (Node) iter.next();
+                    Node parentNode = element.getParentNode();
+                    parentNode.removeChild(element);
+                    parentNode.appendChild(element);
+                }
+            }
+        }
     }
 
     public static void main(String[] args) throws IOException, SAXException, ParserConfigurationException, TransformerException {
@@ -212,6 +204,14 @@ public class DomSorter {
             System.out.println(W3CDomUtil.serialize(dom));
             System.out.println("\n");
         }
+    }
+
+    public static void applySort(Node startNode) throws TransformerException {
+        Pair<String, Comparator> preSelector = new ImmutablePair<>("//*[count(child::*) > 0]", new DomSorter().new DefaultNodeNameComparator());
+        List<Triple<String, Boolean, Comparator>> comps = new ArrayList<>();
+        comps.add(new ImmutableTriple<>("./*", Boolean.FALSE, new DomSorter().new DefaultNodeNameComparator()));
+        DomSorter.sortChildNodes(startNode, preSelector, comps);
+        startNode.normalize();
     }
 
     private Integer compareSimple(Object node, Object node1) {
@@ -264,16 +264,6 @@ public class DomSorter {
             return compareResult;
         }
 
-        private Integer compareXNode(XObject result, XObject result1) throws TransformerException {
-            Integer compareResult = INT_EQUAL;
-            if (result.getType() == XObject.CLASS_STRING && result1.getType() == XObject.CLASS_STRING) {
-                compareResult = naturalCompare(result.castToType(XObject.CLASS_STRING, null).toString(), result1.castToType(XObject.CLASS_STRING, null).toString(), ignoreCase);
-            } else if (result.getType() == XObject.CLASS_NUMBER && result1.getType() == XObject.CLASS_NUMBER) {
-                compareResult = result.lessThan(result1) ? INT_LESS_THEN : INT_GREATER_THEN;
-            }
-            return compareResult;
-        }
-
         private Integer compareNodeSet(XObject result, XObject result1) throws TransformerException {
             Node node = result.nodelist().item(0);
             Node node1 = result1.nodelist().item(0);
@@ -288,6 +278,16 @@ public class DomSorter {
                 } else {
                     compareResult = INT_EQUAL;
                 }
+            }
+            return compareResult;
+        }
+
+        private Integer compareXNode(XObject result, XObject result1) throws TransformerException {
+            Integer compareResult = INT_EQUAL;
+            if (result.getType() == XObject.CLASS_STRING && result1.getType() == XObject.CLASS_STRING) {
+                compareResult = naturalCompare(result.castToType(XObject.CLASS_STRING, null).toString(), result1.castToType(XObject.CLASS_STRING, null).toString(), ignoreCase);
+            } else if (result.getType() == XObject.CLASS_NUMBER && result1.getType() == XObject.CLASS_NUMBER) {
+                compareResult = result.lessThan(result1) ? INT_LESS_THEN : INT_GREATER_THEN;
             }
             return compareResult;
         }

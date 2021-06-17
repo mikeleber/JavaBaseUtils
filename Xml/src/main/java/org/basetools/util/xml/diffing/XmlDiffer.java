@@ -13,6 +13,7 @@ public abstract class XmlDiffer {
     public void register(XMLPreProcessor XMLPreProcessor) {
         this.preProcessors.put(preProcessors.size() + 1, XMLPreProcessor);
     }
+
     public void clearPreProcessors() {
         this.preProcessors.clear();
     }

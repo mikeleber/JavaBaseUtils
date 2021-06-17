@@ -25,21 +25,6 @@ import java.util.List;
 
 public class DomSorterTest {
 
-    public static void assertXMLEquals(String expectedXML, String actualXML) throws Exception {
-        System.out.println(actualXML);
-    }
-
-    public static String readAsStringFromClassloader(Class clazz, String filename, String encoding) throws IOException {
-        try (InputStream inputStream = clazz.getClassLoader().getResourceAsStream(filename)) {
-            if (inputStream == null) {
-                return null;
-            }
-            StringWriter writer = new StringWriter();
-            IOUtils.copy(inputStream, writer, encoding);
-            return writer.toString();
-        }
-    }
-
     @Test
     @Disabled
     public void sortChildNodes() throws Exception {
@@ -59,6 +44,27 @@ public class DomSorterTest {
         // Display the XML
         assertXMLEquals(readAsStringFromClassloader(getClass(), "legodo.xml", "utf-8"), stringOut.toString());
         System.out.println(stringOut.toString());
+    }
+
+    public Document createDocument(File xmlFile) throws ParserConfigurationException, SAXException, IOException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder = factory.newDocumentBuilder();
+        return dBuilder.parse(xmlFile);
+    }
+
+    public static void assertXMLEquals(String expectedXML, String actualXML) throws Exception {
+        System.out.println(actualXML);
+    }
+
+    public static String readAsStringFromClassloader(Class clazz, String filename, String encoding) throws IOException {
+        try (InputStream inputStream = clazz.getClassLoader().getResourceAsStream(filename)) {
+            if (inputStream == null) {
+                return null;
+            }
+            StringWriter writer = new StringWriter();
+            IOUtils.copy(inputStream, writer, encoding);
+            return writer.toString();
+        }
     }
 
     @Test
@@ -99,11 +105,5 @@ public class DomSorterTest {
         // Display the XML
         assertXMLEquals(readAsStringFromClassloader(getClass(), "AFD_VAD003.xml", "utf-8"), stringOut.toString());
         System.out.println(stringOut.toString());
-    }
-
-    public Document createDocument(File xmlFile) throws ParserConfigurationException, SAXException, IOException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder dBuilder = factory.newDocumentBuilder();
-        return dBuilder.parse(xmlFile);
     }
 }

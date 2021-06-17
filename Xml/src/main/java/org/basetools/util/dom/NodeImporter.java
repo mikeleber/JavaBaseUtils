@@ -15,7 +15,6 @@ import org.w3c.dom.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class NodeImporter {
     public static final int ENUMERATION_MAPPING_STRATEGY_REPLACE = 1;
     public static final int ENUMERATION_MAPPING_STRATEGY_APPEND = 2;

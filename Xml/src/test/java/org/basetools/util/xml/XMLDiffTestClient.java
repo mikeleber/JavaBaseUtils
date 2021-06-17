@@ -101,51 +101,12 @@ public class XMLDiffTestClient extends Application {
         stage.show();
     }
 
-    private GridPane getGridPane() {
-        if (pane == null) {
-            pane = new GridPane();
-            // Set the horizontal and vertical gaps between children
-            pane.setHgap(10);
-            pane.setVgap(5);
-            pane.setStyle("-fx-padding: 10;" +
-                    "-fx-border-style: solid inside;" +
-                    "-fx-border-width: 2;" +
-                    "-fx-border-insets: 5;" +
-                    "-fx-border-radius: 5;" +
-                    "-fx-border-color: grey;");
-        }
-        return pane;
-    }
-
-    private WebView getSummaryView() {
-        if (summary == null) {
-            summary = new WebView();
-            summary.setMaxHeight(400);
-        }
-        return summary;
-    }
-
     private TextArea getLoggingArea() {
         if (logging == null) {
             logging = new TextArea();
         }
         return logging;
     }
-
-    private TextArea getExpectedXMLArea() {
-        if (expectedXML == null) {
-            expectedXML = new TextArea();
-        }
-        return expectedXML;
-    }
-
-    private TextArea getActualXMLArea() {
-        if (actualXML == null) {
-            actualXML = new TextArea();
-        }
-        return actualXML;
-    }
-
 
     private Button getVisualDivButton() {
         if (buildVisualDivBtn == null) {
@@ -178,6 +139,19 @@ public class XMLDiffTestClient extends Application {
         return btn;
     }
 
+    private Button getBlacklistRemoveButton() {
+        Button btn = new Button();
+        btn.setText("Remove");
+        btn.setMaxWidth(Double.MAX_VALUE);
+        btn.setOnAction((ActionEvent event) -> {
+            if (blackList.getSelectionModel().getSelectedIndices().size() > 0) {
+                final int selectedIdx = blackList.getSelectionModel().getSelectedIndices().get(0);
+                blackList.getItems().remove(selectedIdx);
+            }
+        });
+        return btn;
+    }
+
     private Button getBlacklistLoadButton() {
         Button btn = new Button();
         btn.setText("Load");
@@ -198,19 +172,43 @@ public class XMLDiffTestClient extends Application {
         return btn;
     }
 
-    private Button getBlacklistRemoveButton() {
-        Button btn = new Button();
-        btn.setText("Remove");
-        btn.setMaxWidth(Double.MAX_VALUE);
-        btn.setOnAction((ActionEvent event) -> {
-            if (blackList.getSelectionModel().getSelectedIndices().size() > 0) {
-                final int selectedIdx = blackList.getSelectionModel().getSelectedIndices().get(0);
-                blackList.getItems().remove(selectedIdx);
-            }
-        });
-        return btn;
+    private TextArea getExpectedXMLArea() {
+        if (expectedXML == null) {
+            expectedXML = new TextArea();
+        }
+        return expectedXML;
     }
 
+    private TextArea getActualXMLArea() {
+        if (actualXML == null) {
+            actualXML = new TextArea();
+        }
+        return actualXML;
+    }
+
+    private GridPane getGridPane() {
+        if (pane == null) {
+            pane = new GridPane();
+            // Set the horizontal and vertical gaps between children
+            pane.setHgap(10);
+            pane.setVgap(5);
+            pane.setStyle("-fx-padding: 10;" +
+                    "-fx-border-style: solid inside;" +
+                    "-fx-border-width: 2;" +
+                    "-fx-border-insets: 5;" +
+                    "-fx-border-radius: 5;" +
+                    "-fx-border-color: grey;");
+        }
+        return pane;
+    }
+
+    private WebView getSummaryView() {
+        if (summary == null) {
+            summary = new WebView();
+            summary.setMaxHeight(400);
+        }
+        return summary;
+    }
 
     private ListView getBlackListView() {
         if (blackList == null) {
@@ -224,7 +222,6 @@ public class XMLDiffTestClient extends Application {
         }
         return blackList;
     }
-
 
     private ObservableList<String> loadBlacklist() {
         List<String> result = new ArrayList<>();
@@ -261,7 +258,6 @@ public class XMLDiffTestClient extends Application {
                 pw.println(xpath);
             }
             pw.close();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -276,15 +272,15 @@ public class XMLDiffTestClient extends Application {
             this.pipeTo = pipeTo;
         }
 
-        public void appendText(String valueOf) {
-            Platform.runLater(() -> console.appendText(valueOf));
-        }
-
         public void write(int b) throws IOException {
             appendText(String.valueOf((char) b));
             if (pipeTo != null) {
                 pipeTo.write(b);
             }
+        }
+
+        public void appendText(String valueOf) {
+            Platform.runLater(() -> console.appendText(valueOf));
         }
     }
 
@@ -294,8 +290,8 @@ public class XMLDiffTestClient extends Application {
         public void handle(ActionEvent e) {
             try {
                 String[] blacklistStrings = (String[]) getBlackListView().getItems().stream().toArray(size -> new String[size]);
-                String leftXMLText = StringUtils.prependIfMissing(expectedXML.getText(), xmlHeaderMarker, xmlHeader,true);
-                String rightXMLText = StringUtils.prependIfMissing(actualXML.getText(), xmlHeaderMarker, xmlHeader,true);
+                String leftXMLText = StringUtils.prependIfMissing(expectedXML.getText(), xmlHeaderMarker, xmlHeader, true);
+                String rightXMLText = StringUtils.prependIfMissing(actualXML.getText(), xmlHeaderMarker, xmlHeader, true);
                 XMLDifferences<String> aDifference = SimpleXMLDiff.builder().withBlacklistXPaths(blacklistStrings).build().diff(leftXMLText, rightXMLText);
                 String diff = aDifference.getDifferences().stream().map(Object::toString).collect(Collectors.joining("<br>"));
                 summary.getEngine().loadContent(diff);
@@ -310,10 +306,10 @@ public class XMLDiffTestClient extends Application {
         public void handle(ActionEvent e) {
             try {
                 String[] blacklistStrings = (String[]) getBlackListView().getItems().stream().toArray(size -> new String[size]);
-                String leftXMLText = StringUtils.prependIfMissing(expectedXML.getText(), xmlHeaderMarker, xmlHeader,true);
-                String rightXMLText = StringUtils.prependIfMissing(actualXML.getText(), xmlHeaderMarker, xmlHeader,true);
+                String leftXMLText = StringUtils.prependIfMissing(expectedXML.getText(), xmlHeaderMarker, xmlHeader, true);
+                String rightXMLText = StringUtils.prependIfMissing(actualXML.getText(), xmlHeaderMarker, xmlHeader, true);
 
-                XMLDifferences <String>aDifference = SimpleXMLDiff.builder().withBlacklistXPaths(blacklistStrings).build().diff(leftXMLText, rightXMLText);
+                XMLDifferences<String> aDifference = SimpleXMLDiff.builder().withBlacklistXPaths(blacklistStrings).build().diff(leftXMLText, rightXMLText);
                 LinkedList<DiffMatchPatch.Diff> diffs = diffMatchPatch.diffMain(aDifference.getActualContent(), aDifference.getExpectedContent(), true);
                 summary.getEngine().loadContent(diffMatchPatch.diffPrettyHtml(diffs));
             } catch (Exception ex) {

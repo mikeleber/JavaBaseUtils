@@ -20,19 +20,6 @@ public final class W3CXPathExecuterImpl {
         super();
     }
 
-    public static W3CXPathExecuterImpl getInstance() {
-        if (_singleton == null) {
-            synchronized (W3CXPathExecuterImpl.class) {
-                if (_singleton == null) {
-                    _singleton = new W3CXPathExecuterImpl();
-                }
-            }
-            return _singleton;
-        } else {
-            return _singleton;
-        }
-    }
-
     public List<Node> processXPath(Node rootElement, String xpath) throws TransformerException {
         return processXPath(rootElement, xpath, false);
     }
@@ -89,6 +76,19 @@ public final class W3CXPathExecuterImpl {
             }
         }
         return null;
+    }
+
+    public static W3CXPathExecuterImpl getInstance() {
+        if (_singleton == null) {
+            synchronized (W3CXPathExecuterImpl.class) {
+                if (_singleton == null) {
+                    _singleton = new W3CXPathExecuterImpl();
+                }
+            }
+            return _singleton;
+        } else {
+            return _singleton;
+        }
     }
 
     public void setElementValue(Element element, String xpath, String value) {

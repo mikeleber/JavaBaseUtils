@@ -18,15 +18,10 @@ public class XMLDifferences<T> {
     public XMLDifferences(T actual, T expected) {
         actualContent = actual;
         expectedContent = expected;
-
     }
 
     public static Builder builder() {
         return new Builder();
-    }
-
-    public Collection<XMLNodeDiff> getDifferences() {
-        return diffList;
     }
 
     public T getActualContent() {
@@ -37,10 +32,13 @@ public class XMLDifferences<T> {
         return getDifferences() != null && getDifferences().size() > 0;
     }
 
+    public Collection<XMLNodeDiff> getDifferences() {
+        return diffList;
+    }
+
     public T getExpectedContent() {
         return expectedContent;
     }
-
 
     @Override
     public String toString() {
@@ -71,7 +69,6 @@ public class XMLDifferences<T> {
             diffList = val;
             return this;
         }
-
 
         public Builder withActual(T val) {
             actualContent = val;

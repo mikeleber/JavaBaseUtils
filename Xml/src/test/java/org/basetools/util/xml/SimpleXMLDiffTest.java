@@ -54,6 +54,10 @@ class SimpleXMLDiffTest {
         assertFalse(diffs.isDifferent());
     }
 
+    protected Node loadDocument(String fileName) throws IOException, SAXException, ParserConfigurationException {
+        return W3CDomUtil.createDocument(new File(this.getClass().getClassLoader().getResource(fileName).getFile()));
+    }
+
     @Test
     public void givenActualWithDifferentValues_thenDiffIsRecognized() throws IOException, XmlDifferException, TransformerException, SAXException, ParserConfigurationException {
         XMLDifferences diffingResult = xmlDiffer.difference(loadDocument(EXPECTED), loadDocument(VALUE_DIFF));
@@ -77,6 +81,10 @@ class SimpleXMLDiffTest {
         XMLDifferences diffingResult = xmlDiffer.difference(loadDocument(EXPECTED), loadDocument(ATTRIBUTE_DIFF));
         assertTrue(diffingResult.isDifferent());
         assertEquals(1, diffTypeCount(diffingResult.getDifferences(), XMLNodeDiff.DiffType.VALUE_CHANGED));
+    }
+
+    private long diffTypeCount(Collection<XMLNodeDiff> differences, XMLNodeDiff.DiffType diffType) {
+        return differences.stream().filter(d -> diffType.equals(d.getDiffType())).count();
     }
 
     @Test
@@ -123,13 +131,5 @@ class SimpleXMLDiffTest {
         XMLDifferences diffingResult = xmlDiffer.difference(loadDocument(EXPECTED), loadDocument(CHILD_ATTRIBUTE_DIFF));
         assertTrue(diffingResult.isDifferent());
         assertEquals(1, diffTypeCount(diffingResult.getDifferences(), XMLNodeDiff.DiffType.VALUE_CHANGED));
-    }
-
-    private long diffTypeCount(Collection<XMLNodeDiff> differences, XMLNodeDiff.DiffType diffType) {
-        return differences.stream().filter(d -> diffType.equals(d.getDiffType())).count();
-    }
-
-    protected Node loadDocument(String fileName) throws IOException, SAXException, ParserConfigurationException {
-        return W3CDomUtil.createDocument(new File(this.getClass().getClassLoader().getResource(fileName).getFile()));
     }
 }

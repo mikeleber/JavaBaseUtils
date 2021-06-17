@@ -63,33 +63,14 @@ public class W3CDomUtil {
     private W3CDomUtil() {
     }
 
-    /**
-     * Creates a W3C DOM out of an URL.
-     *
-     * @param url to create W3C DOM from
-     */
-    public static Document createDocument(URL url) throws XMLParseException, SAXException, IOException {
-        Document dom = null;
-        InputStream is = resolveURL(url);
-        dom = createDocument(is, getFileEncoding());
-        if (dom != null) {
-            dom.appendChild(dom.createProcessingInstruction(TARGET_PI, url.getPath()));
-        }
-        return dom;
-    }
-
-    private static String getFileEncoding() {
-        return "UTF-8";
-    }
-
-    private static InputStream resolveURL(URL url) throws IOException {
-        return url.openStream();
-    }
-
     public static Document createDocument(File file) throws XMLParseException, SAXException, IOException {
         Document dom = null;
         InputStream is = resolveURL(file.toURL());
         return createDocument(is);
+    }
+
+    private static InputStream resolveURL(URL url) throws IOException {
+        return url.openStream();
     }
 
     /**
@@ -101,8 +82,30 @@ public class W3CDomUtil {
         return createDocument(readAsString(is));
     }
 
+    public static Document createDocument(String content) throws XMLParseException, SAXException, IOException {
+        return createDocument(content, false);
+    }
+
     public static String readAsString(InputStream in) throws IOException {
         return readAsString(in, null);
+    }
+
+    public static Document createDocument(String content, boolean ignorePrefix) throws XMLParseException, SAXException, IOException {
+        Document dom = null;
+        // Get an instance of the parser
+        DOMParser parser = new DOMParser();
+        parser.setErrorHandler(null);
+        parser.setEntityResolver(NULL_RESOLVER);
+        if (ignorePrefix) {
+            parser.setFeature("http://xml.org/sax/features/namespaces", false);
+        }
+        // warnings shown, error stream set to stderr.
+        // Parse the document.
+        InputSource is = new InputSource(new StringReader(content));
+        parser.parse(is);
+        // Obtain the document.
+        dom = parser.getDocument();
+        return dom;
     }
 
     public static String readAsString(InputStream in, String encoding) throws IOException {
@@ -110,15 +113,6 @@ public class W3CDomUtil {
             return IOUtils.toString(in, Charset.forName(encoding));
         }
         return IOUtils.toString(in, Charset.defaultCharset());
-    }
-
-    /**
-     * Creates a W3C DOM out of an InputStream.
-     *
-     * @param is InputStream to create W3C DOM from
-     */
-    public static Document createDocument(InputStream is, String enc) throws XMLParseException, SAXException, IOException {
-        return createDocument(readAsString(is, enc));
     }
 
     public static Document createDocument(URL url, String enc) throws XMLParseException, SAXException, IOException {
@@ -176,10 +170,6 @@ public class W3CDomUtil {
         return schemaName;
     }
 
-    private static String extractFileName(String file) {
-        return FilenameUtils.getName(file);
-    }
-
     private static boolean isUrl(String loadedFrom) {
         try {
             new URL(loadedFrom);
@@ -190,6 +180,10 @@ public class W3CDomUtil {
         return false;
     }
 
+    private static String extractFileName(String file) {
+        return FilenameUtils.getName(file);
+    }
+
     public static Document createEmptyDocument() throws XMLParseException, SAXException, IOException {
         Document doc = createEmptyDocument("dummy");
         return doc;
@@ -198,28 +192,6 @@ public class W3CDomUtil {
     public static Document createEmptyDocument(String rootTag) throws XMLParseException, SAXException, IOException {
         Document doc = createDocument("<?xml version=\"1.0\" encoding=\"UTF-8\"?><" + rootTag + "/>");
         return doc;
-    }
-
-    public static Document createDocument(String content) throws XMLParseException, SAXException, IOException {
-        return createDocument(content, false);
-    }
-
-    public static Document createDocument(String content, boolean ignorePrefix) throws XMLParseException, SAXException, IOException {
-        Document dom = null;
-        // Get an instance of the parser
-        DOMParser parser = new DOMParser();
-        parser.setErrorHandler(null);
-        parser.setEntityResolver(NULL_RESOLVER);
-        if (ignorePrefix) {
-            parser.setFeature("http://xml.org/sax/features/namespaces", false);
-        }
-        // warnings shown, error stream set to stderr.
-        // Parse the document.
-        InputSource is = new InputSource(new StringReader(content));
-        parser.parse(is);
-        // Obtain the document.
-        dom = parser.getDocument();
-        return dom;
     }
 
     public static Document createDocument(InputStream input, boolean ignorePrefix, String encoding) throws XMLParseException, SAXException, IOException {
@@ -238,24 +210,6 @@ public class W3CDomUtil {
             is.setEncoding(encoding);
         }
         parser.parse(is);
-        // Obtain the document.
-        dom = parser.getDocument();
-        return dom;
-    }
-
-    /**
-     * Creates a W3C DOM out of a simple String.
-     *
-     * @param content String content
-     */
-    public synchronized static Document createDocument(String content, ErrorHandler handler) throws XMLParseException, SAXException, IOException {
-        Document dom = null;
-        parser.setErrorHandler(handler);
-        // warnings shown, error stream set to stderr.
-        // Parse the document.
-        InputSource is = new InputSource(new StringReader(content));
-        parser.parse(is);
-        parser.setEntityResolver(NULL_RESOLVER);
         // Obtain the document.
         dom = parser.getDocument();
         return dom;
@@ -406,48 +360,6 @@ public class W3CDomUtil {
         return (Element) found;
     }
 
-    public static Element getChild(Node aNode, String name, int index, boolean ignoreNS) {
-        if (aNode == null) {
-            return null;
-        }
-        int indexOfDP = name.indexOf(":");
-        if (index != -1) {
-            int locIndex = 0;
-            NodeList nl = aNode.getChildNodes();
-            int nlSize = nl.getLength();
-            for (int ne = 0; ne < nlSize; ne++) {
-                Node nextElement = nl.item(ne);
-                if (nextElement.getNodeType() == Node.ELEMENT_NODE) {
-                    if (locIndex == index) {
-                        return (Element) nextElement;
-                    } else {
-                        locIndex++;
-                    }
-                }
-            }
-            return null;
-        }
-        NodeList nl = aNode.getChildNodes();
-        int nlSize = nl.getLength();
-        Node found = null;
-        for (int ne = 0; found == null && ne < nlSize; ne++) {
-            Node nextElement = nl.item(ne);
-            if (nextElement != null && nextElement.getNodeType() == Node.ELEMENT_NODE) {
-                String elementName;
-                elementName = nextElement.getNodeName();
-
-                if (ignoreNS) {
-                    if (nextElement.getLocalName().equals(name)) {
-                        found = nextElement;
-                    }
-                } else if (elementName.equals(name)) {
-                    found = nextElement;
-                }
-            }
-        }
-        return (Element) found;
-    }
-
     public static Element getLastChild(Node aNode, String[] name, int index) {
         if (index != -1) {
             int locIndex = 0;
@@ -489,18 +401,6 @@ public class W3CDomUtil {
         }
         return (Element) found;
     }
-//
-//    public static String getQualifiedElementName(Node aNode) {
-//        String elementName = aNode.getNodeName();
-//        String ns = aNode.getNamespaceURI();
-//        if (ns != null && ns.length() > 0) {
-//            String prefix = schema.getNamespacePrefix(ns);
-//            if (prefix != null && prefix.length() > 0) {
-//                elementName = prefix + ":" + aNode.getNodeName();
-//            }
-//        }
-//        return elementName;
-//    }
 
     private static boolean ignoreNamespace() {
         return true;
@@ -558,6 +458,18 @@ public class W3CDomUtil {
         boolean ignoreNS = ignoreNamespace();
         return getChildren(aNode, name, ignoreNS);
     }
+//
+//    public static String getQualifiedElementName(Node aNode) {
+//        String elementName = aNode.getNodeName();
+//        String ns = aNode.getNamespaceURI();
+//        if (ns != null && ns.length() > 0) {
+//            String prefix = schema.getNamespacePrefix(ns);
+//            if (prefix != null && prefix.length() > 0) {
+//                elementName = prefix + ":" + aNode.getNodeName();
+//            }
+//        }
+//        return elementName;
+//    }
 
     public static List<Element> getChildren(Node aNode, String name, boolean ignoreNS) {
         NodeList nl = aNode.getChildNodes();
@@ -591,18 +503,6 @@ public class W3CDomUtil {
         return found;
     }
 
-    public static String getChildText(Node aNode, String name) {
-        return getChildText(aNode, name, false);
-    }
-
-    public static String getChildText(Node aNode, String name, boolean ignoreNS) {
-        Node child = getChild(aNode, name, -1, ignoreNS);
-        if (child != null) {
-            return getText(child);
-        }
-        return null;
-    }
-
     public static Element getFirstChildElement(Node aNode) {
         NodeList list = aNode.getChildNodes();
         int length = list.getLength();
@@ -611,6 +511,19 @@ public class W3CDomUtil {
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 return (Element) node;
             }
+        }
+        return null;
+    }
+
+    public static String getNodeText(Node aNode) {
+        switch (aNode.getNodeType()) {
+            case Node.CDATA_SECTION_NODE:
+                CDATASection cds = (CDATASection) aNode;
+                return cds.getNodeValue();
+            case Node.ATTRIBUTE_NODE:
+                return ((Attr) aNode).getValue();
+            case Node.ELEMENT_NODE:
+                return getText(aNode);
         }
         return null;
     }
@@ -630,15 +543,45 @@ public class W3CDomUtil {
         return text;
     }
 
-    public static String getNodeText(Node aNode) {
-        switch (aNode.getNodeType()) {
-            case Node.CDATA_SECTION_NODE:
-                CDATASection cds = (CDATASection) aNode;
-                return cds.getNodeValue();
-            case Node.ATTRIBUTE_NODE:
-                return ((Attr) aNode).getValue();
-            case Node.ELEMENT_NODE:
-                return getText(aNode);
+    public static Node getTextNode(Node aNode, boolean create) {
+        Node textNode = null;
+        NodeList childs = aNode.getChildNodes();
+        loop:
+        for (int c = 0; c < childs.getLength(); c++) {
+            Node aChild = childs.item(c);
+            int nodeType = aChild.getNodeType();
+            switch (nodeType) {
+                case Node.CDATA_SECTION_NODE:
+                    textNode = aChild;
+                    break loop;
+                case Node.TEXT_NODE:
+                    textNode = aChild;
+                    Node posCDataaChild = getCDataNode(aNode);
+                    if (posCDataaChild != null) {
+                        textNode = posCDataaChild;
+                    }
+                    break loop;
+            }
+        }
+        if (create && textNode == null) {
+            textNode = aNode.getOwnerDocument().createTextNode("");
+            if (textNode == null) {
+                aNode.appendChild(textNode);
+            } else {
+                aNode.insertBefore(textNode, aNode.getFirstChild());
+            }
+        }
+        return textNode;
+    }
+
+    public static Node getCDataNode(Node aNode) {
+        NodeList childs = aNode.getChildNodes();
+        for (int c = 0; c < childs.getLength(); c++) {
+            Node aChild = childs.item(c);
+            if (aChild.getNodeType() == Node.CDATA_SECTION_NODE) {
+                // check cData
+                return aChild;
+            }
         }
         return null;
     }
@@ -666,6 +609,24 @@ public class W3CDomUtil {
         }
         text = text.trim();
         return text;
+    }
+
+    public static String getMixedText(Node aNode) {
+        StringBuilder sb = new StringBuilder();
+        // org.w3c.dom.Node textNode = null;
+        NodeList childs = aNode.getChildNodes();
+        for (int c = 0; c < childs.getLength(); c++) {
+            Node aChild = childs.item(c);
+            // check if content is null
+            String nodeValue = aChild.getNodeValue();
+            if (nodeValue != null) {
+                nodeValue = nodeValue.trim();
+                if (nodeValue.length() > 0) {
+                    sb.append(nodeValue);
+                }
+            }
+        }
+        return sb.toString();
     }
 
     public static Document loadXsdDocument(String inputName) {
@@ -708,67 +669,6 @@ public class W3CDomUtil {
         return stringWriter.toString();
     }
 
-    public static Node getCDataNode(Node aNode) {
-        NodeList childs = aNode.getChildNodes();
-        for (int c = 0; c < childs.getLength(); c++) {
-            Node aChild = childs.item(c);
-            if (aChild.getNodeType() == Node.CDATA_SECTION_NODE) {
-                // check cData
-                return aChild;
-            }
-        }
-        return null;
-    }
-
-    public static Node getTextNode(Node aNode, boolean create) {
-        Node textNode = null;
-        NodeList childs = aNode.getChildNodes();
-        loop:
-        for (int c = 0; c < childs.getLength(); c++) {
-            Node aChild = childs.item(c);
-            int nodeType = aChild.getNodeType();
-            switch (nodeType) {
-                case Node.CDATA_SECTION_NODE:
-                    textNode = aChild;
-                    break loop;
-                case Node.TEXT_NODE:
-                    textNode = aChild;
-                    Node posCDataaChild = getCDataNode(aNode);
-                    if (posCDataaChild != null) {
-                        textNode = posCDataaChild;
-                    }
-                    break loop;
-            }
-        }
-        if (create && textNode == null) {
-            textNode = aNode.getOwnerDocument().createTextNode("");
-            if (textNode == null) {
-                aNode.appendChild(textNode);
-            } else {
-                aNode.insertBefore(textNode, aNode.getFirstChild());
-            }
-        }
-        return textNode;
-    }
-
-    public static String getMixedText(Node aNode) {
-        StringBuilder sb = new StringBuilder();
-        // org.w3c.dom.Node textNode = null;
-        NodeList childs = aNode.getChildNodes();
-        for (int c = 0; c < childs.getLength(); c++) {
-            Node aChild = childs.item(c);
-            // check if content is null
-            String nodeValue = aChild.getNodeValue();
-            if (nodeValue != null) {
-                nodeValue = nodeValue.trim();
-                if (nodeValue.length() > 0) {
-                    sb.append(nodeValue);
-                }
-            }
-        }
-        return sb.toString();
-    }
-
     public static void setText(Node aNode, String text) {
         getTextNode(aNode, true).setNodeValue(text);
     }
@@ -788,31 +688,12 @@ public class W3CDomUtil {
         return null;
     }
 
-    /**
-     * Gets the value of a given processing instruction.
-     *
-     * @param startNode the Document to be searched
-     * @param target    the name of the processing instruction
-     * @return the value of the processing instruction.
-     */
-    public static Node getProcessingInstructionTarget(Node startNode, String target) {
-        NodeList children = startNode.getChildNodes();
-        int childCount = children.getLength();
-        for (int i = 0; i < childCount; i++) {
-            Node node = children.item(i);
-            if (node instanceof ProcessingInstruction && node.getNodeName().equals(target)) {
-                return node;
-            }
-        }
-        return null;
+    private static String getFileEncoding() {
+        return "UTF-8";
     }
 
     public static String getNoNameSpaceSchemaLocation(Document dom) {
         return getDocElementValue(dom, "xsi:noNamespaceSchemaLocation");
-    }
-
-    public static String getNameSpaceSchemaLocation(Document dom) {
-        return getDocElementValue(dom, "xsi:schemaLocation");
     }
 
     public static String getDocElementValue(Document dom, String key) {
@@ -825,19 +706,8 @@ public class W3CDomUtil {
         }
     }
 
-    /**
-     * Gets the value of a given processing instruction.
-     *
-     * @param startNode the Document to be searched
-     * @param target    the name of the processing instruction
-     * @return the value of the processing instruction.
-     */
-    public static String getProcessingInstructionValue(Node startNode, String target) {
-        Node targetNode = getProcessingInstructionTarget(startNode, target);
-        if (targetNode != null) {
-            return targetNode.getNodeValue();
-        }
-        return null;
+    public static String getNameSpaceSchemaLocation(Document dom) {
+        return getDocElementValue(dom, "xsi:schemaLocation");
     }
 
     public static List<String> getProcessingInstructionStrings(Node startNode) {
@@ -850,6 +720,11 @@ public class W3CDomUtil {
                 pi.add(formatPI(node));
             }
         }
+        return pi;
+    }
+
+    public static String formatPI(Node node) {
+        String pi = "<?" + node.getNodeName() + " " + node.getNodeValue() + "?>";
         return pi;
     }
 
@@ -879,11 +754,6 @@ public class W3CDomUtil {
         return null;
     }
 
-    public static String formatPI(Node node) {
-        String pi = "<?" + node.getNodeName() + " " + node.getNodeValue() + "?>";
-        return pi;
-    }
-
     public static String getProcessingInstructionValue(Node startNode, String target, String attribute) {
         String value = getProcessingInstructionValue(startNode, target);
         if (value != null) {
@@ -900,6 +770,40 @@ public class W3CDomUtil {
             }
         }
         return value;
+    }
+
+    /**
+     * Gets the value of a given processing instruction.
+     *
+     * @param startNode the Document to be searched
+     * @param target    the name of the processing instruction
+     * @return the value of the processing instruction.
+     */
+    public static String getProcessingInstructionValue(Node startNode, String target) {
+        Node targetNode = getProcessingInstructionTarget(startNode, target);
+        if (targetNode != null) {
+            return targetNode.getNodeValue();
+        }
+        return null;
+    }
+
+    /**
+     * Gets the value of a given processing instruction.
+     *
+     * @param startNode the Document to be searched
+     * @param target    the name of the processing instruction
+     * @return the value of the processing instruction.
+     */
+    public static Node getProcessingInstructionTarget(Node startNode, String target) {
+        NodeList children = startNode.getChildNodes();
+        int childCount = children.getLength();
+        for (int i = 0; i < childCount; i++) {
+            Node node = children.item(i);
+            if (node instanceof ProcessingInstruction && node.getNodeName().equals(target)) {
+                return node;
+            }
+        }
+        return null;
     }
 
     public static String getXMLProcessingInstructionValue(Document document, String target, String attribute) {
@@ -1025,8 +929,80 @@ public class W3CDomUtil {
         return annotations;
     }
 
+    /**
+     * Creates a W3C DOM out of a simple String.
+     *
+     * @param content String content
+     */
+    public synchronized static Document createDocument(String content, ErrorHandler handler) throws XMLParseException, SAXException, IOException {
+        Document dom = null;
+        parser.setErrorHandler(handler);
+        // warnings shown, error stream set to stderr.
+        // Parse the document.
+        InputSource is = new InputSource(new StringReader(content));
+        parser.parse(is);
+        parser.setEntityResolver(NULL_RESOLVER);
+        // Obtain the document.
+        dom = parser.getDocument();
+        return dom;
+    }
+
+    public static List<Element> getChildren(Node aNode) {
+        NodeList nl = aNode.getChildNodes();
+        int length = nl.getLength();
+        List list = new ArrayList(length);
+        if (length > 0) {
+            for (int i = 0; i < length; i++) {
+                Node node = nl.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    list.add(node);
+                }
+            }
+        }
+        return list;
+    }
+
     public static String toXML(Document doc) {
         return serialize(doc);
+    }
+
+    /**
+     * Pretty-prints a DOM document to XML using DOM Load and Save's LSSerializer.
+     * Note that the "format-pretty-print" DOM configuration parameter can only be set in JDK 1.6+.
+     * https://docs.oracle.com/javase/7/docs/api/org/w3c/dom/DOMConfiguration.html
+     *
+     * @param doc
+     * @return formatted xml output
+     * @see LSSerializer
+     * @see LSOutput
+     * @see DOMConfiguration
+     */
+    public static final String serialize(Document doc) {
+        return serialize(doc, false);
+    }
+
+    public static final String serialize(Document doc, boolean prettyPrint) {
+        DOMImplementation domImplementation = doc.getImplementation();
+        if (domImplementation.hasFeature("LS", "3.0") && domImplementation.hasFeature("Core", "2.0")) {
+            DOMImplementationLS domImplementationLS = (DOMImplementationLS) domImplementation.getFeature("LS", "3.0");
+            LSSerializer lsSerializer = domImplementationLS.createLSSerializer();
+            DOMConfiguration domConfiguration = lsSerializer.getDomConfig();
+            if (prettyPrint) {
+                if (domConfiguration.canSetParameter(FORMAT_PRETTY_PRINT, Boolean.TRUE)) {
+                    lsSerializer.getDomConfig().setParameter(FORMAT_PRETTY_PRINT, Boolean.TRUE);
+                }
+                LSOutput lsOutput = domImplementationLS.createLSOutput();
+                lsOutput.setEncoding(StandardCharsets.UTF_8.name());
+                StringWriter stringWriter = new StringWriter();
+                lsOutput.setCharacterStream(stringWriter);
+                lsSerializer.write(doc, lsOutput);
+                return stringWriter.toString();
+            } else {
+                throw new UnsupportedOperationException("DOMConfiguration 'format-pretty-print' parameter isn't settable.");
+            }
+        } else {
+            throw new UnsupportedOperationException("DOM 3.0 LS and/or DOM 2.0 Core not supported.");
+        }
     }
 
     public static void merge(Node originalParentNode, Node nodeToMerge) {
@@ -1225,11 +1201,13 @@ public class W3CDomUtil {
         }
     }
 
-    private static void addAttribute(Hashtable result, Element element, String name) {
-        String attrValue = element.getAttribute(name);
-        if (attrValue != null && attrValue.length() > 0) {
-            result.put(name, attrValue);
+    public static Hashtable getAllSchemaBaseAttributes(String xsdString) {
+        try {
+            return getAllSchemaBaseAttributes(createDocument(xsdString));
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
         }
+        return null;
     }
 
     public static Hashtable getAllSchemaBaseAttributes(Document dom) {
@@ -1252,13 +1230,11 @@ public class W3CDomUtil {
         return result;
     }
 
-    public static Hashtable getAllSchemaBaseAttributes(String xsdString) {
-        try {
-            return getAllSchemaBaseAttributes(createDocument(xsdString));
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage());
+    private static void addAttribute(Hashtable result, Element element, String name) {
+        String attrValue = element.getAttribute(name);
+        if (attrValue != null && attrValue.length() > 0) {
+            result.put(name, attrValue);
         }
-        return null;
     }
 
     public static Hashtable getAllSchemaBaseAttributes(URL xsdURL) {
@@ -1268,6 +1244,30 @@ public class W3CDomUtil {
             LOGGER.error(e.getMessage());
         }
         return null;
+    }
+
+    /**
+     * Creates a W3C DOM out of an URL.
+     *
+     * @param url to create W3C DOM from
+     */
+    public static Document createDocument(URL url) throws XMLParseException, SAXException, IOException {
+        Document dom = null;
+        InputStream is = resolveURL(url);
+        dom = createDocument(is, getFileEncoding());
+        if (dom != null) {
+            dom.appendChild(dom.createProcessingInstruction(TARGET_PI, url.getPath()));
+        }
+        return dom;
+    }
+
+    /**
+     * Creates a W3C DOM out of an InputStream.
+     *
+     * @param is InputStream to create W3C DOM from
+     */
+    public static Document createDocument(InputStream is, String enc) throws XMLParseException, SAXException, IOException {
+        return createDocument(readAsString(is, enc));
     }
 
     public static String getPrefixForNamespace(Document doc, String nameSpace) {
@@ -1386,21 +1386,6 @@ public class W3CDomUtil {
         return xmlNS;
     }
 
-    public static List<Element> getChildren(Node aNode) {
-        NodeList nl = aNode.getChildNodes();
-        int length = nl.getLength();
-        List list = new ArrayList(length);
-        if (length > 0) {
-            for (int i = 0; i < length; i++) {
-                Node node = nl.item(i);
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    list.add(node);
-                }
-            }
-        }
-        return list;
-    }
-
     public static final Node getParent(Node aNode, String regex) {
         Pattern p = Pattern.compile(regex);
         return getParent(aNode, p);
@@ -1453,6 +1438,60 @@ public class W3CDomUtil {
         return props;
     }
 
+    public static String getChildText(Node aNode, String name) {
+        return getChildText(aNode, name, false);
+    }
+
+    public static String getChildText(Node aNode, String name, boolean ignoreNS) {
+        Node child = getChild(aNode, name, -1, ignoreNS);
+        if (child != null) {
+            return getText(child);
+        }
+        return null;
+    }
+
+    public static Element getChild(Node aNode, String name, int index, boolean ignoreNS) {
+        if (aNode == null) {
+            return null;
+        }
+        int indexOfDP = name.indexOf(":");
+        if (index != -1) {
+            int locIndex = 0;
+            NodeList nl = aNode.getChildNodes();
+            int nlSize = nl.getLength();
+            for (int ne = 0; ne < nlSize; ne++) {
+                Node nextElement = nl.item(ne);
+                if (nextElement.getNodeType() == Node.ELEMENT_NODE) {
+                    if (locIndex == index) {
+                        return (Element) nextElement;
+                    } else {
+                        locIndex++;
+                    }
+                }
+            }
+            return null;
+        }
+        NodeList nl = aNode.getChildNodes();
+        int nlSize = nl.getLength();
+        Node found = null;
+        for (int ne = 0; found == null && ne < nlSize; ne++) {
+            Node nextElement = nl.item(ne);
+            if (nextElement != null && nextElement.getNodeType() == Node.ELEMENT_NODE) {
+                String elementName;
+                elementName = nextElement.getNodeName();
+
+                if (ignoreNS) {
+                    if (nextElement.getLocalName().equals(name)) {
+                        found = nextElement;
+                    }
+                } else if (elementName.equals(name)) {
+                    found = nextElement;
+                }
+            }
+        }
+        return (Element) found;
+    }
+
     public static List elementsToList(List propElements, String field) {
         if (propElements == null) {
             return new ArrayList();
@@ -1491,20 +1530,20 @@ public class W3CDomUtil {
         return value;
     }
 
+    public static String getAttributeValue(Node aType, String name) {
+        Node attNode = getAttribute(aType, name);
+        if (attNode != null) {
+            return attNode.getNodeValue();
+        }
+        return null;
+    }
+
     public static Node getAttribute(Node aType, String name) {
         if (aType != null) {
             NamedNodeMap nnm = aType.getAttributes();
             if (nnm != null) {
                 return nnm.getNamedItem(name);
             }
-        }
-        return null;
-    }
-
-    public static String getAttributeValue(Node aType, String name) {
-        Node attNode = getAttribute(aType, name);
-        if (attNode != null) {
-            return attNode.getNodeValue();
         }
         return null;
     }
@@ -1612,45 +1651,6 @@ public class W3CDomUtil {
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         transformer.transform(new DOMSource(node), new StreamResult(writer));
         return writer.toString();
-    }
-
-    /**
-     * Pretty-prints a DOM document to XML using DOM Load and Save's LSSerializer.
-     * Note that the "format-pretty-print" DOM configuration parameter can only be set in JDK 1.6+.
-     * https://docs.oracle.com/javase/7/docs/api/org/w3c/dom/DOMConfiguration.html
-     *
-     * @param doc
-     * @return formatted xml output
-     * @see LSSerializer
-     * @see LSOutput
-     * @see DOMConfiguration
-     */
-    public static final String serialize(Document doc) {
-        return serialize(doc, false);
-    }
-
-    public static final String serialize(Document doc, boolean prettyPrint) {
-        DOMImplementation domImplementation = doc.getImplementation();
-        if (domImplementation.hasFeature("LS", "3.0") && domImplementation.hasFeature("Core", "2.0")) {
-            DOMImplementationLS domImplementationLS = (DOMImplementationLS) domImplementation.getFeature("LS", "3.0");
-            LSSerializer lsSerializer = domImplementationLS.createLSSerializer();
-            DOMConfiguration domConfiguration = lsSerializer.getDomConfig();
-            if (prettyPrint) {
-                if (domConfiguration.canSetParameter(FORMAT_PRETTY_PRINT, Boolean.TRUE)) {
-                    lsSerializer.getDomConfig().setParameter(FORMAT_PRETTY_PRINT, Boolean.TRUE);
-                }
-                LSOutput lsOutput = domImplementationLS.createLSOutput();
-                lsOutput.setEncoding(StandardCharsets.UTF_8.name());
-                StringWriter stringWriter = new StringWriter();
-                lsOutput.setCharacterStream(stringWriter);
-                lsSerializer.write(doc, lsOutput);
-                return stringWriter.toString();
-            } else {
-                throw new UnsupportedOperationException("DOMConfiguration 'format-pretty-print' parameter isn't settable.");
-            }
-        } else {
-            throw new UnsupportedOperationException("DOM 3.0 LS and/or DOM 2.0 Core not supported.");
-        }
     }
 }
 

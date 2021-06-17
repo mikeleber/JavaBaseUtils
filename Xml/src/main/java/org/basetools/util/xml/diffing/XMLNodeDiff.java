@@ -18,15 +18,6 @@ public class XMLNodeDiff {
 
     }
 
-    public static final String cut(String value, int length, String cutTail) {
-
-        if (value == null || value.length() < length) {
-            return value;
-        } else {
-            return value.substring(0, length) + (cutTail != null ? cutTail : "");
-        }
-    }
-
     public static Builder builder() {
         return new Builder();
     }
@@ -37,14 +28,10 @@ public class XMLNodeDiff {
 
     @Override
     public String toString() {
-        return "" +severity+" Type:"+ diffType +
+        return "" + severity + " Type:" + diffType +
                 " " + toDisplayValue(currentValue != null ? currentValue : actualNode) +
                 " -> expected=" + toDisplayValue(expectedValue != null ? expectedValue : expectNode) +
                 ", " + xpath + "\n";
-    }
-
-    public Servity getSeverity() {
-        return severity;
     }
 
     public final String toDisplayValue(Object value) {
@@ -60,6 +47,19 @@ public class XMLNodeDiff {
         }
         String stringValue = Objects.toString(value, "&lt;nothing&gt;");
         return cut(StringUtils.normalizeSpace(stringValue), 30, "...");
+    }
+
+    public static final String cut(String value, int length, String cutTail) {
+
+        if (value == null || value.length() < length) {
+            return value;
+        } else {
+            return value.substring(0, length) + (cutTail != null ? cutTail : "");
+        }
+    }
+
+    public Servity getSeverity() {
+        return severity;
     }
 
     public Object getExpectedValue() {
@@ -83,11 +83,13 @@ public class XMLNodeDiff {
     }
 
     public enum DiffType {
-        VALUE_CHANGED, NODE_ADDED, NODE_TYPE, NODE_REMOVED, CHILD_COUNT,POSITION, CHILD_REMOVED, CHILD_ADDED
+        VALUE_CHANGED, NODE_ADDED, NODE_TYPE, NODE_REMOVED, CHILD_COUNT, POSITION, CHILD_REMOVED, CHILD_ADDED
     }
+
     public enum Servity {
-        ERROR,WARNING
+        ERROR, WARNING
     }
+
     public static final class Builder {
         private Object actualValue;
         private Object expectedValue;
@@ -95,7 +97,8 @@ public class XMLNodeDiff {
         private Node expectedNode;
         private DiffType diffType;
         private String xpath;
-        private Servity severity=Servity.ERROR;
+        private Servity severity = Servity.ERROR;
+
         private Builder() {
         }
 
@@ -146,7 +149,7 @@ public class XMLNodeDiff {
         }
 
         public Builder withSeverity(Servity severity) {
-            this.severity=severity;
+            this.severity = severity;
             return this;
         }
     }

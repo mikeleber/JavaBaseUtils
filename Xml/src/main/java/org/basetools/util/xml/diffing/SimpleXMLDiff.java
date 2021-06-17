@@ -55,7 +55,7 @@ public class SimpleXMLDiff extends XmlDiffer {
         if (expectedRootNode == null) {
             expectedRootNode = expectedNode;
         }
-        XMLDifferences differences= new XMLDifferences(null,null);
+        XMLDifferences differences = new XMLDifferences(null, null);
         difference(actualNode, expectedNode, differences);
         return differences;
     }
@@ -85,7 +85,7 @@ public class SimpleXMLDiff extends XmlDiffer {
     /**
      * XMLNodeDiff 2 nodes and put the differences in the list
      */
-    public boolean difference(Node actualNode, Node expectedNode,XMLDifferences differences) {
+    public boolean difference(Node actualNode, Node expectedNode, XMLDifferences differences) {
         if (getBlacklistedNodes().contains(actualNode)) {
             return false;
         }
@@ -131,7 +131,6 @@ public class SimpleXMLDiff extends XmlDiffer {
             if (!isTextNode(child2)) pos++;
             expectedChildren.put(getNodeIdentification(child2), new ImmutablePair<>(Integer.valueOf(pos), child2));
         }
-
 
         Set<Node> mixedInBlackList = new HashSet<>(getMixinBlacklist(actualNode));
         mixedInBlackList.addAll(getMixinBlacklist(expectedNode));
@@ -449,7 +448,7 @@ public class SimpleXMLDiff extends XmlDiffer {
             currentDoc.normalizeDocument();
             testDoc.normalizeDocument();
 
-            XMLDifferences diffs = new XMLDifferences(expected,actual);
+            XMLDifferences diffs = new XMLDifferences(expected, actual);
             difference(currentDoc, testDoc, diffs);
             return diffs;
         } catch (Exception e) {
@@ -488,7 +487,6 @@ public class SimpleXMLDiff extends XmlDiffer {
             this.blacklistXpaths = xpaths;
             return this;
         }
-
 
         public SimpleXmlDiffBuilder withNodes(Node actualNode, Node expectedNode) {
             Objects.requireNonNull(actualNode);
