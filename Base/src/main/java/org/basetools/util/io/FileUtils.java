@@ -91,8 +91,9 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
     }
 
     public static InputStream streamFromClassloader(Class clazz, String filename) throws IOException {
-       return clazz.getClassLoader().getResourceAsStream(filename);
+        return clazz.getClassLoader().getResourceAsStream(filename);
     }
+
     public static Reader readerFromClassloader(Class clazz, String filename) throws IOException {
         URL input = clazz.getClassLoader().getResource(filename);
         if (input == null) {
@@ -172,13 +173,21 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
         }
     }
 
-    public static void convertAll(String rootPath, Charset sourceCharset, Charset destCharset) throws IOException {
+    /**
+     * converts the encoding of all files beneath the rootpath matching the fileextension.
+     * @param rootPath
+     * @param sourceCharset
+     * @param filter
+     * @param destCharset
+     * @throws IOException
+     */
+    public static void convertFileEncoding(String rootPath, Charset sourceCharset, FileFilter filter, Charset destCharset) throws IOException {
         List<Path> allFiles = Files.walk(Paths.get(rootPath))
                 .filter(Files::isRegularFile).collect(Collectors.toList());
         allFiles.forEach(p -> {
             try {
                 String data = org.apache.commons.io.FileUtils.readFileToString(p.toFile(), sourceCharset);
-                if (p.getFileName().toString().endsWith(".java")) {
+                if (filter == null || filter.accept(p.getFileName().toFile())) {
                     Files.write(p, data.getBytes(destCharset));
                 }
             } catch (IOException e) {
