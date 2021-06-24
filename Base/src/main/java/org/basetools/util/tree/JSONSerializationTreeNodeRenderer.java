@@ -103,7 +103,7 @@ public class JSONSerializationTreeNodeRenderer<T, U> implements TreeRenderer<T, 
 
     @Override
     public void render(TreeNode genericTreeNode, boolean in, Map traverseData) {
-        System.out.println("in:" + in + " " + genericTreeNode.getID());
+      //  System.out.println("in:" + in + " " + genericTreeNode.getID());
         if (in)
             renderStart(genericTreeNode);
         else
