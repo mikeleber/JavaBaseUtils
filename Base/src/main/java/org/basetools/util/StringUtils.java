@@ -249,4 +249,51 @@ public class StringUtils {
         }
         return cleared.toString();
     }
+
+    /**
+     * Create a fixed result stringarray with size of tokens.
+     * @param token
+     * @return
+     */
+    public static String[] toTokens(String token) {
+        String delims = ":_-";
+        String[] results = new String[delims.length() + 1];
+        int size = token.length();
+        int pos = 0;
+        int segmentPos = 0;
+        int segStart = 0, segEnd = 0;
+        while (pos < size) {
+            char curChar = token.charAt(pos++);
+            switch (curChar) {
+                case ':':
+                    segEnd = pos - 1;
+                    results[segmentPos] = (segStart != segEnd ? token.substring(segStart, segEnd) : null);
+                    segmentPos = 1;
+                    segStart = pos;
+                    break;
+
+                case '_':
+                    segEnd = pos - 1;
+                    results[segmentPos] = (segStart != segEnd ? token.substring(segStart, segEnd) : null);
+                    segmentPos = 2;
+                    segStart = pos;
+                    break;
+                case '-':
+                    segEnd = pos - 1;
+                    results[segmentPos] = (segStart != segEnd ? token.substring(segStart, segEnd) : null);
+                    segmentPos = 3;
+                    segStart = pos;
+                    break;
+            }
+        }
+        if (segStart > segEnd) {
+            //End reached write last segment
+            results[segmentPos] = (segStart != token.length() ? token.substring(segStart, token.length()) : null);
+        } else if (segStart == 0 && segEnd == 0) {
+            //No delim found in string, string is first segment
+            results[0] = token;
+        }
+
+        return results;
+    }
 }
