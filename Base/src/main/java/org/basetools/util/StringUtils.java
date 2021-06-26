@@ -1,6 +1,6 @@
 package org.basetools.util;
 
-import org.apache.commons.lang3.CharSequenceUtils;
+import org.basetools.util.hash.MurmurHash;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -100,6 +100,21 @@ public class StringUtils {
             }
         }
     }
+
+    public static String prependIfMissing(final String str, final CharSequence prefix, final CharSequence toPrepend, final boolean ignoreCase, final CharSequence... prefixes) {
+        if (str == null || EmptyUtil.isEmpty(prefix) || startsWith(str, prefix, ignoreCase)) {
+            return str;
+        }
+        if (prefixes != null && prefixes.length > 0) {
+            for (final CharSequence p : prefixes) {
+                if (startsWith(str, p, ignoreCase)) {
+                    return str;
+                }
+            }
+        }
+        return (toPrepend != null ? toPrepend.toString() : prefix.toString()) + str;
+    }
+
     public static boolean startsWith(final CharSequence str, final CharSequence prefix, final boolean ignoreCase) {
         if (str == null || prefix == null) {
             return str == prefix;
@@ -109,8 +124,9 @@ public class StringUtils {
         }
         return regionMatches(str, ignoreCase, 0, prefix, 0, prefix.length());
     }
+
     public static boolean regionMatches(final CharSequence cs, final boolean ignoreCase, final int thisStart,
-                                 final CharSequence substring, final int start, final int length)    {
+                                        final CharSequence substring, final int start, final int length) {
         if (cs instanceof String && substring instanceof String) {
             return ((String) cs).regionMatches(ignoreCase, thisStart, (String) substring, start, length);
         }
@@ -153,19 +169,7 @@ public class StringUtils {
 
         return true;
     }
-    public static String prependIfMissing(final String str, final CharSequence prefix, final CharSequence toPrepend, final boolean ignoreCase, final CharSequence... prefixes) {
-        if (str == null || EmptyUtil.isEmpty(prefix) || startsWith(str, prefix, ignoreCase)) {
-            return str;
-        }
-        if (prefixes != null && prefixes.length > 0) {
-            for (final CharSequence p : prefixes) {
-                if (startsWith(str, p, ignoreCase)) {
-                    return str;
-                }
-            }
-        }
-        return (toPrepend!=null?toPrepend.toString():prefix.toString()) + str;
-    }
+
     public static final String toPath(Stack stack) {
         int sCount = stack.size();
         StringBuilder result = new StringBuilder();
@@ -252,10 +256,11 @@ public class StringUtils {
 
     /**
      * Create a fixed result stringarray with size of tokens.
+     *
      * @param token
      * @return
      */
-    public static String[] toTokens(String token) {
+    public static String[] tokenizeSegmented(String token) {
         String delims = ":_-";
         String[] results = new String[delims.length() + 1];
         int size = token.length();
@@ -295,5 +300,47 @@ public class StringUtils {
         }
 
         return results;
+    }
+
+    public static String[] tokenizeSegmented(String delims, String token) {
+        String[] results = new String[delims.length() + 1];
+        int size = token.length();
+        int pos = 0;
+        int segmentPos = 0;
+        int segStart = 0, segEnd = 0;
+        while (pos < size) {
+            char curChar = token.charAt(pos++);
+
+            for (int d = 0; d < delims.length(); d++) {
+                if (delims.charAt(d) == curChar) {
+                    segEnd = pos - 1;
+                    results[segmentPos] = (segStart != segEnd ? token.substring(segStart, segEnd) : null);
+                    segmentPos = d + 1;
+                    segStart = pos;
+                    break;
+                }
+            }
+        }
+        if (segStart > segEnd) {
+            //End reached write last segment
+            results[segmentPos] = (segStart != token.length() ? token.substring(segStart, token.length()) : null);
+        } else if (segStart == 0 && segEnd == 0) {
+            //No delim found in string, string is first segment
+            results[0] = token;
+        }
+
+        return results;
+    }
+
+    public static int hash(int prime, String s) {
+        int h = 0;
+        for (int i = 0; i < s.length(); i++) {
+            h = prime * h + s.charAt(i);
+        }
+        return h;
+    }
+
+    public static int hashMurmur(String s) {
+        return MurmurHash.hash32(s);
     }
 }
