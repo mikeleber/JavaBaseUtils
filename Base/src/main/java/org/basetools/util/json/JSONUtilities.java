@@ -16,6 +16,32 @@ import java.util.*;
 public class JSONUtilities {
 
     /**
+     * Add the given Map.Entry to the json builder.
+     *
+     * @param to     builder to add pair
+     * @param values
+     */
+    public static final <K, V> void addAll(JsonObjectBuilder to, Map<K, V> values) {
+        if (values != null) {
+            for (Iterator<Map.Entry<K, V>> entries = values.entrySet().iterator(); entries.hasNext(); ) {
+                add(to, entries.next());
+            }
+        }
+    }
+
+    /**
+     * Add the given Map.Entry to the json builder.
+     *
+     * @param to   builder to add pair
+     * @param pair
+     */
+    public static final <K, V> void add(JsonObjectBuilder to, Map.Entry<?, ?> pair) {
+        if (pair != null) {
+            add(to, pair.getKey(), pair.getValue());
+        }
+    }
+
+    /**
      * This method dispatch a given value to the corresponding JsonObjectBuilder add method depending to it's type.
      * If the object contains a mapping for the specified name, this method replaces the old value with the specified value.
      *
@@ -47,6 +73,20 @@ public class JSONUtilities {
             return to.add(key, (BigInteger) value);
         } else {
             return to.add(key, String.valueOf(value));
+        }
+    }
+
+    /**
+     * Add the given Map.Entry to the json builder.
+     *
+     * @param to     builder to add pair
+     * @param values
+     */
+    public static final <V> void addAll(JsonArrayBuilder to, Collection<V> values) {
+        if (values != null) {
+            for (Iterator<V> entries = values.iterator(); entries.hasNext(); ) {
+                add(to, entries.next());
+            }
         }
     }
 
@@ -84,46 +124,6 @@ public class JSONUtilities {
     }
 
     /**
-     * Add the given Map.Entry to the json builder.
-     *
-     * @param to   builder to add pair
-     * @param pair
-     */
-    public static final <K, V> void add(JsonObjectBuilder to, Map.Entry<?, ?> pair) {
-        if (pair != null) {
-            add(to, pair.getKey(), pair.getValue());
-        }
-    }
-
-    /**
-     * Add the given Map.Entry to the json builder.
-     *
-     * @param to     builder to add pair
-     * @param values
-     */
-    public static final <K, V> void addAll(JsonObjectBuilder to, Map<K, V> values) {
-        if (values != null) {
-            for (Iterator<Map.Entry<K, V>> entries = values.entrySet().iterator(); entries.hasNext(); ) {
-                add(to, entries.next());
-            }
-        }
-    }
-
-    /**
-     * Add the given Map.Entry to the json builder.
-     *
-     * @param to     builder to add pair
-     * @param values
-     */
-    public static final <V> void addAll(JsonArrayBuilder to, Collection<V> values) {
-        if (values != null) {
-            for (Iterator<V> entries = values.iterator(); entries.hasNext(); ) {
-                add(to, entries.next());
-            }
-        }
-    }
-
-    /**
      * Compares two JSON Object for equality.
      *
      * @param source the source
@@ -146,6 +146,7 @@ public class JSONUtilities {
         Objects.requireNonNull(source);
         return Json.createReader(new StringReader(source)).readObject();
     }
+
     public static JsonObject createJson(Reader source) {
         Objects.requireNonNull(source);
         return Json.createReader(source).readObject();
@@ -206,6 +207,25 @@ public class JSONUtilities {
         try (JsonWriter jsonWriter = writerFactory.createWriter(writer)) {
             jsonWriter.write(json);
         }
+    }
+
+    public static Object extractJsonValue(JsonValue jsonObject, Object defaultValue) {
+        switch (jsonObject.getValueType()) {
+            case NULL:
+                break;
+            case TRUE:
+            case FALSE:
+                return Boolean.valueOf(jsonObject.toString());
+            case ARRAY:
+                break;
+            case NUMBER:
+                return ((JsonNumber) jsonObject).numberValue();
+            case OBJECT:
+                return String.valueOf(jsonObject);
+            case STRING:
+                return ((JsonString) jsonObject).getString();
+        }
+        return defaultValue;
     }
 
     public static class ArrayBuilder {
