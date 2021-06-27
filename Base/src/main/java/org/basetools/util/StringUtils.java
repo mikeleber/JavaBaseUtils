@@ -256,12 +256,12 @@ public class StringUtils {
 
     /**
      * Create a fixed result stringarray with size of tokens.
-     *
+     * String delims = ":_-";
      * @param token
      * @return
      */
     public static String[] tokenizeSegmented(String token) {
-        String delims = ":_-";
+        String delims = "_-:";
         String[] results = new String[delims.length() + 1];
         int size = token.length();
         int pos = 0;
@@ -273,7 +273,7 @@ public class StringUtils {
                 case ':':
                     segEnd = pos - 1;
                     results[segmentPos] = (segStart != segEnd ? token.substring(segStart, segEnd) : null);
-                    segmentPos = 1;
+                    segmentPos = 3;
                     segStart = pos;
                     break;
 
@@ -286,7 +286,7 @@ public class StringUtils {
                 case '-':
                     segEnd = pos - 1;
                     results[segmentPos] = (segStart != segEnd ? token.substring(segStart, segEnd) : null);
-                    segmentPos = 3;
+                    segmentPos = 1;
                     segStart = pos;
                     break;
             }
