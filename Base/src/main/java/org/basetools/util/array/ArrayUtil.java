@@ -1,5 +1,6 @@
 package org.basetools.util.array;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Array;
@@ -7,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * The type Array util.
@@ -146,6 +148,7 @@ public final class ArrayUtil {
     public static <T> T[] toGenericArray(T... elems) {
         return elems;
     }
+
     public static final Object[] addToGrowArray(Object[] array, Object o, int gf) {
         if (gf <= 1) {
             gf = 2;
@@ -174,6 +177,7 @@ public final class ArrayUtil {
             return newArray;
         }
     }
+
     public static final Object[][] addToGrowArray(Object[][] array, Object[] o, int gf) {
         int w = o.length;
         if (array == null) {
@@ -422,5 +426,12 @@ public final class ArrayUtil {
             }
         }
         return true;
+    }
+
+    public static List<String> removeBlankOrEmpty(String[] vals) {
+        if (!ArrayUtils.isEmpty(vals)) {
+            return Arrays.asList(vals).stream().filter(org.apache.commons.lang3.StringUtils::isNotBlank).collect(Collectors.toList());
+        }
+        return null;
     }
 }
