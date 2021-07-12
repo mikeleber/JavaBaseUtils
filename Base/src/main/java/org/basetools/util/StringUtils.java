@@ -261,7 +261,7 @@ public class StringUtils {
      * @return
      */
     public static String[] tokenizeSegmented(String token) {
-        String delims = "_-:";
+        String delims = "_-:#";
         String[] results = new String[delims.length() + 1];
         int size = token.length();
         int pos = 0;
@@ -273,22 +273,29 @@ public class StringUtils {
                 case ':':
                     segEnd = pos - 1;
                     results[segmentPos] = (segStart != segEnd ? token.substring(segStart, segEnd) : null);
-                    segmentPos = 3;
+                    segmentPos = 4;
                     segStart = pos;
                     break;
 
                 case '_':
                     segEnd = pos - 1;
                     results[segmentPos] = (segStart != segEnd ? token.substring(segStart, segEnd) : null);
-                    segmentPos = 2;
+                    segmentPos = 3;
                     segStart = pos;
                     break;
                 case '-':
                     segEnd = pos - 1;
                     results[segmentPos] = (segStart != segEnd ? token.substring(segStart, segEnd) : null);
+                    segmentPos = 2;
+                    segStart = pos;
+                    break;
+                case '#':
+                    segEnd = pos - 1;
+                    results[segmentPos] = (segStart != segEnd ? token.substring(segStart, segEnd) : null);
                     segmentPos = 1;
                     segStart = pos;
                     break;
+
             }
         }
         if (segStart > segEnd) {
