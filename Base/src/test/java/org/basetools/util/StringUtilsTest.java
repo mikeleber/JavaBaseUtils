@@ -7,6 +7,7 @@ class StringUtilsTest {
     @Test
     void toTokens() {
         String[] result = StringUtils.tokenizeSegmented( ":89_2-ADD");
+        String[] result0 = StringUtils.tokenizeSegmented( "DOM2:89_2-ADD#1");
         String[] result1 = StringUtils.tokenizeSegmented( "DOM2:89_2-ADD");
         String[] result2 = StringUtils.tokenizeSegmented( "DOM2:89-ADD");
         String[] result3 = StringUtils.tokenizeSegmented( "DOM2:89_2");

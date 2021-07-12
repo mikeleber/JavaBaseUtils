@@ -273,26 +273,26 @@ public class StringUtils {
                 case ':':
                     segEnd = pos - 1;
                     results[segmentPos] = (segStart != segEnd ? token.substring(segStart, segEnd) : null);
-                    segmentPos = 4;
+                    segmentPos = 3;
                     segStart = pos;
                     break;
 
                 case '_':
                     segEnd = pos - 1;
                     results[segmentPos] = (segStart != segEnd ? token.substring(segStart, segEnd) : null);
-                    segmentPos = 3;
+                    segmentPos = 2;
                     segStart = pos;
                     break;
                 case '-':
                     segEnd = pos - 1;
                     results[segmentPos] = (segStart != segEnd ? token.substring(segStart, segEnd) : null);
-                    segmentPos = 2;
+                    segmentPos = 1;
                     segStart = pos;
                     break;
                 case '#':
                     segEnd = pos - 1;
                     results[segmentPos] = (segStart != segEnd ? token.substring(segStart, segEnd) : null);
-                    segmentPos = 1;
+                    segmentPos = 4;
                     segStart = pos;
                     break;
 
