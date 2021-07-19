@@ -1,5 +1,7 @@
 package org.basetools.util.json;
 
+import org.apache.commons.lang3.StringUtils;
+
 import javax.json.*;
 import javax.json.stream.JsonGenerator;
 import java.io.Reader;
@@ -72,7 +74,7 @@ public class JSONUtilities {
         } else if (value instanceof BigInteger) {
             return to.add(key, (BigInteger) value);
         } else {
-            return to.add(key, String.valueOf(value));
+            return to.add(key, Objects.toString(value,""));
         }
     }
 
