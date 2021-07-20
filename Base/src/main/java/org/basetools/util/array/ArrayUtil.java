@@ -434,4 +434,16 @@ public final class ArrayUtil {
         }
         return null;
     }
+
+    public static boolean isEmptyOrAllNull(Object[] array) {
+        if (array == null) {
+            return true;
+        } else if (array.length == 0) {
+            return true;
+        }
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] != null) return false;
+        }
+        return true;
+    }
 }
