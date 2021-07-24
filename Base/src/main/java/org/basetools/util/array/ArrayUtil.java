@@ -49,6 +49,15 @@ public final class ArrayUtil {
         return null;
     }
 
+    public static final <T> T get(T[][] srcArr, int comCol, Object compVal, int getCol, T defaultValue) {
+        int idx = contains(srcArr, comCol, compVal);
+        if (idx >= 0) {
+            return get(srcArr[idx], getCol, defaultValue);
+        } else {
+            return defaultValue;
+        }
+    }
+
     /**
      * Returns the object at the given postion. If t is out of the possible value range defaultValue will be returned.
      *
@@ -232,11 +241,11 @@ public final class ArrayUtil {
         return array;
     }
 
-    public static final int contains(Object[][] array, int col, Object value) {
+    public static final <T> int contains(T[][] array, int col, Object value) {
         return contains(array, col, value, false);
     }
 
-    public static final int contains(Object[][] array, int col, Object value, boolean firstIDXIsRow) {
+    public static final <T> int contains(T[][] array, int col, Object value, boolean firstIDXIsRow) {
         int foundAt = -1;
         if (array == null || array.length <= 0 || value == null) {
             return foundAt;
@@ -442,7 +451,9 @@ public final class ArrayUtil {
             return true;
         }
         for (int i = 0; i < array.length; i++) {
-            if (array[i] != null) return false;
+            if (array[i] != null) {
+                return false;
+            }
         }
         return true;
     }
