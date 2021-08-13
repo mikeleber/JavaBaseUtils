@@ -257,6 +257,7 @@ public class StringUtils {
     /**
      * Create a fixed result stringarray with size of tokens.
      * String delims = ":_-";
+     *
      * @param token
      * @return
      */
@@ -270,7 +271,7 @@ public class StringUtils {
         while (pos < size) {
             char curChar = token.charAt(pos++);
             switch (curChar) {
-                case ':':
+                case '€':
                     segEnd = pos - 1;
                     results[segmentPos] = (segStart != segEnd ? token.substring(segStart, segEnd) : null);
                     segmentPos = 3;
@@ -289,13 +290,12 @@ public class StringUtils {
                     segmentPos = 1;
                     segStart = pos;
                     break;
-                case '#':
+                case '§':
                     segEnd = pos - 1;
                     results[segmentPos] = (segStart != segEnd ? token.substring(segStart, segEnd) : null);
                     segmentPos = 4;
                     segStart = pos;
                     break;
-
             }
         }
         if (segStart > segEnd) {
