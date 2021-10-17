@@ -15,16 +15,6 @@ public class Tree<T, U> {
         super();
     }
 
-    public TreeNode<T, U> getRoot() {
-        return root;
-    }
-
-    public void setRoot(TreeNode<T, U> root) {
-        cache.clear();
-        cache.put(root.getID(), root);
-        this.root = root;
-    }
-
     public int getNumberOfNodes() {
         int numberOfNodes = 0;
         if (root != null) {
@@ -51,6 +41,18 @@ public class Tree<T, U> {
         return traversalResult;
     }
 
+    private int auxiliaryGetNumberOfNodes(TreeNode<T, U> node) {
+        int numberOfNodes = node.size();
+        for (TreeNode<T, U> child : node.getChildren()) {
+            numberOfNodes += auxiliaryGetNumberOfNodes(child);
+        }
+        return numberOfNodes;
+    }
+
+    public boolean exists(TreeNode<T, U> nodeToFind) {
+        return (find(nodeToFind) != null);
+    }
+
 //	private void buildPreOrder(TreeNode<T, U> node, List<TreeNode<T, U>> traversalResult) {
 //		traversalResult.add(node);
 //		for (TreeNode<T, U> child : node.getChildren()) {
@@ -65,28 +67,12 @@ public class Tree<T, U> {
 //		traversalResult.add(node);
 //	}
 
-    private int auxiliaryGetNumberOfNodes(TreeNode<T, U> node) {
-        int numberOfNodes = node.getNumberOfChildren();
-        for (TreeNode<T, U> child : node.getChildren()) {
-            numberOfNodes += auxiliaryGetNumberOfNodes(child);
-        }
-        return numberOfNodes;
-    }
-
-    public boolean exists(TreeNode<T, U> nodeToFind) {
-        return (find(nodeToFind) != null);
-    }
-
     public TreeNode<T, U> find(TreeNode<T, U> nodeToFind) {
         TreeNode<T, U> returnNode = null;
         if (root != null) {
             returnNode = auxiliaryFind(root, nodeToFind);
         }
         return returnNode;
-    }
-
-    private void manipulateTree(TreeNode<T, U> currNode, Compactor modifier) {
-        currNode.manipulateStructure(modifier);
     }
 
     public TreeNode<T, U> compactTree(TreeNode<T, U> startNode, Compactor modifier, boolean evalNewRootNode) {
@@ -100,7 +86,7 @@ public class Tree<T, U> {
                 if (modifier.compact(aParent)) {
                     if (aParent != startNode) {
                         if (aParent.getParent() != null) {
-                            aParent.getParent().removeChild(aParent, true);
+                            aParent.getParent().remove(aParent, true);
                         }
                     } else {
                         break;
@@ -114,8 +100,8 @@ public class Tree<T, U> {
             if (topnode.getDepth() > 2) {
                 // GenericTreeNode<T, U> childNode = topnode.getChildAt(0);
                 TreeNode<T, U> childNode = topnode;
-                while (childNode.getNumberOfChildren() > 0) {
-                    TreeNode<T, U> newChildNode = childNode.getChildAt(0);
+                while (childNode.size() > 0) {
+                    TreeNode<T, U> newChildNode = childNode.get(0);
                     if (modifier.compactParent(childNode)) {
                         if (childNode == startNode) {
                             // never remove root node!
@@ -133,6 +119,24 @@ public class Tree<T, U> {
             }
         }
         return topnode;
+    }
+
+    private void manipulateTree(TreeNode<T, U> currNode, Compactor modifier) {
+        currNode.manipulateStructure(modifier);
+    }
+
+    public List<TreeNode<T, U>> findLeafNodes(TreeNode<T, U> startNode) {
+        return startNode.findLeafNodes();
+    }
+
+    public TreeNode<T, U> getRoot() {
+        return root;
+    }
+
+    public void setRoot(TreeNode<T, U> root) {
+        cache.clear();
+        cache.put(root.getID(), root);
+        this.root = root;
     }
 
     public void clearTreeStructure(TreeNode<T, U> startNode, Compactor modifier) {
@@ -156,10 +160,6 @@ public class Tree<T, U> {
         }
     }
 
-    public List<TreeNode<T, U>> findLeafNodes(TreeNode<T, U> startNode) {
-        return startNode.findLeafNodes();
-    }
-
     private TreeNode<T, U> auxiliaryFind(TreeNode<T, U> currentNode, TreeNode<T, U> nodeToFind) {
         TreeNode<T, U> returnNode = null;
         int i = 0;
@@ -169,8 +169,8 @@ public class Tree<T, U> {
             returnNode = currentNode;
         } else if (currentNode.hasChildren()) {
             i = 0;
-            while (returnNode == null && i < currentNode.getNumberOfChildren()) {
-                returnNode = auxiliaryFind(currentNode.getChildAt(i), nodeToFind);
+            while (returnNode == null && i < currentNode.size()) {
+                returnNode = auxiliaryFind(currentNode.get(i), nodeToFind);
                 i++;
             }
         }
@@ -210,6 +210,14 @@ public class Tree<T, U> {
     }
 
     /**
+     * Inserts the document node.
+     */
+    private TreeNode<T, U> insertDocumentNode(Node what, TreeNode<T, U> where) {
+        TreeNode<T, U> treeNode = insertNode(what, where);
+        return treeNode;
+    }
+
+    /**
      * Inserts a node and returns a reference to the new node.
      */
     private TreeNode<T, U> insertNode(Object what, TreeNode<T, U> where) {
@@ -217,14 +225,6 @@ public class Tree<T, U> {
         // insertNodeInto(node, where);
         return null;
     } // insertNode(Node,MutableTreeNode):MutableTreeNode
-
-    /**
-     * Inserts the document node.
-     */
-    private TreeNode<T, U> insertDocumentNode(Node what, TreeNode<T, U> where) {
-        TreeNode<T, U> treeNode = insertNode(what, where);
-        return treeNode;
-    }
 
     /**
      * Inserts a text node.
@@ -311,6 +311,13 @@ public class Tree<T, U> {
         return getRoot().getFirstChild();
     }
 
+    public void addPath(String path, boolean check, T data) {
+        if (path != null) {
+            String[] elems = path.split("/");
+            addNode(elems, data);
+        }
+    }
+
     public <G> void addNode(String[] nodePath, T data) {
         if (nodePath != null) {
             TreeNode<T, U> baseNode = getRoot();
@@ -332,13 +339,6 @@ public class Tree<T, U> {
                     }
                 }
             }
-        }
-    }
-
-    public void addPath(String path, boolean check, T data) {
-        if (path != null) {
-            String[] elems = path.split("/");
-            addNode(elems, data);
         }
     }
 

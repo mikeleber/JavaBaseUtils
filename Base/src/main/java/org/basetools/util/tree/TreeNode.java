@@ -30,27 +30,6 @@ public class TreeNode<T, U> {
 
     protected boolean _isList;
 
-    public TreeNode() {
-        super();
-    }
-
-    public TreeNode(T data) {
-        this();
-        setData(data);
-    }
-
-    public TreeNode(T data, U usrobj) {
-        this(data);
-        setUserObject(usrobj);
-    }
-
-    public TreeNode(TreeNode<T, U> parent, T data, U usrobj) {
-        this(data, usrobj);
-        if (parent != null) {
-            parent.addChild(this);
-        }
-    }
-
     public TreeNode(TreeNode<T, U> parent, T data, U usrobj, boolean add) {
         this(data, usrobj);
         if (parent != null && add) {
@@ -58,15 +37,40 @@ public class TreeNode<T, U> {
         }
     }
 
-    public TreeNode(String id, T data) {
+    public TreeNode(T data, U usrobj) {
+        this(data);
+        setUserObject(usrobj);
+    }
+
+    public TreeNode<T, U> addChild(TreeNode<T, U> child) {
+        depth = -1;
+        getChildren().add(child);
+        child.setParent(this);
+        return child;
+    }
+
+    public TreeNode(T data) {
         this();
-        setId(id);
         setData(data);
     }
 
-    public TreeNode(String id, T data, U usrobj) {
-        this(id, data);
-        setUserObject(usrobj);
+    public List<TreeNode<T, U>> getChildren() {
+        if (children == null) {
+            children = new ArrayList<>();
+        }
+        return children;
+    }
+
+    public TreeNode() {
+        super();
+    }
+
+    public void setChildren(List<TreeNode<T, U>> children) {
+        depth = -1;
+        this.children = children;
+        for (TreeNode<T, U> child : children) {
+            child.setParent(this);
+        }
     }
 
     public TreeNode(String id, TreeNode<T, U> parent, T data, U usrobj) {
@@ -76,8 +80,30 @@ public class TreeNode<T, U> {
         }
     }
 
+    public TreeNode(String id, T data, U usrobj) {
+        this(id, data);
+        setUserObject(usrobj);
+    }
+
+    public TreeNode(String id, T data) {
+        this();
+        setId(id);
+        setData(data);
+    }
+
+    public void setId(String id) {
+        _id = id;
+    }
+
     public TreeNode(TreeNode<T, U> parent, T data) {
         this(parent, data, null);
+    }
+
+    public TreeNode(TreeNode<T, U> parent, T data, U usrobj) {
+        this(data, usrobj);
+        if (parent != null) {
+            parent.addChild(this);
+        }
     }
 
     public TreeNode<T, U> find(TreeNode<T, U> nodeToFind) {
@@ -102,8 +128,8 @@ public class TreeNode<T, U> {
             returnNode = currentNode;
         } else if (currentNode.hasChildren()) {
             i = 0;
-            while (returnNode == null && i < currentNode.getNumberOfChildren()) {
-                returnNode = auxiliaryFind(currentNode.getChildAt(i), data);
+            while (returnNode == null && i < currentNode.size()) {
+                returnNode = auxiliaryFind(currentNode.get(i), data);
                 i++;
             }
         }
@@ -117,8 +143,8 @@ public class TreeNode<T, U> {
             returnNode = currentNode;
         } else if (currentNode.hasChildren()) {
             i = 0;
-            while (returnNode == null && i < currentNode.getNumberOfChildren()) {
-                returnNode = auxiliaryFind(currentNode.getChildAt(i), data, userObj);
+            while (returnNode == null && i < currentNode.size()) {
+                returnNode = auxiliaryFind(currentNode.get(i), data, userObj);
                 i++;
             }
         }
@@ -134,8 +160,8 @@ public class TreeNode<T, U> {
             returnNode = currentNode;
         } else if (currentNode.hasChildren()) {
             i = 0;
-            while (returnNode == null && i < currentNode.getNumberOfChildren()) {
-                returnNode = auxiliaryFind(currentNode.getChildAt(i), nodeToFind);
+            while (returnNode == null && i < currentNode.size()) {
+                returnNode = auxiliaryFind(currentNode.get(i), nodeToFind);
                 i++;
             }
         }
@@ -151,6 +177,23 @@ public class TreeNode<T, U> {
             }
         }
         return false;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
+    }
+
+    public U getUserObject() {
+        return userobject;
+    }
+
+    public TreeNode<T, U> setUserObject(U obj) {
+        userobject = obj;
+        return this;
     }
 
     public String getID() {
@@ -180,7 +223,7 @@ public class TreeNode<T, U> {
         if (aNode == null) {
             retval = false;
         } else {
-            if (getNumberOfChildren() == 0) {
+            if (size() == 0) {
                 retval = false;
             } else {
                 retval = (aNode.getParent() == this);
@@ -189,7 +232,7 @@ public class TreeNode<T, U> {
         return retval;
     }
 
-    public int getIndex(TreeNode<T, U> aChild) {
+    public int indexOf(TreeNode<T, U> aChild) {
         if (aChild == null) {
             throw new IllegalArgumentException("argument is null");
         }
@@ -197,10 +240,6 @@ public class TreeNode<T, U> {
             return -1;
         }
         return children.indexOf(aChild); // linear search
-    }
-
-    public void setId(String id) {
-        _id = id;
     }
 
     public List<TreeNode<T, U>> getAllChildren() {
@@ -221,30 +260,8 @@ public class TreeNode<T, U> {
         return childrens;
     }
 
-    public List<TreeNode<T, U>> getChildren() {
-        if (children == null) {
-            children = new ArrayList<>();
-        }
-        return children;
-    }
-
-    public void setChildren(List<TreeNode<T, U>> children) {
-        depth = -1;
-        this.children = children;
-        for (TreeNode<T, U> child : children) {
-            child.setParent(this);
-        }
-    }
-
-    public int getNumberOfChildren() {
-        if (children == null) {
-            return 0;
-        }
-        return getChildren().size();
-    }
-
     public boolean hasChildren() {
-        return (children != null && getNumberOfChildren() > 0);
+        return (children != null && size() > 0);
     }
 
     public TreeNode<T, U> cloneNode(boolean deep) {
@@ -257,13 +274,6 @@ public class TreeNode<T, U> {
         return copy;
     }
 
-    public TreeNode<T, U> addChild(TreeNode<T, U> child) {
-        depth = -1;
-        getChildren().add(child);
-        child.setParent(this);
-        return child;
-    }
-
     public void addChildren(List<TreeNode<T, U>> childs) {
         depth = -1;
         getChildren().addAll(childs);
@@ -272,21 +282,7 @@ public class TreeNode<T, U> {
         }
     }
 
-    public void addChildrenAt(int index, List<TreeNode<T, U>> childs) {
-        depth = -1;
-        for (TreeNode<T, U> child : childs) {
-            addChildAt(index++, child);
-        }
-    }
-
-    public TreeNode<T, U> addChildAt(int index, TreeNode<T, U> child) throws IndexOutOfBoundsException {
-        depth = -1;
-        getChildren().add(index, child);
-        child.setParent(this);
-        return child;
-    }
-
-    public void removeChildren() {
+    public void clear() {
         if (children != null) {
             depth = -1;
             children.clear();
@@ -309,25 +305,6 @@ public class TreeNode<T, U> {
         _name = name;
     }
 
-    public boolean removeChild(TreeNode<T, U> child) throws IndexOutOfBoundsException {
-        return removeChild(child, false);
-    }
-
-    public boolean removeChild(TreeNode<T, U> child, boolean shiftChildsUp) throws IndexOutOfBoundsException {
-        boolean removed = false;
-        if (children != null) {
-            int idx = children.indexOf(child);
-            if (idx >= 0) {
-                depth = -1;
-                removed = removeChildAt(idx);
-                if (removed && shiftChildsUp && child.getNumberOfChildren() > 0) {
-                    addChildrenAt(idx, child.getChildren());
-                }
-            }
-        }
-        return removed;
-    }
-
     public boolean pushUp(boolean preservePosition, boolean removeContainerIfEmpty) throws IndexOutOfBoundsException {
         boolean removed = false;
         if (getParent() != null && getParent().getParent() != null) {
@@ -337,14 +314,14 @@ public class TreeNode<T, U> {
             int idx = childrens.indexOf(this);
             if (idx >= 0) {
                 depth = -1;
-                removed = parent.removeChildAt(idx);
+                removed = parent.remove(idx);
                 if (removed) {
                     if (preservePosition) {
-                        pParent.addChildAt(idx, this);
+                        pParent.add(idx, this);
                     } else {
                         pParent.addChild(this);
                     }
-                    if (parent.getNumberOfChildren() == 0) {
+                    if (parent.size() == 0) {
                         parent.remove();
                     }
                 }
@@ -371,28 +348,17 @@ public class TreeNode<T, U> {
             int idx = childrens.indexOf(this);
             if (idx >= 0) {
                 depth = -1;
-                injected = parent.removeChildAt(idx);
+                injected = parent.remove(idx);
                 if (injected) {
                     node.addChild(this);
-                    parent.addChildAt(idx, node);
+                    parent.add(idx, node);
                 }
             }
         }
         return injected;
     }
 
-    public boolean removeChildAt(int index) throws IndexOutOfBoundsException {
-        boolean removed = false;
-        if (children != null) {
-            removed = children.remove(index) != null;
-            if (removed) {
-                depth = -1;
-            }
-        }
-        return removed;
-    }
-
-    public TreeNode<T, U> getChildAt(int index) throws IndexOutOfBoundsException {
+    public TreeNode<T, U> get(int index) throws IndexOutOfBoundsException {
         if (children != null) {
             return children.get(index);
         } else {
@@ -422,20 +388,6 @@ public class TreeNode<T, U> {
         return null;
     }
 
-//    public static TreeNode of(TreeNode templateNode) {
-//        TreeNode newNode = new TreeNode<>();
-//        newNode.data = templateNode.data;
-//        newNode.userobject = templateNode.userobject;
-//        newNode._info = templateNode._info;
-//        newNode._properties = templateNode._properties;
-//        newNode._id = templateNode._id;
-//        newNode._description = templateNode._description;
-//        newNode._name = templateNode._name;
-//        newNode._isList = templateNode._isList;
-//        newNode._isContainer = templateNode._isContainer;
-//        return newNode;
-//    }
-
     public TreeNode<T, U> getChildByDataAndUserObj(T data, U usrObj) throws IndexOutOfBoundsException {
         if (children != null) {
             List<TreeNode<T, U>> childs = getChildren();
@@ -456,6 +408,20 @@ public class TreeNode<T, U> {
         return returnNodes != null && returnNodes.size() > 0 ? returnNodes.get(0) : null;
     }
 
+//    public static TreeNode of(TreeNode templateNode) {
+//        TreeNode newNode = new TreeNode<>();
+//        newNode.data = templateNode.data;
+//        newNode.userobject = templateNode.userobject;
+//        newNode._info = templateNode._info;
+//        newNode._properties = templateNode._properties;
+//        newNode._id = templateNode._id;
+//        newNode._description = templateNode._description;
+//        newNode._name = templateNode._name;
+//        newNode._isList = templateNode._isList;
+//        newNode._isContainer = templateNode._isContainer;
+//        return newNode;
+//    }
+
     public List<TreeNode<T, U>> findNodesByData(T data) {
         List<TreeNode<T, U>> returnNodes = null;
         returnNodes = findNodesByData(returnNodes, data);
@@ -474,23 +440,6 @@ public class TreeNode<T, U> {
             returnNodes = childs.get(c).findNodesByData(returnNodes, data);
         }
         return returnNodes;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
-    }
-
-    public U getUserObject() {
-        return userobject;
-    }
-
-    public TreeNode<T, U> setUserObject(U obj) {
-        userobject = obj;
-        return this;
     }
 
     @Override
@@ -523,6 +472,10 @@ public class TreeNode<T, U> {
         return stringRepresentation;
     }
 
+    public boolean isRoot() {
+        return getParent() == null;
+    }
+
     public TreeNode<T, U> getParent() {
         return parent;
     }
@@ -531,13 +484,9 @@ public class TreeNode<T, U> {
         this.parent = parent;
     }
 
-    public boolean isRoot() {
-        return getParent() == null;
-    }
-
     public TreeNode<T, U> getParent(int minChilds) {
         if (parent != null) {
-            if (parent.getNumberOfChildren() >= minChilds) {
+            if (parent.size() >= minChilds) {
                 return parent;
             } else {
                 return parent.getParent(minChilds);
@@ -563,7 +512,7 @@ public class TreeNode<T, U> {
     }
 
     private int getDepth(int depth) {
-        int cc = getNumberOfChildren();
+        int cc = size();
         if (cc > 0) {
             depth++;
             List<TreeNode<T, U>> childs = getChildren();
@@ -600,7 +549,7 @@ public class TreeNode<T, U> {
     }
 
     public List<TreeNode<T, U>> findLeafNodes(List<TreeNode<T, U>> returnNodes) {
-        if (getNumberOfChildren() == 0) {
+        if (size() == 0) {
             if (returnNodes == null) {
                 returnNodes = new ArrayList<>();
             }
@@ -631,7 +580,7 @@ public class TreeNode<T, U> {
             parentData = getParent().getData();
         }
         result.put(parentData, getData(), this);
-        if (getNumberOfChildren() > 0) {
+        if (size() > 0) {
         }
         List<TreeNode<T, U>> childs = getChildren();
         for (int c = 0; c < childs.size(); c++) {
@@ -699,23 +648,74 @@ public class TreeNode<T, U> {
 
     public boolean removeFromParent() {
         if (getParent() != null) {
-            return getParent().removeChild(this);
+            return getParent().remove(this);
         }
         return false;
     }
 
+    public boolean remove(TreeNode<T, U> child) throws IndexOutOfBoundsException {
+        return remove(child, false);
+    }
+
+    public boolean remove(TreeNode<T, U> child, boolean shiftChildsUp) throws IndexOutOfBoundsException {
+        boolean removed = false;
+        if (children != null) {
+            int idx = children.indexOf(child);
+            if (idx >= 0) {
+                depth = -1;
+                removed = remove(idx);
+                if (removed && shiftChildsUp && child.size() > 0) {
+                    add(idx, child.getChildren());
+                }
+            }
+        }
+        return removed;
+    }
+
+    public boolean remove(int index) throws IndexOutOfBoundsException {
+        boolean removed = false;
+        if (children != null) {
+            removed = children.remove(index) != null;
+            if (removed) {
+                depth = -1;
+            }
+        }
+        return removed;
+    }
+
+    public int size() {
+        if (children == null) {
+            return 0;
+        }
+        return getChildren().size();
+    }
+
+    public void add(int index, List<TreeNode<T, U>> childs) {
+        depth = -1;
+        for (TreeNode<T, U> child : childs) {
+            add(index++, child);
+        }
+    }
+
+    public TreeNode<T, U> add(int index, TreeNode<T, U> child) throws IndexOutOfBoundsException {
+        depth = -1;
+        getChildren().add(index, child);
+        child.setParent(this);
+        return child;
+    }
+
     public List<TreeNode<T, U>> remove() {
         if (getParent() != null) {
-            getParent().removeChild(this);
+            getParent().remove(this);
         }
-        for (int i = 0; i < getNumberOfChildren(); i++) {
-            getChildAt(i).setParent(null);
+        for (int i = 0; i < size(); i++) {
+            get(i).setParent(null);
         }
         return getChildren();
     }
 
     public boolean isLeaf() {
-        return getNumberOfChildren() == 0;
+        return size() == 0;
     }
 
     public String createXPath(boolean useName) {
@@ -732,7 +732,7 @@ public class TreeNode<T, U> {
             if (!isList()) {
                 sb.append("/");
                 sb.append(name);
-                if (getParent() != null && getParent().isList() && getParent().getNumberOfChildren() > 0) {
+                if (getParent() != null && getParent().isList() && getParent().size() > 0) {
                     sb.append("[");
                     sb.append(getParent().getChildren().indexOf(this) + 1);
                     sb.append("]");
@@ -921,12 +921,12 @@ public class TreeNode<T, U> {
         if (aChild == null) {
             throw new IllegalArgumentException("argument is null");
         }
-        int index = getIndex(aChild); // linear search
+        int index = indexOf(aChild); // linear search
         if (index == -1) {
             throw new IllegalArgumentException("node is not a child");
         }
-        if (index < getNumberOfChildren() - 1) {
-            return getChildAt(index + 1);
+        if (index < size() - 1) {
+            return get(index + 1);
         } else {
             return null;
         }
@@ -943,12 +943,12 @@ public class TreeNode<T, U> {
         if (aChild == null) {
             throw new IllegalArgumentException("argument is null");
         }
-        int index = getIndex(aChild); // linear search
+        int index = indexOf(aChild); // linear search
         if (index == -1) {
             throw new IllegalArgumentException("argument is not a child");
         }
         if (index > 0) {
-            return getChildAt(index - 1);
+            return get(index - 1);
         } else {
             return null;
         }
@@ -982,7 +982,7 @@ public class TreeNode<T, U> {
      * @return the node that follows this node in a preorder traversal, or null if this node is last
      */
     public TreeNode<T, U> getNextNode() {
-        if (getNumberOfChildren() == 0) {
+        if (size() == 0) {
             // No children, so look for nextSibling
             TreeNode<T, U> nextSibling = getNextSibling();
             if (nextSibling == null) {
@@ -1001,7 +1001,7 @@ public class TreeNode<T, U> {
                 return nextSibling;
             }
         } else {
-            return getChildAt(0);
+            return get(0);
         }
     }
 
@@ -1018,7 +1018,7 @@ public class TreeNode<T, U> {
         }
         previousSibling = getPreviousSibling();
         if (previousSibling != null) {
-            if (previousSibling.getNumberOfChildren() == 0) {
+            if (previousSibling.size() == 0) {
                 return previousSibling;
             } else {
                 return previousSibling.getLastLeaf();
@@ -1094,17 +1094,17 @@ public class TreeNode<T, U> {
 
     public void compact(Compactor<T, U> modifier) {
         if (modifier.isRelevant(this)) {
-            for (int c = 0; c < getNumberOfChildren(); c++) {
-                getChildAt(c).compact(modifier);
+            for (int c = 0; c < size(); c++) {
+                get(c).compact(modifier);
             }
             if (modifier.compact(this)) {
                 TreeNode<T, U> aParent = getParent();
                 if (aParent != null) {
-                    int idx = aParent.getIndex(this);
+                    int idx = aParent.indexOf(this);
                     List<TreeNode<T, U>> removedChilds = remove();
                     if (removedChilds != null && removedChilds.size() > 0) {
                         if (idx >= 0) {
-                            aParent.addChildrenAt(idx, removedChilds);
+                            aParent.add(idx, removedChilds);
                         } else {
                             aParent.addChildren(removedChilds);
                         }
@@ -1120,11 +1120,11 @@ public class TreeNode<T, U> {
         }
         if (!modifier.isRelevant(this)) {
             if (getParent() != null) {
-                getParent().removeChild(this);
+                getParent().remove(this);
             }
         } else {
-            for (int c = getNumberOfChildren() - 1; c >= 0; c--) {
-                getChildAt(c).manipulateStructure(modifier);
+            for (int c = size() - 1; c >= 0; c--) {
+                get(c).manipulateStructure(modifier);
             }
         }
     }
