@@ -33,6 +33,7 @@ import java.util.Objects;
 public class TreeDocumentNavigator extends DefaultNavigator {
     private final static TreeDocumentNavigator SINGLETON = new TreeDocumentNavigator();
     private XPathTreeNodeHandler _nodeHandler;
+    private boolean _usIdAsName = false;
 
     public TreeDocumentNavigator() {
         super();
@@ -47,15 +48,19 @@ public class TreeDocumentNavigator extends DefaultNavigator {
         return SINGLETON;
     }
 
-    @Override
-    public Object getDocumentNode(Object contextNode) {
-        return (contextNode instanceof TreeNode) ? ((TreeNode) contextNode) : null;
-    }
-
     public void reset() {
         if (getHandler() != null) {
             getHandler().reset();
         }
+    }
+
+    public XPathTreeNodeHandler getHandler() {
+        return _nodeHandler;
+    }
+
+    @Override
+    public Iterator getChildAxisIterator(Object contextNode) throws UnsupportedAxisException {
+        return new TreeTreeNodeIterator((TreeNode) contextNode, getHandler());
     }
 
     @Override
@@ -69,13 +74,19 @@ public class TreeDocumentNavigator extends DefaultNavigator {
         return new AttributeTreeNodeIterator((TreeNode) contextNode, getHandler());
     }
 
-    public XPathTreeNodeHandler getHandler() {
-        return _nodeHandler;
+    @Override
+    public Iterator getSelfAxisIterator(Object contextNode) throws UnsupportedAxisException {
+        return new SelfAxisIteratorTree((TreeNode) contextNode, getHandler());
     }
 
     @Override
-    public Iterator getChildAxisIterator(Object contextNode) throws UnsupportedAxisException {
-        return new TreeTreeNodeIterator((TreeNode) contextNode, getHandler());
+    public Object getDocumentNode(Object contextNode) {
+        return (contextNode instanceof TreeNode) ? ((TreeNode) contextNode) : null;
+    }
+
+    @Override
+    public String getElementNamespaceUri(Object element) {
+        return getElementNamespaceUri(element, false);
     }
 
     /*
@@ -93,7 +104,11 @@ public class TreeDocumentNavigator extends DefaultNavigator {
      */
     @Override
     public String getElementName(Object element) {
-        return ((TreeNode) element).getID();
+        if (_usIdAsName) {
+            return ((TreeNode) element).getID();
+        } else {
+            return ((TreeNode) element).getName();
+        }
     }
 
     /*
@@ -102,7 +117,7 @@ public class TreeDocumentNavigator extends DefaultNavigator {
      */
     @Override
     public String getElementQName(Object element) {
-        return ((TreeNode) element).getID();
+        return getElementName(element);
     }
 
     /*
@@ -120,7 +135,7 @@ public class TreeDocumentNavigator extends DefaultNavigator {
      */
     @Override
     public String getAttributeName(Object attr) {
-        return ((TreeNode<Object, Object>) attr).getID();
+        return getElementName(attr);
     }
 
     /*
@@ -129,7 +144,7 @@ public class TreeDocumentNavigator extends DefaultNavigator {
      */
     @Override
     public String getAttributeQName(Object attr) {
-        return ((TreeNode) attr).getID();
+        return getElementName(attr);
     }
 
     /*
@@ -234,6 +249,14 @@ public class TreeDocumentNavigator extends DefaultNavigator {
         return null;
     }
 
+    // public void setCachedMode(boolean cachedMode) {
+    // _cachedMode = cachedMode;
+    // }
+    /*
+     * (non-Javadoc)
+     * @see org.jaxen.Navigator#parseXPath(java.lang.String)
+     */
+
     /*
      * (non-Javadoc)
      * @see org.jaxen.Navigator#getTextStringValue(java.lang.Object)
@@ -256,26 +279,8 @@ public class TreeDocumentNavigator extends DefaultNavigator {
         return "";
     }
 
-    // public void setCachedMode(boolean cachedMode) {
-    // _cachedMode = cachedMode;
-    // }
-    /*
-     * (non-Javadoc)
-     * @see org.jaxen.Navigator#parseXPath(java.lang.String)
-     */
-
     @Override
     public XPath parseXPath(String xpath) throws SAXPathException {
         return new TreeNodeXPath(xpath, this);
-    }
-
-    @Override
-    public Iterator getSelfAxisIterator(Object contextNode) throws UnsupportedAxisException {
-        return new SelfAxisIteratorTree((TreeNode) contextNode, getHandler());
-    }
-
-    @Override
-    public String getElementNamespaceUri(Object element) {
-        return getElementNamespaceUri(element, false);
     }
 }

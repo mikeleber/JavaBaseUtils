@@ -73,6 +73,12 @@ public class TreeNode<T, U> {
         }
     }
 
+    public TreeNode(T data, U usrobj, String name) {
+        this(data);
+        setUserObject(usrobj);
+        setName(name);
+    }
+
     public TreeNode(String id, TreeNode<T, U> parent, T data, U usrobj) {
         this(id, data, usrobj);
         if (parent != null) {
@@ -266,6 +272,7 @@ public class TreeNode<T, U> {
 
     public TreeNode<T, U> cloneNode(boolean deep) {
         TreeNode<T, U> copy = new TreeNode<>(getData(), getUserObject());
+        copy.setName(getName());
         if (deep && children != null) {
             for (TreeNode<T, U> child : children) {
                 copy.addChild(child.cloneNode(deep));
@@ -303,6 +310,11 @@ public class TreeNode<T, U> {
 
     public void setName(String name) {
         _name = name;
+    }
+
+    public TreeNode<T, U> withName(String name) {
+        _name = name;
+        return this;
     }
 
     public boolean pushUp(boolean preservePosition, boolean removeContainerIfEmpty) throws IndexOutOfBoundsException {
