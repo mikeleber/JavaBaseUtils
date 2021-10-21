@@ -55,7 +55,7 @@ class MeshTest {
         node.parse(aDef.entrySet().iterator().next().getValue(), new RelationalJSONNodeCreator(node.getMesh()));
         node.initialize();
 
-        List<RelationalTreeNode> selection = (List<RelationalTreeNode>) TreeNodeXPathExecuterImpl.getInstance().processXPathJaxen("/Syrius", node);
+        List<RelationalTreeNode> selection = (List<RelationalTreeNode>) TreeNodeXPathExecuterImpl.getInstance().processXPathJaxen("/System", node);
         System.out.println(GraphvizTreeVisitor.toGraph(9, node.getMesh().createSystemTree(9, new HashSet<>(selection)), null));
     }
 
