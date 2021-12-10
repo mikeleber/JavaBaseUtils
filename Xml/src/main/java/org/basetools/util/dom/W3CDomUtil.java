@@ -91,6 +91,18 @@ public class W3CDomUtil {
     }
 
     public static Document createDocument(String content, boolean ignorePrefix) throws XMLParseException, SAXException, IOException {
+
+        return createDocument(new StringReader(content), ignorePrefix);
+    }
+
+    public static String readAsString(InputStream in, String encoding) throws IOException {
+        if (encoding != null) {
+            return IOUtils.toString(in, Charset.forName(encoding));
+        }
+        return IOUtils.toString(in, Charset.defaultCharset());
+    }
+
+    public static Document createDocument(Reader xmlReader, boolean ignorePrefix) throws XMLParseException, SAXException, IOException {
         Document dom = null;
         // Get an instance of the parser
         DOMParser parser = new DOMParser();
@@ -101,18 +113,15 @@ public class W3CDomUtil {
         }
         // warnings shown, error stream set to stderr.
         // Parse the document.
-        InputSource is = new InputSource(new StringReader(content));
+        InputSource is = new InputSource(xmlReader);
         parser.parse(is);
         // Obtain the document.
         dom = parser.getDocument();
         return dom;
     }
 
-    public static String readAsString(InputStream in, String encoding) throws IOException {
-        if (encoding != null) {
-            return IOUtils.toString(in, Charset.forName(encoding));
-        }
-        return IOUtils.toString(in, Charset.defaultCharset());
+    public static Document createDocument(Reader reader) throws XMLParseException, SAXException, IOException {
+        return createDocument(reader, false);
     }
 
     public static Document createDocument(URL url, String enc) throws XMLParseException, SAXException, IOException {
@@ -453,11 +462,6 @@ public class W3CDomUtil {
             return null;
         }
     }
-
-    public static List<Element> getChildren(Node aNode, String name) {
-        boolean ignoreNS = ignoreNamespace();
-        return getChildren(aNode, name, ignoreNS);
-    }
 //
 //    public static String getQualifiedElementName(Node aNode) {
 //        String elementName = aNode.getNodeName();
@@ -470,6 +474,11 @@ public class W3CDomUtil {
 //        }
 //        return elementName;
 //    }
+
+    public static List<Element> getChildren(Node aNode, String name) {
+        boolean ignoreNS = ignoreNamespace();
+        return getChildren(aNode, name, ignoreNS);
+    }
 
     public static List<Element> getChildren(Node aNode, String name, boolean ignoreNS) {
         NodeList nl = aNode.getChildNodes();
@@ -1071,10 +1080,6 @@ public class W3CDomUtil {
             Node child = nlist.item(i);
             markAsIncluded(child);
         }
-    }
-
-    public static Document createDocument(Reader reader) throws XMLParseException, SAXException, IOException {
-        return createDocument(new InputSource(reader));
     }
 
     public static Hashtable getNameSpaces(Document dom) {
