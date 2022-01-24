@@ -36,10 +36,16 @@
         <module>Net</module>
         <module>Base</module>
         <module>Xml</module>
+        <module>API</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.leber.basetools</groupId>
+                <artifactId>API</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.leber.basetools</groupId>
                 <artifactId>Base</artifactId>
