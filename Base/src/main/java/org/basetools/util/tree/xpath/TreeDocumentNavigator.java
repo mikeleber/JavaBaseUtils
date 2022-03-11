@@ -104,10 +104,14 @@ public class TreeDocumentNavigator extends DefaultNavigator {
      */
     @Override
     public String getElementName(Object element) {
+        TreeNode treeNode = (TreeNode) element;
+
         if (_usIdAsName) {
-            return ((TreeNode) element).getID();
+            return treeNode.getID();
         } else {
-            return ((TreeNode) element).getName();
+            if (treeNode.isList()) {
+                return treeNode.getName();
+            } else return treeNode.getName();
         }
     }
 
