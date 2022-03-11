@@ -3,15 +3,16 @@ package org.basetools.util.tree.xpath;
 import org.basetools.util.tree.TreeNode;
 import org.jaxen.DefaultNavigator;
 import org.jaxen.XPath;
+
 import java.util.List;
 
-public final class TreeNodeXPathExecuterImpl {
+public class TreeNodeXPathExecuterImpl {
     private static final XPathTreeNodeHandler DEFAULT_HANDLER = new XPathTreeNodeHandler();
     public static long timeConsumption = 0;
     public static int counter = 0;
     private static TreeNodeXPathExecuterImpl _singleton = null;
 
-    private TreeNodeXPathExecuterImpl() {
+    protected TreeNodeXPathExecuterImpl() {
         super();
     }
 
