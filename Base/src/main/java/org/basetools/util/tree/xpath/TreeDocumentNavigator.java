@@ -109,9 +109,7 @@ public class TreeDocumentNavigator extends DefaultNavigator {
         if (_usIdAsName) {
             return treeNode.getID();
         } else {
-            if (treeNode.isList()) {
-                return treeNode.getName();
-            } else return treeNode.getName();
+            return treeNode.getName();
         }
     }
 
