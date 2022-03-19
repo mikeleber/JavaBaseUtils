@@ -283,6 +283,48 @@ public final class ArrayUtil {
         return array;
     }
 
+    public static <T> T[] removeFromArray(T[] array, T[] vals) {
+        if (array == null || vals == null || vals.length == 0) {
+            return array;
+        }
+        int s = array.length;
+        T[] newArray = null;
+        T foundObject = null;
+        boolean addValue = true;
+        int foundCount = 0;
+        int pos = 0;
+        for (int i = 0; i < s; i++) {
+            for (int v = 0; v < vals.length; v++) {
+                if (array[i] == vals[v] || (vals[v] != null)) {
+                    if (vals[v].equals(array[i])) {
+                        // found so we have to skip!
+                        foundCount++;
+                        foundObject = array[i];
+                        addValue = false;
+                        break;
+                    }
+                }
+            }
+            if (addValue) {
+                if (pos < s) {
+                    foundObject = array[i];
+                    if (newArray == null) {
+                        newArray = toGenericArray(foundObject, s);
+                    }
+                    newArray[pos++] = array[i];
+                }
+            }
+            addValue = true;
+        }
+        if (foundObject != null) {
+            T[] result = toGenericArray(foundObject, s - foundCount);
+            System.arraycopy(newArray, 0, result, 0, s - foundCount);
+            return result;
+        } else {
+            return array;
+        }
+    }
+
     /**
      * Search within an array for a given value. This method use Object.equals() to check for equality.
      * If no value found -1 is returned
@@ -456,5 +498,38 @@ public final class ArrayUtil {
             }
         }
         return true;
+    }
+
+    public static <T> T[] intersection(T[] array1, T[] array2) {
+        return intersection(array1, array2, null);
+    }
+
+    public static <T> T[] intersection(T[] array1, T[] array2, Class clazz) {
+        Object[] intersection = null;
+        // List<T> intersection = new ArrayList<>();
+        for (int i = 0; i < array1.length; i++) {
+            T a1 = array1[i];
+            if (a1 != null) {
+                for (int j = 0; j < array2.length; j++) {
+                    T a2 = array2[j];
+                    if (a1.equals(a2)) {
+                        if (contains(intersection, a2) == -1) {
+                            intersection = addToGrowArray(intersection, a2, 10);
+                            // intersection.add(a2);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if (clazz != null) {
+            if (intersection == null || intersection.length == 0) {
+                return (T[]) Array.newInstance(clazz, 0);
+            } else {
+                return (T[]) finalizeGrowArray(clazz, intersection);
+            }
+        } else {
+            return (T[]) finalizeGrowArray(clazz, intersection);
+        }
     }
 }
