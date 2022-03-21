@@ -44,20 +44,6 @@ public class Iso8601Parser {
     }
 
     /**
-     * To instant .
-     *
-     * @param toParse the to parse. returns null if toParse is empty or null;
-     * @return the instant
-     */
-    public static Instant toInstant(String toParse) {
-        if (!StringUtils.isEmpty(toParse)) {
-            return toCalendar(toParse).toInstant();
-        } else {
-            return null;
-        }
-    }
-
-    /**
      * To calendar calendar.
      *
      * @param toParse the to parse
@@ -70,6 +56,25 @@ public class Iso8601Parser {
         }
         Calendar result = buildCalendarWithDateOnly(toParse.substring(0, indexOfT), toParse);
         return parseHour(result, toParse.substring(indexOfT + 1));
+    }
+
+    private static Calendar buildCalendarWithDateOnly(String dateStr, String originalDate) {
+        Calendar result = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
+        result.setMinimalDaysInFirstWeek(4);
+        result.setFirstDayOfWeek(Calendar.MONDAY);
+        result.set(Calendar.HOUR_OF_DAY, 0);
+        result.set(Calendar.MINUTE, 0);
+        result.set(Calendar.SECOND, 0);
+        result.set(Calendar.MILLISECOND, 0);
+        String basicFormatDate = dateStr.replaceAll("-", "");
+
+        if (basicFormatDate.indexOf('W') != -1) {
+            return parseWeekDate(result, basicFormatDate);
+        } else if (basicFormatDate.length() == 7) {
+            return parseOrdinalDate(result, basicFormatDate);
+        } else {
+            return parseCalendarDate(result, basicFormatDate, originalDate);
+        }
     }
 
     private static Calendar parseHour(Calendar result, String hourStr) {
@@ -91,9 +96,29 @@ public class Iso8601Parser {
         return result;
     }
 
-    private static int getIndexOfSign(String str) {
-        int index = str.indexOf('+');
-        return index != -1 ? index : str.indexOf('-');
+    private static Calendar parseWeekDate(Calendar result, String basicFormatDate) {
+        result.set(Calendar.YEAR, Integer.parseInt(basicFormatDate.substring(0, 4)));
+        result.set(Calendar.WEEK_OF_YEAR, Integer.parseInt(basicFormatDate.substring(5, 7)));
+        result.set(Calendar.DAY_OF_WEEK, basicFormatDate.length() == 7
+                ? Calendar.MONDAY
+                : Calendar.SUNDAY + Integer.parseInt(basicFormatDate.substring(7)));
+        return result;
+    }
+
+    private static Calendar parseOrdinalDate(Calendar calendar, String basicFormatOrdinalDate) {
+        calendar.set(Calendar.YEAR, Integer.parseInt(basicFormatOrdinalDate.substring(0, 4)));
+        calendar.set(Calendar.DAY_OF_YEAR, Integer.parseInt(basicFormatOrdinalDate.substring(4)));
+        return calendar;
+    }
+
+    private static Calendar parseCalendarDate(Calendar result, String basicFormatDate, String originalDate) {
+        if (basicFormatDate.length() == 2) {
+            return parseCalendarDateWithCenturyOnly(result, basicFormatDate);
+        } else if (basicFormatDate.length() == 4) {
+            return parseCalendarDateWithYearOnly(result, basicFormatDate);
+        } else {
+            return parseCalendarDateWithPrecisionGreaterThanYear(result, basicFormatDate, originalDate);
+        }
     }
 
     private static void parseHourWithoutHandlingTimeZone(Calendar calendar, String basicFormatHour) {
@@ -124,33 +149,9 @@ public class Iso8601Parser {
         calendar.set(Calendar.MILLISECOND, (int) (fractionalPart * 1000));
     }
 
-    private static Calendar buildCalendarWithDateOnly(String dateStr, String originalDate) {
-        Calendar result = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
-        result.setMinimalDaysInFirstWeek(4);
-        result.setFirstDayOfWeek(Calendar.MONDAY);
-        result.set(Calendar.HOUR_OF_DAY, 0);
-        result.set(Calendar.MINUTE, 0);
-        result.set(Calendar.SECOND, 0);
-        result.set(Calendar.MILLISECOND, 0);
-        String basicFormatDate = dateStr.replaceAll("-", "");
-
-        if (basicFormatDate.indexOf('W') != -1) {
-            return parseWeekDate(result, basicFormatDate);
-        } else if (basicFormatDate.length() == 7) {
-            return parseOrdinalDate(result, basicFormatDate);
-        } else {
-            return parseCalendarDate(result, basicFormatDate, originalDate);
-        }
-    }
-
-    private static Calendar parseCalendarDate(Calendar result, String basicFormatDate, String originalDate) {
-        if (basicFormatDate.length() == 2) {
-            return parseCalendarDateWithCenturyOnly(result, basicFormatDate);
-        } else if (basicFormatDate.length() == 4) {
-            return parseCalendarDateWithYearOnly(result, basicFormatDate);
-        } else {
-            return parseCalendarDateWithPrecisionGreaterThanYear(result, basicFormatDate, originalDate);
-        }
+    private static int getIndexOfSign(String str) {
+        int index = str.indexOf('+');
+        return index != -1 ? index : str.indexOf('-');
     }
 
     private static Calendar parseCalendarDateWithCenturyOnly(Calendar result, String basicFormatDate) {
@@ -178,18 +179,17 @@ public class Iso8601Parser {
         throw new RuntimeException("Can't parse " + originalDate);
     }
 
-    private static Calendar parseWeekDate(Calendar result, String basicFormatDate) {
-        result.set(Calendar.YEAR, Integer.parseInt(basicFormatDate.substring(0, 4)));
-        result.set(Calendar.WEEK_OF_YEAR, Integer.parseInt(basicFormatDate.substring(5, 7)));
-        result.set(Calendar.DAY_OF_WEEK, basicFormatDate.length() == 7
-                ? Calendar.MONDAY
-                : Calendar.SUNDAY + Integer.parseInt(basicFormatDate.substring(7)));
-        return result;
-    }
-
-    private static Calendar parseOrdinalDate(Calendar calendar, String basicFormatOrdinalDate) {
-        calendar.set(Calendar.YEAR, Integer.parseInt(basicFormatOrdinalDate.substring(0, 4)));
-        calendar.set(Calendar.DAY_OF_YEAR, Integer.parseInt(basicFormatOrdinalDate.substring(4)));
-        return calendar;
+    /**
+     * To instant .
+     *
+     * @param toParse the to parse. returns null if toParse is empty or null;
+     * @return the instant
+     */
+    public static Instant toInstant(String toParse) {
+        if (!StringUtils.isEmpty(toParse)) {
+            return toCalendar(toParse).toInstant();
+        } else {
+            return null;
+        }
     }
 }
