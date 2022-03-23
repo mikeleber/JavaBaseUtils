@@ -347,6 +347,10 @@ public class StringUtils {
         return h;
     }
 
+    public static boolean isEmpty(final CharSequence cs) {
+        return cs == null || cs.length() == 0;
+    }
+
     public static int hashMurmur(String s) {
         return MurmurHash.hash32(s);
     }

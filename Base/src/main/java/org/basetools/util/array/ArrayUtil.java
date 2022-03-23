@@ -1,7 +1,6 @@
 package org.basetools.util.array;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.basetools.util.StringUtils;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
@@ -58,6 +57,10 @@ public final class ArrayUtil {
         }
     }
 
+    public static final <T> int contains(T[][] array, int col, Object value) {
+        return contains(array, col, value, false);
+    }
+
     /**
      * Returns the object at the given postion. If t is out of the possible value range defaultValue will be returned.
      *
@@ -72,6 +75,33 @@ public final class ArrayUtil {
             return srcArr[t] != null ? srcArr[t] : defaultValue;
         }
         return defaultValue;
+    }
+
+    public static final <T> int contains(T[][] array, int col, Object value, boolean firstIDXIsRow) {
+        int foundAt = -1;
+        if (array == null || array.length <= 0 || value == null) {
+            return foundAt;
+        }
+        int length = 0;
+        if (firstIDXIsRow) {
+            length = array.length - 1;
+        } else {
+            length = array[0].length - 1;
+        }
+        for (int r = length; r >= 0; r--) {
+            if (firstIDXIsRow) {
+                if (value.equals(array[r][col])) {
+                    foundAt = r;
+                    break;
+                }
+            } else {
+                if (value.equals(array[col][r])) {
+                    foundAt = r;
+                    break;
+                }
+            }
+        }
+        return foundAt;
     }
 
     /**
@@ -108,8 +138,7 @@ public final class ArrayUtil {
                     if (trim) {
                         val = val.trim();
                     }
-                    if (ignoreCase ? StringUtils.startsWithIgnoreCase(val, startsWith) : StringUtils.startsWith(val, startsWith)) {
-
+                    if (StringUtils.startsWith(val, startsWith, ignoreCase)) {
                         if (returnMatchFragment) {
                             result = val.substring(startsWith.length()).trim();
                         } else {
@@ -156,35 +185,6 @@ public final class ArrayUtil {
     @SafeVarargs
     public static <T> T[] toGenericArray(T... elems) {
         return elems;
-    }
-
-    public static final Object[] addToGrowArray(Object[] array, Object o, int gf) {
-        if (gf <= 1) {
-            gf = 2;
-        }
-        if (array == null) {
-            array = new Object[gf];
-        }
-        int s = array.length;
-        int lastIdx = -1;
-        if (s > 0) {
-            Integer iVal = (Integer) array[s - 1];
-            lastIdx = (iVal != null ? iVal.intValue() : -1);
-            array[s - 1] = 0;
-        }
-        lastIdx++;
-        if (lastIdx < s - 1) {
-            array[lastIdx] = o;
-            array[s - 1] = lastIdx;
-            return array;
-        } else {
-            // need to expand array
-            Object[] newArray = new Object[s + gf];
-            System.arraycopy(array, 0, newArray, 0, s);
-            newArray[lastIdx] = o;
-            newArray[newArray.length - 1] = lastIdx;
-            return newArray;
-        }
     }
 
     public static final Object[][] addToGrowArray(Object[][] array, Object[] o, int gf) {
@@ -241,37 +241,6 @@ public final class ArrayUtil {
         return array;
     }
 
-    public static final <T> int contains(T[][] array, int col, Object value) {
-        return contains(array, col, value, false);
-    }
-
-    public static final <T> int contains(T[][] array, int col, Object value, boolean firstIDXIsRow) {
-        int foundAt = -1;
-        if (array == null || array.length <= 0 || value == null) {
-            return foundAt;
-        }
-        int length = 0;
-        if (firstIDXIsRow) {
-            length = array.length - 1;
-        } else {
-            length = array[0].length - 1;
-        }
-        for (int r = length; r >= 0; r--) {
-            if (firstIDXIsRow) {
-                if (value.equals(array[r][col])) {
-                    foundAt = r;
-                    break;
-                }
-            } else {
-                if (value.equals(array[col][r])) {
-                    foundAt = r;
-                    break;
-                }
-            }
-        }
-        return foundAt;
-    }
-
     public static final Object[] removeFromGrowArray(Object[] array, Object key) {
         if (array == null || array.length == 0) {
             return null;
@@ -281,48 +250,6 @@ public final class ArrayUtil {
             array = removeFromGrowArray(array, foundPos);
         }
         return array;
-    }
-
-    public static <T> T[] removeFromArray(T[] array, T[] vals) {
-        if (array == null || vals == null || vals.length == 0) {
-            return array;
-        }
-        int s = array.length;
-        T[] newArray = null;
-        T foundObject = null;
-        boolean addValue = true;
-        int foundCount = 0;
-        int pos = 0;
-        for (int i = 0; i < s; i++) {
-            for (int v = 0; v < vals.length; v++) {
-                if (array[i] == vals[v] || (vals[v] != null)) {
-                    if (vals[v].equals(array[i])) {
-                        // found so we have to skip!
-                        foundCount++;
-                        foundObject = array[i];
-                        addValue = false;
-                        break;
-                    }
-                }
-            }
-            if (addValue) {
-                if (pos < s) {
-                    foundObject = array[i];
-                    if (newArray == null) {
-                        newArray = toGenericArray(foundObject, s);
-                    }
-                    newArray[pos++] = array[i];
-                }
-            }
-            addValue = true;
-        }
-        if (foundObject != null) {
-            T[] result = toGenericArray(foundObject, s - foundCount);
-            System.arraycopy(newArray, 0, result, 0, s - foundCount);
-            return result;
-        } else {
-            return array;
-        }
     }
 
     /**
@@ -374,6 +301,48 @@ public final class ArrayUtil {
         return array;
     }
 
+    public static <T> T[] removeFromArray(T[] array, T[] vals) {
+        if (array == null || vals == null || vals.length == 0) {
+            return array;
+        }
+        int s = array.length;
+        T[] newArray = null;
+        T foundObject = null;
+        boolean addValue = true;
+        int foundCount = 0;
+        int pos = 0;
+        for (int i = 0; i < s; i++) {
+            for (int v = 0; v < vals.length; v++) {
+                if (array[i] == vals[v] || (vals[v] != null)) {
+                    if (vals[v].equals(array[i])) {
+                        // found so we have to skip!
+                        foundCount++;
+                        foundObject = array[i];
+                        addValue = false;
+                        break;
+                    }
+                }
+            }
+            if (addValue) {
+                if (pos < s) {
+                    foundObject = array[i];
+                    if (newArray == null) {
+                        newArray = toGenericArray(foundObject, s);
+                    }
+                    newArray[pos++] = array[i];
+                }
+            }
+            addValue = true;
+        }
+        if (foundObject != null) {
+            T[] result = toGenericArray(foundObject, s - foundCount);
+            System.arraycopy(newArray, 0, result, 0, s - foundCount);
+            return result;
+        } else {
+            return array;
+        }
+    }
+
     public static final Object[] addToGrowArray(Object[] array, Object o, int initSize, double factor) {
         if (factor <= 1) {
             factor = 2;
@@ -410,33 +379,6 @@ public final class ArrayUtil {
             result[i] = map.apply((T) list.get(i));
         }
         return result;
-    }
-
-    /**
-     * Finalize the wrow array! It removes the buffer and size information from array!
-     *
-     * @param array
-     * @return
-     */
-    /**
-     * Finalize the wrow array! It removes the buffer and size information from array!
-     *
-     * @param array
-     * @return
-     */
-    public static final Object[] finalizeGrowArray(Class clazz, Object[] array) {
-        if (array == null || array.length == 0) {
-            return array;
-        }
-        int s = array.length;
-        int lastIdx = -1;
-        if (s > 0) {
-            Integer iVal = ((Integer) array[s - 1]);
-            lastIdx = (iVal != null ? iVal.intValue() : 0) + 1;
-        }
-        Object[] newArray = (Object[]) Array.newInstance(clazz, lastIdx);
-        System.arraycopy(array, 0, newArray, 0, lastIdx);
-        return newArray;
     }
 
     public static final Object[] finalizeGrowArray(Class clazz, Object[][] array) {
@@ -480,10 +422,21 @@ public final class ArrayUtil {
     }
 
     public static List<String> removeBlankOrEmpty(String[] vals) {
-        if (!ArrayUtils.isEmpty(vals)) {
+        if (!ArrayUtil.isEmpty(vals)) {
             return Arrays.asList(vals).stream().filter(org.apache.commons.lang3.StringUtils::isNotBlank).collect(Collectors.toList());
         }
         return null;
+    }
+
+    public static boolean isEmpty(final Object[] array) {
+        return getLength(array) == 0;
+    }
+
+    public static int getLength(final Object array) {
+        if (array == null) {
+            return 0;
+        }
+        return Array.getLength(array);
     }
 
     public static boolean isEmptyOrAllNull(Object[] array) {
@@ -531,5 +484,55 @@ public final class ArrayUtil {
         } else {
             return (T[]) finalizeGrowArray(clazz, intersection);
         }
+    }
+
+    public static final Object[] addToGrowArray(Object[] array, Object o, int gf) {
+        if (gf <= 1) {
+            gf = 2;
+        }
+        if (array == null) {
+            array = new Object[gf];
+        }
+        int s = array.length;
+        int lastIdx = -1;
+        if (s > 0) {
+            Integer iVal = (Integer) array[s - 1];
+            lastIdx = (iVal != null ? iVal.intValue() : -1);
+            array[s - 1] = 0;
+        }
+        lastIdx++;
+        if (lastIdx < s - 1) {
+            array[lastIdx] = o;
+            array[s - 1] = lastIdx;
+            return array;
+        } else {
+            // need to expand array
+            Object[] newArray = new Object[s + gf];
+            System.arraycopy(array, 0, newArray, 0, s);
+            newArray[lastIdx] = o;
+            newArray[newArray.length - 1] = lastIdx;
+            return newArray;
+        }
+    }
+
+    /**
+     * Finalize the wrow array! It removes the buffer and size information from array!
+     *
+     * @param array
+     * @return
+     */
+    public static final Object[] finalizeGrowArray(Class clazz, Object[] array) {
+        if (array == null || array.length == 0) {
+            return array;
+        }
+        int s = array.length;
+        int lastIdx = -1;
+        if (s > 0) {
+            Integer iVal = ((Integer) array[s - 1]);
+            lastIdx = (iVal != null ? iVal.intValue() : 0) + 1;
+        }
+        Object[] newArray = (Object[]) Array.newInstance(clazz, lastIdx);
+        System.arraycopy(array, 0, newArray, 0, lastIdx);
+        return newArray;
     }
 }
