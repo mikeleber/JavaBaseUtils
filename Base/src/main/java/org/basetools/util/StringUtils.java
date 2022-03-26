@@ -5,6 +5,7 @@ import org.basetools.util.hash.MurmurHash;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Stack;
+import java.util.StringTokenizer;
 
 public class StringUtils {
     public static final char CHAR_SPACE = (char) 0x20;
@@ -353,5 +354,37 @@ public class StringUtils {
 
     public static int hashMurmur(String s) {
         return MurmurHash.hash32(s);
+    }
+
+    public static String[] getTokensArray(String strData, String strDelimiters, boolean returnDelims) {
+
+        String[] strTokenArray = null;
+
+        try {
+
+            if (strData == null || strDelimiters == null)
+                return strTokenArray;
+
+            //create tokenizer object
+            StringTokenizer st = new StringTokenizer(strData, strDelimiters, returnDelims);
+
+            /*
+             * Create the array having same size as total
+             * number of tokens
+             */
+            strTokenArray = new String[st.countTokens()];
+
+            //iterate through all the tokens
+            int count = 0;
+            while (st.hasMoreTokens()) {
+
+                //add to an array
+                strTokenArray[count++] = st.nextToken();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return strTokenArray;
     }
 }
