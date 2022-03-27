@@ -841,9 +841,9 @@ public class TreeNode<T, U> {
         }
     }
 
-    public Object getProperty(String key) {
+    public <T> T getProperty(String key) {
         if (_properties != null) {
-            return getProperties().get(key);
+            return (T) getProperties().get(key);
         } else {
             return null;
         }
