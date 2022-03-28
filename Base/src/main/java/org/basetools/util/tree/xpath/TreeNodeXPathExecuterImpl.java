@@ -12,7 +12,7 @@ public class TreeNodeXPathExecuterImpl {
     public static int counter = 0;
     private static TreeNodeXPathExecuterImpl _singleton = null;
 
-    protected TreeNodeXPathExecuterImpl() {
+    public TreeNodeXPathExecuterImpl() {
         super();
     }
 
