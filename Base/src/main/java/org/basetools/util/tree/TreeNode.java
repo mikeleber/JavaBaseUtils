@@ -1,5 +1,6 @@
 package org.basetools.util.tree;
 
+import org.apache.commons.collections4.Predicate;
 import org.apache.commons.collections4.map.MultiKeyMap;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -263,6 +264,16 @@ public class TreeNode<T, U> {
                 }
             }
         }
+        return childrens;
+    }
+
+    public List<TreeNode<T, U>> findChildren(Predicate<TreeNode<T, U>> predicate) {
+        List<TreeNode<T, U>> childrens = new ArrayList<>();
+        for (TreeNode<T, U> node : getChildren()) {
+            if (predicate.evaluate(node))
+                childrens.add(node);
+        }
+
         return childrens;
     }
 
