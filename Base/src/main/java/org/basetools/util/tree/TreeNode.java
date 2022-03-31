@@ -250,18 +250,18 @@ public class TreeNode<T, U> {
     }
 
     public List<TreeNode<T, U>> getAllChildren() {
-        List<TreeNode<T, U>> childrens = getChildren(this);
-        return childrens;
+        return getChildren(this);
     }
 
     private List<TreeNode<T, U>> getChildren(TreeNode<T, U> root) {
-        List<TreeNode<T, U>> childrens = new ArrayList<>();
+        return getChildren(root, new ArrayList<>());
+    }
+
+    private List<TreeNode<T, U>> getChildren(TreeNode<T, U> root, List<TreeNode<T, U>> childrens) {
         if (root != null) {
+            childrens.add(root);
             for (TreeNode<T, U> node : root.getChildren()) {
-                childrens.add(node);
-                if (node.hasChildren()) {
-                    childrens.addAll(getChildren(node));
-                }
+                getChildren(node, childrens);
             }
         }
         return childrens;
