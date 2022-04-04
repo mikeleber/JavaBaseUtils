@@ -250,17 +250,33 @@ public class TreeNode<T, U> {
     }
 
     public List<TreeNode<T, U>> getAllChildren() {
-        List<TreeNode<T, U>> childrens = getChildren(this);
-        return childrens;
+        //List<TreeNode<T, U>> childrens = getChildrenOld(this);
+        return getChildren(this, new ArrayList<TreeNode<T, U>>());
+//        if (childrens.size() != childrens2.size()) {
+//            System.out.println("error");
+//        }
+//        return childrens2;
     }
 
-    private List<TreeNode<T, U>> getChildren(TreeNode<T, U> root) {
+    private List<TreeNode<T, U>> getChildrenOld(TreeNode<T, U> root) {
         List<TreeNode<T, U>> childrens = new ArrayList<>();
         if (root != null) {
             for (TreeNode<T, U> node : root.getChildren()) {
                 childrens.add(node);
                 if (node.hasChildren()) {
-                    childrens.addAll(getChildren(node));
+                    childrens.addAll(getChildrenOld(node));
+                }
+            }
+        }
+        return childrens;
+    }
+
+    private List<TreeNode<T, U>> getChildren(TreeNode<T, U> startNode, List<TreeNode<T, U>> childrens) {
+        if (startNode != null) {
+            for (TreeNode<T, U> node : startNode.getChildren()) {
+                childrens.add(node);
+                if (node.hasChildren()) {
+                    getChildren(node, childrens);
                 }
             }
         }
