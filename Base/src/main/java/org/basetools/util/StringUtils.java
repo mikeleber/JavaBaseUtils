@@ -387,4 +387,38 @@ public class StringUtils {
 
         return strTokenArray;
     }
+
+    public static final int countChars(CharSequence src, char toCount, boolean retDelims) {
+        int numOfElements = 0;
+        int nowPos = 0;
+        int maxLength = src.length();
+        while (nowPos < maxLength) {
+            while (nowPos < src.length()) {
+                char c = src.charAt(nowPos);
+                if (!retDelims && toCount != c) {
+                    break;
+                }
+                nowPos++;
+            }
+            if (nowPos >= maxLength) {
+                break;
+            }
+            int startPos = nowPos;
+            while (nowPos < src.length()) {
+                char c = src.charAt(nowPos);
+                if (toCount == c) {
+                    break;
+                }
+                nowPos++;
+            }
+            if (retDelims && (startPos == nowPos)) {
+                char c = src.charAt(nowPos);
+                if (toCount != c) {
+                    nowPos++;
+                }
+            }
+            numOfElements++;
+        }
+        return numOfElements;
+    }
 }
