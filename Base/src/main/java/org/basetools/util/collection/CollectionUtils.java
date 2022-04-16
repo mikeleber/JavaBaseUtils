@@ -117,12 +117,26 @@ public class CollectionUtils {
         return result;
     }
 
+    public static Collection<org.apache.commons.lang3.tuple.Pair<String, String>> addPairs(String[][] derivedFrom, Collection<org.apache.commons.lang3.tuple.Pair<String, String>> result) {
+        for (int s = 0; s < derivedFrom.length; s++) {
+            result.add(org.apache.commons.lang3.tuple.Pair.of(derivedFrom[s][0], derivedFrom[s][1]));
+        }
+        return result;
+    }
+
+    public static Collection<org.apache.commons.lang3.tuple.Pair<String, String>> addPairsInverse(String[][] derivedFrom, Collection<org.apache.commons.lang3.tuple.Pair<String, String>> result) {
+        for (int s = derivedFrom.length - 1; s >= 0; s--) {
+            result.add(org.apache.commons.lang3.tuple.Pair.of(derivedFrom[s][0], derivedFrom[s][1]));
+        }
+        return result;
+    }
+
     /**
-     * <P>
+     * <p>
      * This method adds obj to vect if and only if vect does not already contain obj.
      * </P>
      */
-    public static <T> void  unionAdd(List<T> list, T obj) {
+    public static <T> void unionAdd(List<T> list, T obj) {
         if (obj == null) {
             return;
         }
@@ -132,18 +146,15 @@ public class CollectionUtils {
         list.add(obj);
     }
 
-
     public static <T> T getFirstCommonObject(List<T> listA, List<T> listB) {
         if (listA != null && listB != null && listB.size() > 0) {
-            for (T o :listA)
+            for (T o : listA)
                 if (listB.contains(o)) {
                     return o;
                 }
         }
         return null;
     }
-
-
 
     public static List keepEvery(List array, int every) {
         if (array == null || array.size() == 0 || every == 1) {
@@ -217,9 +228,6 @@ public class CollectionUtils {
         return aList;
     }
 
-
-
-
     /**
      * This method returns a Vector containing the elements of vectA minus the elements of vectB. If vectA has an element in the Vector 5 times and vectB has it 3 times, the result will have it two times. This method will always return a new, non-null Vector, even if vectA and/or vectB are null.
      */
@@ -244,18 +252,12 @@ public class CollectionUtils {
         return result;
     }
 
-
-
-
-
     /**
      * This method takes a sepChars-separated string and converts it to a vector of fields. i.e., "gomod,jonabbey" -> a vector whose elements are "gomod" and "jonabbey". NOTE: this method will omit 'degenerate' fields from the output vector. That is, if input is "gomod,,, jonabbey" and sepChars is
      * ", ", then the result vector will still only have "gomod" and "jonabbey" as elements, even though one might wish to explicitly know about the blanks between commas. This method is intended mostly for creating email list vectors, rather than general file-parsing vectors.
      *
-     * @param input
-     *            the sepChars-separated string to test.
-     * @param sepChars
-     *            a string containing a list of characters which may occur as field separators. Any two fields in the input may be separated by one or many of the characters present in sepChars.
+     * @param input    the sepChars-separated string to test.
+     * @param sepChars a string containing a list of characters which may occur as field separators. Any two fields in the input may be separated by one or many of the characters present in sepChars.
      */
     public static Vector stringVector(String input, String sepChars) {
         Vector results = new Vector();
@@ -312,8 +314,6 @@ public class CollectionUtils {
         }
     }
 
-
-
     public static List getStartsWith(List array, String sword) {
         List result = new ArrayList(5);
         for (int a = 0; a < array.size(); a++) {
@@ -339,12 +339,10 @@ public class CollectionUtils {
     /**
      * Filters all the elements given in the filter list out of the base list. This is used for filtering a list which contains an array as entry. (e.g. a string array)
      *
-     * @author dwachter
-     * @param base
-     *            list which defines the base to be filterd, type of list must be a type which extends Object[]
-     * @param filter
-     *            list which holds the values to filter out of the base list, type of list must be a type which extends Object[]
+     * @param base   list which defines the base to be filterd, type of list must be a type which extends Object[]
+     * @param filter list which holds the values to filter out of the base list, type of list must be a type which extends Object[]
      * @return returns a list of the same type as given for the base and filter
+     * @author dwachter
      */
     public static <T> List<T> filterOut(List<? extends Object[]> base, List<? extends Object[]> filter) {
         int rLength = base.size();
@@ -425,7 +423,6 @@ public class CollectionUtils {
         return result;
     }
 
-
     public static List sublist(List aList, Object startObj, boolean preceding) {
         int from = aList.indexOf(startObj);
         if (from != -1) {
@@ -437,7 +434,6 @@ public class CollectionUtils {
         }
         return null;
     }
-
 
     public static <T> T get(List<T> aList, int i) {
         if (aList != null && i >= 0 && i < aList.size()) {

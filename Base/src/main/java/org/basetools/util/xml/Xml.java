@@ -1,5 +1,6 @@
 package org.basetools.util.xml;
 
+import org.basetools.util.StringUtils;
 import org.basetools.util.sort.FastQSort;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
@@ -67,6 +68,48 @@ public class Xml {
         } catch (SAXException exception) {
             throw new RuntimeException(exception);
         }
+    }
+
+    public byte getValue(String propName, byte defValue, boolean prefDef) {
+        if (prefDef) return childBooleanToByte(propName, defValue);
+        else
+            return defValue == -1 ? childBooleanToByte(propName, defValue) : defValue;
+    }
+
+    public byte getAttrValue(String propName, byte defValue, boolean prefDef) {
+        if (prefDef) return attrBooleanToByte(propName, defValue);
+        else
+            return defValue == -1 ? attrBooleanToByte(propName, defValue) : defValue;
+    }
+
+    public int getAttrValue(String propName, int defValue, boolean prefDef) {
+        if (prefDef) return optAttrInteger(propName, defValue);
+        else
+            return defValue == -1 ? optAttrInteger(propName, defValue) : defValue;
+    }
+
+    public String getAttrValue(String propName, String defValue, boolean prefDef) {
+        if (prefDef) return optAttrString(propName, defValue);
+        else
+            return defValue == null ? optAttrString(propName, defValue) : defValue;
+    }
+
+    public double getValue(String propName, double defValue, boolean prefDef) {
+        if (prefDef) return childToDouble(propName, defValue);
+        else
+            return defValue == -1 ? childToDouble(propName, defValue) : defValue;
+    }
+
+    public int getValue(String propName, int defValue, boolean prefDef) {
+        if (prefDef) return childToInt(propName, defValue);
+        else
+            return defValue == -1 ? childToInt(propName, defValue) : defValue;
+    }
+
+    public String getValue(String propName, String defValue, boolean prefDef) {
+        if (prefDef) return childToString(propName, defValue);
+        else
+            return defValue == null ? childToString(propName, defValue) : defValue;
     }
 
     public String getTextContentOnly(Element element) {
@@ -198,6 +241,11 @@ public class Xml {
         return Integer.parseInt(stringAttr(name));
     }
 
+    public boolean booleanAttr(String name) {
+        String attrVal = optAttrString(name);
+        return StringUtils.isTrue(attrVal);
+    }
+
     public String stringAttr(String name) {
         String value = optAttrString(name);
         if (value == null) {
@@ -321,6 +369,15 @@ public class Xml {
             return defaultValue;
         } else {
             return (byte) (child.contentToBoolean(false) ? 1 : 0);
+        }
+    }
+
+    public byte attrBooleanToByte(String name, byte defaultValue) {
+        String val = optAttrString(name);
+        if (val == null || val.length() == 0) {
+            return defaultValue;
+        } else {
+            return (byte) (isTrue(val, false) ? 1 : 0);
         }
     }
 

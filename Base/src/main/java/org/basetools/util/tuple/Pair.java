@@ -3,6 +3,7 @@ package org.basetools.util.tuple;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 
@@ -25,6 +26,21 @@ public class Pair<L, R> implements Map.Entry<L, R>, Comparable<Pair<L, R>>, Seri
 
     public static <L, R> Pair<L, R> of(final L left, final R right) {
         return new Pair<>(left, right);
+    }
+
+    public static <L, R> Pair<String, String>[] from(String[][] derivedFrom) {
+        Pair[] result = new Pair[derivedFrom.length];
+        for (int s = 0; s < derivedFrom.length; s++) {
+            result[s] = Pair.of(derivedFrom[s][0], derivedFrom[s][1]);
+        }
+        return result;
+    }
+
+    public static Collection<Pair<String, String>> add(String[][] derivedFrom, Collection<Pair<String, String>> result) {
+        for (int s = 0; s < derivedFrom.length; s++) {
+            result.add(Pair.of(derivedFrom[s][0], derivedFrom[s][1]));
+        }
+        return result;
     }
 
     public int compareTo(final Pair<L, R> other) {

@@ -13,6 +13,8 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -249,9 +251,18 @@ public class TreeNode<T, U> {
         return children.indexOf(aChild); // linear search
     }
 
-    public List<TreeNode<T, U>> getAllChildren() {
+    public Collection<TreeNode<T, U>> getAllChildren() {
         //List<TreeNode<T, U>> childrens = getChildrenOld(this);
-        return getChildren(this, new ArrayList<TreeNode<T, U>>());
+        return getChildren(this, new ArrayList<>());
+//        if (childrens.size() != childrens2.size()) {
+//            System.out.println("error");
+//        }
+//        return childrens2;
+    }
+
+    public <c extends Collection<TreeNode<T, U>>> c getAllChildren(Collection<TreeNode<T, U>> result) {
+        //List<TreeNode<T, U>> childrens = getChildrenOld(this);
+        return (c) getChildren(this, result);
 //        if (childrens.size() != childrens2.size()) {
 //            System.out.println("error");
 //        }
@@ -271,7 +282,7 @@ public class TreeNode<T, U> {
         return childrens;
     }
 
-    private List<TreeNode<T, U>> getChildren(TreeNode<T, U> startNode, List<TreeNode<T, U>> childrens) {
+    private Collection<TreeNode<T, U>> getChildren(TreeNode<T, U> startNode, Collection<TreeNode<T, U>> childrens) {
         if (startNode != null) {
             for (TreeNode<T, U> node : startNode.getChildren()) {
                 childrens.add(node);
@@ -286,11 +297,22 @@ public class TreeNode<T, U> {
     public List<TreeNode<T, U>> findChildren(Predicate<TreeNode<T, U>> predicate) {
         List<TreeNode<T, U>> childrens = new ArrayList<>();
         for (TreeNode<T, U> node : getChildren()) {
-            if (predicate.evaluate(node))
+            if (predicate.evaluate(node)) {
                 childrens.add(node);
+            }
         }
 
         return childrens;
+    }
+
+    public TreeNode<T, U> findChild(Predicate<TreeNode<T, U>> predicate) {
+        for (TreeNode<T, U> node : getChildren()) {
+            if (predicate.evaluate(node)) {
+                return node;
+            }
+        }
+
+        return null;
     }
 
     public boolean hasChildren() {
@@ -757,17 +779,17 @@ public class TreeNode<T, U> {
         return size() == 0;
     }
 
-    public String createXPath(boolean useName) {
+    public String createXPath(Function<TreeNode<T, U>, String> nameGetter) {
         StringBuffer sb = new StringBuffer();
-        createXPath(sb, false);
+        createXPath(sb, nameGetter);
         return sb.toString();
     }
 
-    public void createXPath(StringBuffer sb, boolean useName) {
+    public void createXPath(StringBuffer sb, Function<TreeNode<T, U>, String> nameGetter) {
 
-        String name = useName ? evalName() : getID();
+        String name = nameGetter != null ? nameGetter.apply(this) : getID();
         if (getParent() != null) {
-            getParent().createXPath(sb, false);
+            getParent().createXPath(sb, nameGetter);
             if (!isList()) {
                 sb.append("/");
                 sb.append(name);
@@ -1068,9 +1090,9 @@ public class TreeNode<T, U> {
     }
 
     public TreeNode<T, U> getFirstLeaf() {
-        List<TreeNode<T, U>> allChilds = getAllChildren();
-        for (int a = 0; a < allChilds.size(); a++) {
-            TreeNode<T, U> aChild = allChilds.get(a);
+        Iterator<TreeNode<T, U>> allChilds = getAllChildren().iterator();
+        while (allChilds.hasNext()) {
+            TreeNode<T, U> aChild = allChilds.next();
             if (aChild.isLeaf()) {
                 return aChild;
             }
@@ -1085,7 +1107,7 @@ public class TreeNode<T, U> {
      * @see #isLeaf
      */
     public TreeNode<T, U> getLastLeaf() {
-        List<TreeNode<T, U>> allChilds = getAllChildren();
+        List<TreeNode<T, U>> allChilds = getAllChildren(new ArrayList<>());
         for (int a = allChilds.size() - 1; a >= 0; a--) {
             TreeNode<T, U> aChild = allChilds.get(a);
             if (aChild.isLeaf()) {
@@ -1102,7 +1124,7 @@ public class TreeNode<T, U> {
      * @throws NoSuchElementException if this node has no children
      */
     public TreeNode<T, U> getFirstChild() {
-        List<TreeNode<T, U>> allChilds = getAllChildren();
+        List<TreeNode<T, U>> allChilds = getAllChildren(new ArrayList<>());
         if (allChilds.size() > 0) {
             return allChilds.get(0);
         }
@@ -1116,7 +1138,7 @@ public class TreeNode<T, U> {
      * @throws NoSuchElementException if this node has no children
      */
     public TreeNode<T, U> getLastChild() {
-        List<TreeNode<T, U>> allChilds = getAllChildren();
+        List<TreeNode<T, U>> allChilds = getAllChildren(new ArrayList<>());
         if (allChilds.size() > 0) {
             return allChilds.get(allChilds.size() - 1);
         } else {
@@ -1259,6 +1281,13 @@ public class TreeNode<T, U> {
             } else if (type == JsonValue.ValueType.OBJECT) {
                 parse(value.asJsonObject(), creator);
             }
+        }
+    }
+
+    public void traverseParent(Consumer<TreeNode<T, U>> a) {
+        a.accept(this);
+        if (getParent() != null) {
+            getParent().traverseParent(a);
         }
     }
 }
