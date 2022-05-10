@@ -66,6 +66,10 @@ public class StringUtils {
         return result.toString();
     }
 
+    public static boolean isXML(String string) {
+        return string != null && string.trim().startsWith("<") && string.trim().endsWith(">");
+    }
+
     /**
      * @deprecated use Apache Stringutils.stripEnd
      */
