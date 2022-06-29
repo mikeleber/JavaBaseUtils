@@ -66,6 +66,55 @@ public class StringUtils {
         return result.toString();
     }
 
+    public static final String toString(Object[] sourceList, String delimiter) {
+        return toString(sourceList, delimiter, false);
+    }
+
+    public static final String toString(Object[] keys, Object[] values, String keyValueDelimiter, String delimiter) {
+        if (keys == null) {
+            return null;
+        }
+        int s = keys.length;
+        boolean isFirstIteration = true;
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < s; i++) {
+            if (isFirstIteration) {
+                isFirstIteration = false;
+            } else if (delimiter != null) {
+                result.append(delimiter);
+            }
+            result.append(keys[i]);
+            if (keyValueDelimiter != null) {
+                result.append(keyValueDelimiter);
+            }
+            if (values != null) {
+                result.append(values[i]);
+            }
+        }
+        return result.toString();
+    }
+
+    public static final String toString(Object[] values, String delimiter, boolean skipNullElements) {
+        if (values == null) {
+            return null;
+        }
+        int s = values.length;
+        boolean isFirstIteration = true;
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < s; i++) {
+            if (skipNullElements && values[i] == null) {
+            } else {
+                if (isFirstIteration) {
+                    isFirstIteration = false;
+                } else if (delimiter != null) {
+                    result.append(delimiter);
+                }
+                result.append(values[i]);
+            }
+        }
+        return result.toString();
+    }
+
     public static boolean isXML(String string) {
         return string != null && string.trim().startsWith("<") && string.trim().endsWith(">");
     }

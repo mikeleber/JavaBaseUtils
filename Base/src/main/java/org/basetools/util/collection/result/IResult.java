@@ -1,12 +1,13 @@
 package org.basetools.util.collection.result;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
 /**
  * The interface Result.
  */
-public interface IResult {
+public interface IResult<E> extends Collection<E> {
 
     /**
      * Gets column names.

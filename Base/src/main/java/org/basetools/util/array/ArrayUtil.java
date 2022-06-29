@@ -301,6 +301,24 @@ public final class ArrayUtil {
         return array;
     }
 
+    /**
+     * replace the target String with the corresponding with string if target is null or has zero length
+     *
+     * @param target
+     * @param with
+     * @return
+     */
+    public static Object[] merge(Object[] target, Object[] with) {
+        for (int i = 0; i < target.length; i++) {
+            Object ar1Obj = target[i];
+            Object ar2Obj = with[i];
+            if (ar1Obj == null || "".equals(ar1Obj)) {
+                target[i] = ar2Obj;
+            }
+        }
+        return target;
+    }
+
     public static <T> T[] removeFromArray(T[] array, T[] vals) {
         if (array == null || vals == null || vals.length == 0) {
             return array;

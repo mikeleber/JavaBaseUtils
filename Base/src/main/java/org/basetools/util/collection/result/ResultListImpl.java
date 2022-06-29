@@ -1,12 +1,13 @@
 package org.basetools.util.collection.result;
 
+import org.basetools.util.StringUtils;
 import org.basetools.util.array.ArrayUtil;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class ResultListImpl extends ResultList<Object[]> implements IResult {
+public class ResultListImpl extends ResultList<Object[]> implements IResult<Object[]> {
     private List<String> columnNames;
     private List<String> columnDataTypes;
     private int resultColumnCount = -1;
@@ -122,6 +123,29 @@ public class ResultListImpl extends ResultList<Object[]> implements IResult {
             }
         }
         return -1;
+    }
+
+    public void removeDuplicates(int[] idColumnPositions) {
+        int rLength = size();
+        if (rLength > 0) {
+            List content = new ArrayList(rLength);
+            HashMap duplicateCheckMap = new HashMap(rLength);
+            for (int i = 0; i < rLength; i++) {
+                Object[] row = get(i);
+                String key = createRowKey(idColumnPositions, row);
+                if (duplicateCheckMap.containsKey(key)) {
+                } else {
+                    content.add(row);
+                    duplicateCheckMap.put(key, "");
+                }
+            }
+            clear();
+            addAll(content);
+        }
+    }
+
+    public static String createRowKey(int[] posses, Object[] row) {
+        return (posses == null ? StringUtils.toString(row, ",") : toString(posses, row, ","));
     }
 
     @Override
@@ -244,5 +268,107 @@ public class ResultListImpl extends ResultList<Object[]> implements IResult {
         }
         Object[] aRow = get(row);
         return aRow[col];
+    }
+
+    public void merge(IResult with, int[] idCols, boolean zeroOnly) {
+        if (with == null || with.size() == 0) {
+            return;
+        }
+        if (size() == 0 || idCols == null || idCols.length == 0) {
+            addAll(with);
+        } else {
+            ArrayList tempList = new ArrayList();
+            for (int i = 0; i < with.size(); i++) {
+                String[] withRow = (String[]) with.getRow(i);
+                String fkey = (idCols != null ? toString(idCols, withRow, ",") : null);
+                boolean found = false;
+                for (int r = 0; r < size(); r++) {
+                    String[] thisRow = (String[]) get(r);
+                    String tKey = toString(idCols, thisRow, ",");
+                    if (tKey.equals(fkey)) {
+                        // merge where zero or null
+                        if (zeroOnly) {
+                            ArrayUtil.merge(thisRow, withRow);
+                        } else {
+                            remove(r);
+                            add(r, withRow);
+                        }
+                        found = true;
+                    }
+                }
+                if (!found) {
+                    // add it to temp!
+                    tempList.add(withRow);
+                }
+            }
+            addAll(tempList);
+        }
+    }
+
+    public static final String toString(int[] itemsPos, Object[] list, String delim) {
+        return toString(itemsPos, list, delim, null);
+    }
+
+    public static final String toString(String delim, String quali, String prefix, String postfix, Object... parts) {
+        StringBuilder buindings = new StringBuilder();
+        if (prefix != null) {
+            buindings.append(prefix);
+        }
+        for (int i = 0; i < parts.length; i++) {
+            if (quali != null) {
+                buindings.append(quali);
+            }
+            buindings.append(parts[i]);
+            if (quali != null) {
+                buindings.append(quali);
+            }
+            if (delim != null) {
+                if (i + 1 < parts.length) {
+                    buindings.append(delim);
+                }
+            }
+        }
+        if (postfix != null) {
+            buindings.append(postfix);
+        }
+        return buindings.toString();
+    }
+
+    public static final String toString(int[] itemsPos, Object[] list, String delim, String qualifier) {
+        int s = itemsPos.length;
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < s; i++) {
+            if (qualifier != null) {
+                result.append(qualifier);
+            }
+            result.append(list[itemsPos[i]]);
+            if (qualifier != null) {
+                result.append(qualifier);
+            }
+            if (i < (s - 1) && delim != null) {
+                result.append(delim);
+            }
+        }
+        return result.toString();
+    }
+
+    public void shrinkToLast(int[] idCols) {
+        if (idCols == null || idCols.length == 0) {
+            return;
+        }
+        for (int i = size() - 1; i >= 0; i--) {
+            String[] withRow = (String[]) get(i);
+            String fkey = (idCols.length == 1 ? withRow[idCols[0]] : toString(idCols, withRow, ","));
+            int r = i - 1;
+            for (; r >= 0; r--) {
+                String[] thisRow = (String[]) get(r);
+                String tKey = (idCols.length == 1 ? thisRow[idCols[0]] : toString(idCols, thisRow, ","));
+                if (tKey.equals(fkey)) {
+                    remove(r);
+                    r--;
+                    i--;
+                }
+            }
+        }
     }
 }
