@@ -14,6 +14,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -102,6 +103,16 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
         return new FileReader(input.getFile());
     }
 
+    public static List<String> listFiles(String dir, int depth) throws IOException {
+        try (Stream<Path> stream = Files.walk(Paths.get(dir), depth)) {
+            return stream
+                    .filter(file -> !Files.isDirectory(file))
+                    .map(Path::getFileName)
+                    .map(Path::toString)
+                    .collect(Collectors.toList());
+        }
+    }
+
     /**
      * Reads the contents of a file into a String from the clazz.getResourceAsStream.
      * As fallback it tries to load it from clazz.getClassLoader().getResourceAsStream.
@@ -133,7 +144,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
         }
     }
 
-    public static URL getLoctionFromClass(Class clazz, String filename) {
+    public static URL getClassLocation(Class clazz, String filename) {
         URL inputURL = clazz.getResource(filename);
 
         if (inputURL == null) {
@@ -175,6 +186,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 
     /**
      * converts the encoding of all files beneath the rootpath matching the fileextension.
+     *
      * @param rootPath
      * @param sourceCharset
      * @param filter
@@ -208,17 +220,17 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
         final ArrayList<String> retval = new ArrayList<String>();
         final String classPath = System.getProperty("java.class.path", ".");
         final String[] classPathElements = classPath.split(System.getProperty("path.separator"));
-        for (final String element : classPathElements) {
-            retval.addAll(getResources(element, pattern));
+        for (final String path : classPathElements) {
+            retval.addAll(getResources(path, pattern));
         }
         return retval;
     }
 
-    private static Collection<String> getResources(
-            final String element,
+    public static Collection<String> getResources(
+            final String path,
             final Pattern pattern) {
         final ArrayList<String> retval = new ArrayList<String>();
-        final File file = new File(element);
+        final File file = new File(path);
         if (file.isDirectory()) {
             retval.addAll(getResourcesFromDirectory(file, pattern));
         } else {
@@ -243,7 +255,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
         while (e.hasMoreElements()) {
             final ZipEntry ze = (ZipEntry) e.nextElement();
             final String fileName = ze.getName();
-            final boolean accept = pattern.matcher(fileName).matches();
+            final boolean accept = pattern == null || pattern.matcher(fileName).matches();
             if (accept) {
                 retval.add(fileName);
             }
@@ -256,7 +268,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
         return retval;
     }
 
-    private static Collection<String> getResourcesFromDirectory(
+    public static Collection<String> getResourcesFromDirectory(
             final File directory,
             final Pattern pattern) {
         final ArrayList<String> retval = new ArrayList<String>();
@@ -267,7 +279,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
             } else {
                 try {
                     final String fileName = file.getCanonicalPath();
-                    final boolean accept = pattern.matcher(fileName).matches();
+                    final boolean accept = pattern == null || pattern.matcher(fileName).matches();
                     if (accept) {
                         retval.add(fileName);
                     }
