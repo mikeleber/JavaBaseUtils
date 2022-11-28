@@ -148,10 +148,11 @@ public class CollectionUtils {
 
     public static <T> T getFirstCommonObject(List<T> listA, List<T> listB) {
         if (listA != null && listB != null && listB.size() > 0) {
-            for (T o : listA)
+            for (T o : listA) {
                 if (listB.contains(o)) {
                     return o;
                 }
+            }
         }
         return null;
     }
@@ -441,5 +442,16 @@ public class CollectionUtils {
         } else {
             return null;
         }
+    }
+
+    public static <T> List<T> replace(List<T> elements, T what, T with) {
+        if (elements != null) {
+            int idx = elements.indexOf(what);
+            if (idx >= 0) {
+                elements.remove(idx);
+                elements.add(idx, with);
+            }
+        }
+        return elements;
     }
 }
