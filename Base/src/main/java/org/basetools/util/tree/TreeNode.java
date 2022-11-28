@@ -32,6 +32,7 @@ public class TreeNode<T, U> {
     protected String _name;
 
     protected boolean _isList;
+    protected boolean _isRecursive;
 
     public TreeNode(TreeNode<T, U> parent, T data, U usrobj, boolean add) {
         this(data, usrobj);
@@ -821,8 +822,17 @@ public class TreeNode<T, U> {
         return _isList;
     }
 
+    public boolean isRecursive() {
+        return _isRecursive;
+    }
+
     public void setIsList(boolean isList) {
         _isList = isList;
+    }
+
+    public TreeNode<T, U> setIsRecursive(boolean recursive) {
+        _isRecursive = recursive;
+        return this;
     }
 
     public void render(TreeRenderer<?, ?> renderer) {
