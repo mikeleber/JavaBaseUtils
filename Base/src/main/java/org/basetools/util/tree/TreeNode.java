@@ -504,6 +504,13 @@ public class TreeNode<T, U> {
         return returnNodes;
     }
 
+    public TreeNode<T, U> findParentByData(T data) {
+        if (getParent() != null && Objects.equals(getParent().getData(), data)) {
+            return getParent();
+        }
+        return null;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -677,7 +684,7 @@ public class TreeNode<T, U> {
         if (getData() == data || (data != null && data.equals(getData()))) {
             return this;
         } else if (getParent() != null) {
-            return getParentByData(data);
+            return getParent().getParentByData(data);
         }
         return null;
     }
