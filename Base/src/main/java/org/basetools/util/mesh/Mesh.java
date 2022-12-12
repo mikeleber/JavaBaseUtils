@@ -86,26 +86,30 @@ public class Mesh<T, U> {
 
                 RelationalTreeNode<T, U> from = relation.getRelationFrom();
                 RelationalTreeNode<T, U> to = relation.getRelationTo();
+                if (from != null && to != null) {
 
-                RelationalTreeNode<T, U> fromTopLevelNode = (RelationalTreeNode) from.goUpToLevel(level);
-                RelationalTreeNode<T, U> toTopLevelNode = (RelationalTreeNode) to.goUpToLevel(level);
-                referencesTo.add(relation.getRelationTo());
-                List creationPath = fromTopLevelNode.getPathToParent(false);
-                creationPath.remove(0);
-                RelationalTreeNode<T, U> createdFromNode = (RelationalTreeNode<T, U>) targetTree.addNode(creationPath, (node, templateNode) -> {
+                    RelationalTreeNode<T, U> fromTopLevelNode = (RelationalTreeNode) from.goUpToLevel(level);
+                    RelationalTreeNode<T, U> toTopLevelNode = (RelationalTreeNode) to.goUpToLevel(level);
+                    referencesTo.add(relation.getRelationTo());
+                    List creationPath = fromTopLevelNode.getPathToParent(false);
+                    creationPath.remove(0);
+                    RelationalTreeNode<T, U> createdFromNode = (RelationalTreeNode<T, U>) targetTree.addNode(creationPath, (node, templateNode) -> {
 
-                    RelationalTreeNode newNode = RelationalTreeNode.of((RelationalTreeNode) templateNode);
-                    //newNode.setIsSubgraph(templateNode.getNumberOfChildren() > 0);
-                    return newNode;
-                });
-                createdFromNode.addRelation(relation.getId(), fromTopLevelNode).setName(relation.getName()).setToRelation(toTopLevelNode);
-                creationPath = toTopLevelNode.getPathToParent(false);
-                creationPath.remove(0);
-                RelationalTreeNode<T, U> createdToNode = (RelationalTreeNode<T, U>) targetTree.addNode(creationPath, (node, templateNode) -> {
-                    RelationalTreeNode newNode = RelationalTreeNode.of((RelationalTreeNode) templateNode);
-                    // newNode.setIsSubgraph(templateNode.getNumberOfChildren() > 0);
-                    return newNode;
-                });
+                        RelationalTreeNode newNode = RelationalTreeNode.of((RelationalTreeNode) templateNode);
+                        //newNode.setIsSubgraph(templateNode.getNumberOfChildren() > 0);
+                        return newNode;
+                    });
+                    createdFromNode.addRelation(relation.getId(), fromTopLevelNode).setName(relation.getName()).setToRelation(toTopLevelNode);
+                    creationPath = toTopLevelNode.getPathToParent(false);
+                    creationPath.remove(0);
+                    RelationalTreeNode<T, U> createdToNode = (RelationalTreeNode<T, U>) targetTree.addNode(creationPath, (node, templateNode) -> {
+                        RelationalTreeNode newNode = RelationalTreeNode.of((RelationalTreeNode) templateNode);
+                        // newNode.setIsSubgraph(templateNode.getNumberOfChildren() > 0);
+                        return newNode;
+                    });
+                } else {
+                    //from or to not found
+                }
             }
         }
 
