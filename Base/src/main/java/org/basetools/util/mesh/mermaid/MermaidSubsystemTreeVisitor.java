@@ -12,6 +12,7 @@ import java.util.List;
 
 public class MermaidSubsystemTreeVisitor implements TreeVisitor {
     private StringBuilder builder;
+    private StringBuilder globalRelationBuilder = new StringBuilder();
 
     public MermaidSubsystemTreeVisitor(StringBuilder builder) {
         this.builder = builder;
@@ -22,7 +23,9 @@ public class MermaidSubsystemTreeVisitor implements TreeVisitor {
         builder.append("graph TB" + Mesh.NEWLINE);
 
         ((List<RelationalTreeNode>) targetTree.getChildren()).stream().forEach((node) -> node.setIsSubgraph(true));
-        targetTree.accept(new MermaidSubsystemTreeVisitor(builder));
+        MermaidSubsystemTreeVisitor visitor = new MermaidSubsystemTreeVisitor(builder);
+        targetTree.accept(visitor);
+        builder.append(visitor.globalRelationBuilder);
         System.out.println(builder.toString());
         return builder;
     }
@@ -31,7 +34,7 @@ public class MermaidSubsystemTreeVisitor implements TreeVisitor {
     public void visitStart(TreeNode aNode) {
         System.out.println("visit " + aNode.getName());
         Iterator<NodeRelation> relations = ((RelationalTreeNode) aNode).getRelations().values().iterator();
-        if (((RelationalTreeNode) aNode).isSubgraph()) {
+        if (drawSubgraph(aNode)) {
             builder.append(" subgraph " + aNode.getID() + " [" + aNode.getID() + "]" + Mesh.NEWLINE);
             //do not use id twice. subgraph is like a node and need a unique name
             //if (!relations.hasNext() && !aNode.hasChildren()) {
@@ -40,25 +43,40 @@ public class MermaidSubsystemTreeVisitor implements TreeVisitor {
         }
         while (relations.hasNext()) {
             NodeRelation relation = relations.next();
-            if (relation.isTargetingOutside(aNode)) {
-                String fromTopLevelNodeId = relation.getRelationFrom().getID();
-                builder.append(fromTopLevelNodeId + "-->");
-                TreeNode toTopLevelNode = relation.getRelationTo();
-                String toTopLevelNodeId = toTopLevelNode.getID();
-                String relationName = relation.getName();
-                if (StringUtils.isNotEmpty(relationName) && !relationName.equals(toTopLevelNodeId)) {
-                    builder.append("|" + relation.getName() + "|");
-                }
-                builder.append(toTopLevelNodeId + Mesh.NEWLINE);
-            }
+
+//            if (drawSubgraph(aNode)) {
+//                if (relation.isTargetingOutsideOrSelf(aNode)) {
+//                    appendRelation(relation, globalRelationBuilder);
+//                } else {
+//                    appendRelation(relation, globalRelationBuilder);
+//                }
+//            } else {
+            appendRelation(relation, globalRelationBuilder);
+//            }
         }
+    }
+
+    private void appendRelation(NodeRelation relation, StringBuilder builder) {
+        String fromTopLevelNodeId = relation.getRelationFrom().getID();
+        builder.append(fromTopLevelNodeId + "-->");
+        TreeNode toTopLevelNode = relation.getRelationTo();
+        String toTopLevelNodeId = toTopLevelNode.getID();
+        String relationName = relation.getName();
+        if (StringUtils.isNotEmpty(relationName) && !relationName.equals(toTopLevelNodeId)) {
+            builder.append("|" + relation.getName() + "|");
+        }
+        builder.append(toTopLevelNodeId + Mesh.NEWLINE);
     }
 
     @Override
     public void visitEnd(TreeNode aNode) {
-        if (((RelationalTreeNode) aNode).isSubgraph()) {
+        if (drawSubgraph(aNode)) {
             builder.append("end" + Mesh.NEWLINE);
         }
+    }
+
+    private static boolean drawSubgraph(TreeNode aNode) {
+        return ((RelationalTreeNode) aNode).isSubgraph() || (aNode.getParent() != null && ((RelationalTreeNode) aNode.getParent()).isSubgraph());
     }
 
     @Override

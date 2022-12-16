@@ -27,7 +27,7 @@ public class NodeRelation<T, U> {
     }
 
     public NodeRelation<T, U> setTargetNodeID(String id) {
-        this.targetNodeID = id;
+        targetNodeID = id;
         return this;
     }
 
@@ -49,7 +49,7 @@ public class NodeRelation<T, U> {
         return this;
     }
 
-    public boolean isTargetingOutside(TreeNode aNode) {
-        return this.fromRelation.isChild(aNode, true);
+    public boolean isTargetingOutsideOrSelf(TreeNode aNode) {
+        return aNode == fromRelation || aNode.isChild(fromRelation, true) || aNode.isChild(toRelation, true);
     }
 }
