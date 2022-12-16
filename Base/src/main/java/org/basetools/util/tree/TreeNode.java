@@ -121,6 +121,21 @@ public class TreeNode<T, U> {
         return returnNode;
     }
 
+    public boolean isChild(TreeNode<T, U> nodeToFind, boolean hierarchy) {
+        for (TreeNode<T, U> node : getChildren()) {
+            if (Objects.equals(node, nodeToFind)) {
+                return true;
+            }
+            if (hierarchy) {
+                if (node.isChild(nodeToFind, hierarchy)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public TreeNode<T, U> find(T data, U userObj) {
         TreeNode<T, U> returnNode = auxiliaryFind(this, data, userObj);
         return returnNode;
@@ -315,6 +330,7 @@ public class TreeNode<T, U> {
 
         return null;
     }
+
 
     public boolean hasChildren() {
         return (children != null && size() > 0);

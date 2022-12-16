@@ -65,15 +65,18 @@ public class RelationalJSONNodeCreator implements JSONNodeCreator<RelationalTree
 
     private void parseRelation(RelationalTreeNode current, JsonObject aDef) {
         String id = null;
+        String targetNodeID = aDef.getString("target");
+        String currentNodeID = current.getID();
         String name = null;
         if (aDef.containsKey("id")) {
             id = aDef.getString("id");
         }
-        NodeRelation relation = current.addRelation(Objects.toString(id, UUID.randomUUID().toString()), null);
+        String relationID = Objects.toString(currentNodeID + "_" + id + "_" + targetNodeID, UUID.randomUUID().toString());
+        NodeRelation relation = current.addRelation(relationID, null);
 
         if (aDef.containsKey("name")) {
             relation.setName(aDef.getString("name"));
         }
-        relation.setTargetNodeID(aDef.getString("target"));
+        relation.setTargetNodeID(targetNodeID);
     }
 }

@@ -1,5 +1,7 @@
 package org.basetools.util.mesh;
 
+import org.basetools.util.tree.TreeNode;
+
 public class NodeRelation<T, U> {
     private RelationalTreeNode<T, U> toRelation;
     private String id, targetNodeID;
@@ -45,5 +47,9 @@ public class NodeRelation<T, U> {
     public NodeRelation<T, U> setToRelation(RelationalTreeNode<T, U> toRelation) {
         this.toRelation = toRelation;
         return this;
+    }
+
+    public boolean isTargetingOutside(TreeNode aNode) {
+        return this.fromRelation.isChild(aNode, true);
     }
 }
