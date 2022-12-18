@@ -26,7 +26,6 @@ public class MermaidSubsystemTreeVisitor implements TreeVisitor {
         MermaidSubsystemTreeVisitor visitor = new MermaidSubsystemTreeVisitor(builder);
         targetTree.accept(visitor);
         builder.append(visitor.globalRelationBuilder);
-        System.out.println(builder.toString());
         return builder;
     }
 
