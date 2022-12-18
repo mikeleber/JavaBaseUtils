@@ -24,6 +24,10 @@ public class Mesh<T, U> {
         cache.put(id, child);
     }
 
+    public Map<Object, RelationalTreeNode<T, U>> getCache() {
+        return cache;
+    }
+
     public void addRoot(RelationalTreeNode root) {
 
         cache.clear();

@@ -104,7 +104,7 @@ public class RelationalTreeNode<T, U> extends TreeNode<T, U> {
     }
 
     public void initialize() {
-        super.accept(new TreeVisitor<T, U>() {
+        super.accept(new TreeVisitor<>() {
             @Override
             public void visitStart(TreeNode<T, U> aNode) {
                 ((RelationalTreeNode) aNode).initializeRelations();
@@ -125,11 +125,13 @@ public class RelationalTreeNode<T, U> extends TreeNode<T, U> {
     private void initializeRelations() {
         if (hasRelations()) {
             for (NodeRelation relation : getRelations().values()) {
-                RelationalTreeNode targetNode = getMesh().find(relation.getTargetNodeID());
-                if (targetNode == null) {
-                    System.out.println("targetnode not found: " + relation.getTargetNodeID());
-                } else {
-                    relation.setToRelation(targetNode);
+                if (relation.getRelationTo() == null) {
+                    RelationalTreeNode targetNode = getMesh().find(relation.getTargetNodeID());
+                    if (targetNode == null) {
+                        System.out.println("targetnode not found: " + relation.getTargetNodeID());
+                    } else {
+                        relation.setToRelation(targetNode);
+                    }
                 }
             }
         }
@@ -152,5 +154,10 @@ public class RelationalTreeNode<T, U> extends TreeNode<T, U> {
 
     public void setIsSubgraph(boolean isContainer) {
         isSubgraph = isContainer;
+    }
+
+    public void addNode(RelationalTreeNode node) {
+        getMesh().getCache().put(node.getID(), node);
+        addChild(node);
     }
 }
