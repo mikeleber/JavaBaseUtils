@@ -513,6 +513,7 @@ public class W3CDomUtil {
     }
 
     public static Element getFirstChildElement(Node aNode) {
+        if (aNode == null) return null;
         NodeList list = aNode.getChildNodes();
         int length = list.getLength();
         for (int i = 0; i < length; i++) {
@@ -525,6 +526,7 @@ public class W3CDomUtil {
     }
 
     public static String getNodeText(Node aNode) {
+        if (aNode == null) return null;
         switch (aNode.getNodeType()) {
             case Node.CDATA_SECTION_NODE:
                 CDATASection cds = (CDATASection) aNode;
@@ -538,6 +540,7 @@ public class W3CDomUtil {
     }
 
     public static String getText(Node aNode) {
+        if (aNode == null) return null;
         String text = null;
         Node textNode = getTextNode(aNode, false);
         if (textNode != null) {
@@ -553,6 +556,7 @@ public class W3CDomUtil {
     }
 
     public static Node getTextNode(Node aNode, boolean create) {
+        if (aNode == null) return null;
         Node textNode = null;
         NodeList childs = aNode.getChildNodes();
         loop:
