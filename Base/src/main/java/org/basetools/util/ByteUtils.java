@@ -5,6 +5,12 @@ public class ByteUtils {
         return (byte) (val ? 1 : 0);
     }
 
+    public static byte toByte(Boolean val, byte defaultVal) {
+        if (val == null) return defaultVal;
+        else
+            return (byte) (val ? 1 : 0);
+    }
+
     public static byte toByte(int val) {
         return (byte) (val == 1 ? 1 : 0);
     }
