@@ -99,11 +99,20 @@ public class Xml {
         else
             return defValue == -1 ? childToDouble(propName, defValue) : defValue;
     }
-
+    public boolean getValue(String propName, Boolean defValue, boolean prefDef) {
+        if (prefDef) return childToBoolean(propName, defValue);
+        else
+            return defValue == null ? childToBoolean(propName, defValue) : defValue;
+    }
     public int getValue(String propName, int defValue, boolean prefDef) {
         if (prefDef) return childToInt(propName, defValue);
         else
             return defValue == -1 ? childToInt(propName, defValue) : defValue;
+    }
+    public short getValue(String propName, short defValue, boolean prefDef) {
+        if (prefDef) return (short)childToInt(propName, defValue);
+        else
+            return defValue == -1 ? (short) childToInt(propName, defValue) : defValue;
     }
 
     public String getValue(String propName, String defValue, boolean prefDef) {
@@ -362,7 +371,12 @@ public class Xml {
         }
         return Integer.parseInt(content);
     }
-
+    public short contentToShort(short defaultValue) {
+        if (content == null) {
+            return defaultValue;
+        }
+        return Short.parseShort(content);
+    }
     public byte childBooleanToByte(String name, byte defaultValue) {
         Xml child = optChild(name);
         if (child == null || child.content == null || child.content.length() == 0) {
@@ -395,6 +409,12 @@ public class Xml {
             return defaultValue;
         }
         return Double.parseDouble(content);
+    }
+
+    public String toXML() {
+        StringBuilder sb = new StringBuilder();
+        toXML(sb);
+        return sb.toString();
     }
 
     public void toXML(StringBuilder xml) {
