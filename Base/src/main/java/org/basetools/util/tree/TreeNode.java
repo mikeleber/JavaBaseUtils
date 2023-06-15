@@ -1223,12 +1223,12 @@ public class TreeNode<T, U> {
         }
     }
 
-    public void addPaths(NodePathFacade<T> facade, List<T> data) {
+    public void addPaths(NodePathFacade<T> facade, Collection<T> data) {
         if (facade != null) {
             if (data != null) {
-                for (int d = 0; d < data.size(); d++) {
-                    String[] elems = facade.buildPath(data.get(d));
-                    addNode(elems, data.get(d));
+                for (T item:data) {
+                    String[] elems = facade.buildPath(item);
+                    addNode(elems, item);
                 }
             }
         }

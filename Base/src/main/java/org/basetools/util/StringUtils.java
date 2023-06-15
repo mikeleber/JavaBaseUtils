@@ -210,6 +210,13 @@ public class StringUtils {
         }
     }
 
+    public static final String[] split(String aString, String splitter) {
+        if (aString == null) {
+            return null;
+        }
+        return aString.split(splitter);
+    }
+
     public static String prependIfMissing(final String str, final CharSequence prefix, final CharSequence toPrepend, final boolean ignoreCase, final CharSequence... prefixes) {
         if (str == null || EmptyUtil.isEmpty(prefix) || startsWith(str, prefix, ignoreCase)) {
             return str;
