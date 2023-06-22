@@ -221,7 +221,8 @@ public class JSONUtilities {
             case NUMBER:
                 return ((JsonNumber) jsonObject).numberValue();
             case OBJECT:
-                return String.valueOf(jsonObject);
+                return jsonObject.asJsonObject().isEmpty() ? null :
+                        String.valueOf(jsonObject);
             case STRING:
                 return ((JsonString) jsonObject).getString();
         }
