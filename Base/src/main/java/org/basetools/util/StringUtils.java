@@ -455,6 +455,9 @@ public class StringUtils {
     public static CharSequence getNonEmpty(final CharSequence cs,final CharSequence defaultCs) {
         return !isEmpty(cs)?cs:defaultCs;
     }
+    public static String getNonEmpty(final String cs,final String defaultCs) {
+        return !isEmpty(cs)?cs:defaultCs;
+    }
 
     public static int hashMurmur(String s) {
         return MurmurHash.hash32(s);
