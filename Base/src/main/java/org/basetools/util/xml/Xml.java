@@ -183,11 +183,17 @@ public class Xml {
         return name;
     }
 
-    public void addChildren(Xml... xmls) {
-        for (Xml xml : xmls) {
-            addChild(xml.name(), xml);
+    public Xml getChild(String... pathNames) {
+        Xml current=this;
+        for (String name : pathNames) {
+            current= current.optChild(name);
+            if (current==null){
+                return null;
+            }
         }
+        return current;
     }
+
 
     public Xml child(String name) {
         Xml child = optChild(name);

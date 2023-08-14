@@ -97,7 +97,7 @@ public class JSONUtilities {
      * @param to    to be added to
      * @param value value object to add to json
      */
-    public static <V> JsonArrayBuilder add(JsonArrayBuilder to, V value) {
+    public static  JsonArrayBuilder add(JsonArrayBuilder to, Object value) {
         if (value instanceof String) {
             return to.add((String) value);
         } else if (value instanceof Integer) {

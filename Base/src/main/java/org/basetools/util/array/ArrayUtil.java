@@ -163,18 +163,16 @@ public final class ArrayUtil {
         System.arraycopy(array, pos, newArray, pos + 1, array.length - pos);
         return newArray;
     }
-
-    public static final <V> V[] add(V[] array, V o) {
+    public static final <V> V[] add(V[] array, V element) {
         if (array == null) {
-            V[] newArray = toGenericArray(o, 1);
-            newArray[0] = o;
+            V[] newArray = toGenericArray(element, 1);
+            newArray[0] = element;
             return newArray;
         }
-        int s = array.length;
-        V[] newArray = toGenericArray(o, s + 1);
-        System.arraycopy(array, 0, newArray, 0, s);
-        newArray[s] = o;
-        return newArray;
+        final int N = array.length;
+        array = Arrays.copyOf(array, N + 1);
+        array[N] = element;
+        return array;
     }
 
     public static final <T> T[] toGenericArray(T t, int size) {
