@@ -82,6 +82,12 @@ public class Xml {
             return defValue == -1 ? attrBooleanToByte(propName, defValue) : defValue;
     }
 
+    public short getAttrValue(String propName, short defValue, boolean prefDef) {
+        if (prefDef) return optAttrShort(propName, defValue);
+        else
+            return defValue == -1 ? optAttrShort(propName, defValue) : defValue;
+    }
+
     public int getAttrValue(String propName, int defValue, boolean prefDef) {
         if (prefDef) return optAttrInteger(propName, defValue);
         else
@@ -252,8 +258,13 @@ public class Xml {
         return nameAttributes.get(name);
     }
 
-    public int integerAttr(String name) {
-        return Integer.parseInt(stringAttr(name));
+    public short optAttrShort(String name, short defaultValue) {
+        String string = optAttrString(name);
+        return string == null ? defaultValue : shortAttr(name);
+    }
+
+    public short shortAttr(String name) {
+        return Short.parseShort(stringAttr(name));
     }
 
     public boolean booleanAttr(String name) {
@@ -278,6 +289,10 @@ public class Xml {
     public Integer optAttrInteger(String name, int defaultValue) {
         String string = optAttrString(name);
         return string == null ? defaultValue : integerAttr(name);
+    }
+
+    public int integerAttr(String name) {
+        return Integer.parseInt(stringAttr(name));
     }
 
     public Double optAttrDouble(String name) {
