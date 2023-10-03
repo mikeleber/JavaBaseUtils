@@ -3,7 +3,7 @@ package org.basetools.util.sort;
 import java.util.*;
 
 public class MapUtil {
-    private static <K, V> Map<K, V> sortByValue(Map<K, V> map,Comparator<Map.Entry<K,V>> comparator) {
+    public static <K, V> Map<K, V> sortByValue(Map<K, V> map,Comparator<Map.Entry<K,V>> comparator) {
         List<Map.Entry<K, V>> list = new LinkedList<>(map.entrySet());
         Collections.sort(list, comparator);
 

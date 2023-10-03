@@ -408,6 +408,25 @@ public class TreeNode<T, U> {
         return removed;
     }
 
+    public boolean moveTo(TreeNode newParent) throws IndexOutOfBoundsException {
+        boolean removed = false;
+        if (getParent() != null && newParent != null) {
+            TreeNode<T, U> parent = getParent();
+            List<TreeNode<T, U>> childrens = parent.getChildren();
+            int idx = childrens.indexOf(this);
+            if (idx >= 0) {
+                depth = -1;
+                removed = parent.remove(idx);
+                if (removed) {
+                    newParent.addChild(this);
+                    if (parent.size() == 0) {
+                        parent.remove();
+                    }
+                }
+            }
+        }
+        return removed;
+    }
     public TreeNode<T, U> inject() throws IndexOutOfBoundsException {
         TreeNode<T, U> node = cloneNode(false);
         inject(node);
@@ -943,6 +962,17 @@ public class TreeNode<T, U> {
         return null;
     }
 
+    public TreeNode<T, U> getChildByName(Object name) throws IndexOutOfBoundsException {
+        if (children != null) {
+            List<TreeNode<T, U>> childs = getChildren();
+            for (TreeNode<T, U> child : childs) {
+                if (child != null && Objects.equals(child.getName(), name)) {
+                    return child;
+                }
+            }
+        }
+        return null;
+    }
     public void getNodesAtLevel(int level, List<TreeNode<T, U>> result) throws IndexOutOfBoundsException {
         if (children != null) {
             List<TreeNode<T, U>> childs = getChildren();
