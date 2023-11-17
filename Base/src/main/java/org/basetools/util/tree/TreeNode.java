@@ -28,6 +28,7 @@ public class TreeNode<T, U> {
     protected int depth = -1;
     protected HashMap<String, Object> _properties;
     protected String _id;
+    protected String _strucId;
     protected String _description;
     protected String _name;
 
@@ -51,6 +52,10 @@ public class TreeNode<T, U> {
         getChildren().add(child);
         child.setParent(this);
         return child;
+    }
+
+    private void reset() {
+        _strucId=null;
     }
 
     public TreeNode(T data) {
@@ -223,16 +228,23 @@ public class TreeNode<T, U> {
 
     public String getID() {
         if (_id == null) {
+            return getStructureId();
+        }
+        return _id;
+    }
+
+    public String getStructureId() {
+        if (_strucId == null) {
             String id = null;
             if (getParent() != null) {
                 int pos = getPos() + 1;
-                id = getParent().getID() + "_" + pos;
+                id = getParent().getStructureId() + "_" + pos;
             } else {
                 id = "1";
             }
-            setId(id);
+            _strucId = id;
         }
-        return _id;
+        return _strucId;
     }
 
     public int getPos() {
@@ -586,6 +598,7 @@ public class TreeNode<T, U> {
 
     public void setParent(TreeNode<T, U> parent) {
         this.parent = parent;
+        reset();
     }
 
     public TreeNode<T, U> getParent(int minChilds) {
@@ -779,8 +792,10 @@ public class TreeNode<T, U> {
     public boolean remove(int index) throws IndexOutOfBoundsException {
         boolean removed = false;
         if (children != null) {
+            TreeNode removedChild = children.get(index);
             removed = children.remove(index) != null;
             if (removed) {
+                removedChild.reset();
                 depth = -1;
             }
         }
