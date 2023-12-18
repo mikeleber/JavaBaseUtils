@@ -1,5 +1,6 @@
 package org.basetools.util.io;
 
+
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
@@ -101,6 +102,16 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
             return null;
         }
         return new FileReader(input.getFile());
+    }
+
+    public static InputSource inputSourceFromClassloader(Class clazz, String filename) throws IOException {
+        URL input = clazz.getClassLoader().getResource(filename);
+        if (input == null) {
+            return null;
+        }
+        InputSource is = new InputSource(new FileReader(input.getFile()));
+        is.setSystemId(input.getPath());
+        return is;
     }
 
     public static List<String> listFiles(String dir, int depth) throws IOException {
