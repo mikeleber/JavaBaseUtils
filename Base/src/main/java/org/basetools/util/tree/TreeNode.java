@@ -1,8 +1,6 @@
 package org.basetools.util.tree;
 
-import org.apache.commons.collections4.Predicate;
 import org.apache.commons.collections4.map.MultiKeyMap;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.basetools.util.collection.ValueFacade;
@@ -15,6 +13,7 @@ import javax.json.JsonValue;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,7 +54,7 @@ public class TreeNode<T, U> {
     }
 
     private void reset() {
-        _strucId=null;
+        _strucId = null;
     }
 
     public TreeNode(T data) {
@@ -325,7 +324,7 @@ public class TreeNode<T, U> {
     public List<TreeNode<T, U>> findChildren(Predicate<TreeNode<T, U>> predicate) {
         List<TreeNode<T, U>> childrens = new ArrayList<>();
         for (TreeNode<T, U> node : getChildren()) {
-            if (predicate.evaluate(node)) {
+            if (predicate.test(node)) {
                 childrens.add(node);
             }
         }
@@ -335,7 +334,7 @@ public class TreeNode<T, U> {
 
     public TreeNode<T, U> findChild(Predicate<TreeNode<T, U>> predicate) {
         for (TreeNode<T, U> node : getChildren()) {
-            if (predicate.evaluate(node)) {
+            if (predicate.test(node)) {
                 return node;
             }
         }
@@ -439,6 +438,7 @@ public class TreeNode<T, U> {
         }
         return removed;
     }
+
     public TreeNode<T, U> inject() throws IndexOutOfBoundsException {
         TreeNode<T, U> node = cloneNode(false);
         inject(node);
@@ -594,6 +594,14 @@ public class TreeNode<T, U> {
 
     public TreeNode<T, U> getParent() {
         return parent;
+    }
+
+    public TreeNode<T, U> getParent(Predicate<TreeNode<T, U>> condition) {
+        if (parent == null) return null;
+        if (condition.test(parent)) {
+            return parent;
+        }
+        return parent.getParent(condition);
     }
 
     public void setParent(TreeNode<T, U> parent) {
@@ -837,17 +845,23 @@ public class TreeNode<T, U> {
         return size() == 0;
     }
 
-    public String createXPath(Function<TreeNode<T, U>, String> nameGetter) {
+    public String getPath() {
         StringBuffer sb = new StringBuffer();
-        createXPath(sb, nameGetter);
+        createPath(sb, null);
         return sb.toString();
     }
 
-    public void createXPath(StringBuffer sb, Function<TreeNode<T, U>, String> nameGetter) {
+    public String createPath(Function<TreeNode<T, U>, String> nameGetter) {
+        StringBuffer sb = new StringBuffer();
+        createPath(sb, nameGetter);
+        return sb.toString();
+    }
+
+    public void createPath(StringBuffer sb, Function<TreeNode<T, U>, String> nameGetter) {
 
         String name = nameGetter != null ? nameGetter.apply(this) : getID();
         if (getParent() != null) {
-            getParent().createXPath(sb, nameGetter);
+            getParent().createPath(sb, nameGetter);
             if (!isList()) {
                 sb.append("/");
                 sb.append(name);
@@ -988,6 +1002,7 @@ public class TreeNode<T, U> {
         }
         return null;
     }
+
     public void getNodesAtLevel(int level, List<TreeNode<T, U>> result) throws IndexOutOfBoundsException {
         if (children != null) {
             List<TreeNode<T, U>> childs = getChildren();
@@ -1006,7 +1021,7 @@ public class TreeNode<T, U> {
         if (parentID == null) {
             return null;
         }
-        if (ObjectUtils.equals(getID(), parentID)) {
+        if (Objects.equals(getID(), parentID)) {
             return this;
         }
         if (getParent() != null) {
@@ -1271,7 +1286,7 @@ public class TreeNode<T, U> {
     public void addPaths(NodePathFacade<T> facade, Collection<T> data) {
         if (facade != null) {
             if (data != null) {
-                for (T item:data) {
+                for (T item : data) {
                     String[] elems = facade.buildPath(item);
                     addNode(elems, item);
                 }
