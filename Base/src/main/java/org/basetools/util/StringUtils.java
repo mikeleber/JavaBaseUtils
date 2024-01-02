@@ -338,7 +338,7 @@ public class StringUtils {
             } else {
                 if (onlyNumeric) {
                     String qualiContent = text.substring(comStart + sqLen, comEnd);
-                    if (!org.apache.commons.lang3.StringUtils.isNumeric(qualiContent)) {
+                    if (!StringUtils.isNumeric(qualiContent)) {
                         if (retNullIfNotNumeric) {
                             return null;
                         } else {
@@ -354,6 +354,19 @@ public class StringUtils {
             }
         }
         return cleared.toString();
+    }
+
+    public static boolean isNumeric(final CharSequence cs) {
+        if (isEmpty(cs)) {
+            return false;
+        }
+        final int sz = cs.length();
+        for (int i = 0; i < sz; i++) {
+            if (!Character.isDigit(cs.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -464,6 +477,11 @@ public class StringUtils {
 
     public static int hashMurmur(String s) {
         return MurmurHash.hash32(s);
+    }
+
+    public static String replace(String val, String what, String with) {
+        //TODO:implement
+        return val;
     }
 
     public enum ContentType {unknown, xml, jsonSchema, json, yaml}
