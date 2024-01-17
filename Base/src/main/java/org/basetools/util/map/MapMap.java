@@ -27,7 +27,7 @@ public class MapMap<K, K2, V> {
             lock.lock();
             Map<K2, V> innerMap = _holder.get(key);
             if (innerMap == null) {
-                innerMap = Reflecter.on(_holder.getClass()).get();
+                innerMap = new LinkedHashMap<>();//Reflecter.on(_holder.getClass()).get();
             }
             _holder.put(key, innerMap);
             return innerMap.put(key2, value);
@@ -52,7 +52,7 @@ public class MapMap<K, K2, V> {
         lock.unlock();
     }
 
-    public V removeInner(K key, K2 key2) {
+    public V remove(K key, K2 key2) {
         Lock lock = _readWriteLock.writeLock();
         try {
             lock.lock();
@@ -99,7 +99,7 @@ public class MapMap<K, K2, V> {
         }
     }
 
-    void forEach(Consumer<? super V> action) {
+    public void forEach(Consumer<? super V> action) {
         Objects.requireNonNull(action);
         Lock lock = _readWriteLock.readLock();
         try {
