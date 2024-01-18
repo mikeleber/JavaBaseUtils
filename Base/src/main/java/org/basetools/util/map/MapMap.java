@@ -27,7 +27,7 @@ public class MapMap<K, K2, V> {
             lock.lock();
             Map<K2, V> innerMap = _holder.get(key);
             if (innerMap == null) {
-                innerMap = new LinkedHashMap<>();//Reflecter.on(_holder.getClass()).get();
+                innerMap =Reflecter.on(_holder).create().get();
             }
             _holder.put(key, innerMap);
             return innerMap.put(key2, value);
@@ -43,7 +43,6 @@ public class MapMap<K, K2, V> {
         _holder.clear();
         lock.unlock();
     }
-
     public void clear(K key) {
         Lock lock = _readWriteLock.writeLock();
         lock.lock();
