@@ -298,7 +298,7 @@ public class StringUtils {
 
     public static CharSequence wrapQuoted(CharSequence aString) {
 
-        if (org.apache.commons.lang3.StringUtils.isEmpty(aString)) {
+        if (aString==null||aString.length()==0) {
             return aString;
         }
 
@@ -465,14 +465,17 @@ public class StringUtils {
     public static boolean isEmpty(final CharSequence cs) {
         return cs == null || cs.length() == 0;
     }
+
     public static boolean isNotEmpty(final CharSequence cs) {
         return !isEmpty(cs);
     }
-    public static CharSequence getNonEmpty(final CharSequence cs,final CharSequence defaultCs) {
-        return !isEmpty(cs)?cs:defaultCs;
+
+    public static CharSequence getNonEmpty(final CharSequence cs, final CharSequence defaultCs) {
+        return !isEmpty(cs) ? cs : defaultCs;
     }
-    public static String getNonEmpty(final String cs,final String defaultCs) {
-        return !isEmpty(cs)?cs:defaultCs;
+
+    public static String getNonEmpty(final String cs, final String defaultCs) {
+        return !isEmpty(cs) ? cs : defaultCs;
     }
 
     public static int hashMurmur(String s) {
@@ -480,8 +483,8 @@ public class StringUtils {
     }
 
     public static String replace(String val, String what, String with) {
-        //TODO:implement
-        return val;
+        if (val == null) return val;
+        return val.replaceAll(what, with);
     }
 
     public enum ContentType {unknown, xml, jsonSchema, json, yaml}

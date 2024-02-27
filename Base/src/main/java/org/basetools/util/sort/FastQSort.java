@@ -47,8 +47,9 @@ import java.util.Vector;
  * @version @(#)QSortAlgorithm.java 1.3, 29 Feb 1996 extended with TriMedian and InsertionSort by Denis Ahrens with all the tips from Robert Sedgewick (Algorithms in C++). It uses TriMedian and InsertionSort for lists shorts than 4.<fuhrmann@cs.tu-berlin.de>
  */
 public final class FastQSort {
+
     public static final int ASC = 0;
-    public static final int DES = 1;
+    public static final int DESC = 1;
     public static final int NATURAL = 2;
     private static final FastQSort _instance = new FastQSort();
     /**
@@ -328,7 +329,7 @@ public final class FastQSort {
         _comparator = comparator;
         QuickSort(a, 0, a.size() - 1);
         InsertionSort(a, 0, a.size() - 1);
-        if (direction == DES) {
+        if (direction == DESC) {
             List aClone = new Vector(a);
             a.clear();
             for (int i = aClone.size() - 1; i >= 0; i--) {

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -72,6 +73,15 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
         return path.toFile();
     }
 
+    public static Path changeExtension(Path source, String extension) {
+        String newFileName = changeExtension(extension, source.getFileName().toString());
+        return source.getParent().resolve(newFileName);
+    }
+
+    public static String changeExtension(String extension, String fileName) {
+        return fileName.substring(0, fileName.lastIndexOf(".")) + '.' + extension;
+    }
+
     /**
      * Reads the contents of a file into a String from the clazz.getClassLoader().getResourceAsStream.
      *
@@ -120,6 +130,16 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
                     .filter(file -> !Files.isDirectory(file))
                     .map(Path::getFileName)
                     .map(Path::toString)
+                    .collect(Collectors.toList());
+        }
+    }
+
+    public static List<Path> listFiles(String dir, int depth, Predicate<Path> filter) throws IOException {
+        try (Stream<Path> stream = Files.walk(Paths.get(dir), depth)) {
+            return stream
+                    .filter(file -> !Files.isDirectory(file))
+                    .filter(filter)
+                    .map(Path::getFileName)
                     .collect(Collectors.toList());
         }
     }
