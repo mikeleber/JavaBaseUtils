@@ -1,9 +1,6 @@
 package org.basetools.util.io;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 
 public class InputSource extends org.xml.sax.InputSource {
     public InputSource() {
@@ -74,7 +71,13 @@ public class InputSource extends org.xml.sax.InputSource {
 
     public Reader evalReader() {
         if (super.getCharacterStream() != null) return super.getCharacterStream();
-        if (super.getByteStream() != null) return new InputStreamReader(super.getByteStream());
+        if (super.getByteStream() != null) {
+            try {
+                return new InputStreamReader(super.getByteStream(),super.getEncoding());
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
         return null;
     }
 
