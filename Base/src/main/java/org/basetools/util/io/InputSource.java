@@ -1,6 +1,8 @@
 package org.basetools.util.io;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 
 public class InputSource extends org.xml.sax.InputSource {
@@ -68,6 +70,17 @@ public class InputSource extends org.xml.sax.InputSource {
     @Override
     public Reader getCharacterStream() {
         return super.getCharacterStream();
+    }
+
+    public Reader evalReader() {
+        if (super.getCharacterStream() != null) return super.getCharacterStream();
+        if (super.getByteStream() != null) return new InputStreamReader(super.getByteStream());
+        return null;
+    }
+
+    public String readString() throws IOException {
+        Reader input = evalReader();
+        return input != null ? FileUtils.readAsString(input) : null;
     }
 
     @Override
