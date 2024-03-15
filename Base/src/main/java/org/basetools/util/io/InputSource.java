@@ -1,8 +1,12 @@
 package org.basetools.util.io;
 
+import org.basetools.util.StringUtils;
+
 import java.io.*;
 
 public class InputSource extends org.xml.sax.InputSource {
+    private org.basetools.util.StringUtils.ContentType _payloadType;
+
     public InputSource() {
         super();
     }
@@ -17,6 +21,10 @@ public class InputSource extends org.xml.sax.InputSource {
 
     public InputSource(Reader characterStream) {
         super(characterStream);
+    }
+
+    public StringUtils.ContentType getPayloadType() {
+        return _payloadType;
     }
 
     @Override
@@ -69,11 +77,16 @@ public class InputSource extends org.xml.sax.InputSource {
         return super.getCharacterStream();
     }
 
+    public InputSource withPayloadType(StringUtils.ContentType type) {
+        _payloadType = type;
+        return this;
+    }
+
     public Reader evalReader() {
         if (super.getCharacterStream() != null) return super.getCharacterStream();
         if (super.getByteStream() != null) {
             try {
-                return new InputStreamReader(super.getByteStream(),super.getEncoding());
+                return new InputStreamReader(super.getByteStream(), super.getEncoding());
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }

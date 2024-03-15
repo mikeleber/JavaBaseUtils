@@ -298,7 +298,7 @@ public class StringUtils {
 
     public static CharSequence wrapQuoted(CharSequence aString) {
 
-        if (aString==null||aString.length()==0) {
+        if (aString == null || aString.length() == 0) {
             return aString;
         }
 
@@ -487,7 +487,7 @@ public class StringUtils {
         return val.replaceAll(what, with);
     }
 
-    public enum ContentType {unknown, xml, jsonSchema, json, yaml}
+    public enum ContentType {unknown, xml, xmlSchema, jsonSchema, json, yaml}
 
     public static final int countChars(CharSequence src, char toCount, boolean retDelims) {
         int numOfElements = 0;

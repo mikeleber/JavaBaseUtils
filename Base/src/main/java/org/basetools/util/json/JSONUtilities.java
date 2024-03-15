@@ -143,12 +143,12 @@ public class JSONUtilities {
      * @return created object
      */
     public static JsonObject createJson(String source) {
-        Objects.requireNonNull(source);
+        if (source==null)return null;
         return Json.createReader(new StringReader(source)).readObject();
     }
 
     public static JsonObject createJson(Reader source) {
-        Objects.requireNonNull(source);
+        if (source==null)return null;
         return Json.createReader(source).readObject();
     }
 
