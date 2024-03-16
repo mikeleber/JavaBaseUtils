@@ -43,6 +43,11 @@ public class InputSource extends org.xml.sax.InputSource {
     }
 
     @Override
+    public String toString() {
+        return getSystemId()+":"+getPublicId();
+    }
+
+    @Override
     public String getSystemId() {
         return super.getSystemId();
     }
@@ -82,6 +87,16 @@ public class InputSource extends org.xml.sax.InputSource {
         return this;
     }
 
+    public InputSource withSystemId(String id) {
+        setSystemId(id);
+        return this;
+    }
+
+    public InputSource withPublicId(String id) {
+        setPublicId(id);
+        return this;
+    }
+
     public Reader evalReader() {
         if (super.getCharacterStream() != null) return super.getCharacterStream();
         if (super.getByteStream() != null) {
@@ -97,6 +112,19 @@ public class InputSource extends org.xml.sax.InputSource {
     public String readString() throws IOException {
         Reader input = evalReader();
         return input != null ? FileUtils.readAsString(input) : null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        InputSource that = (InputSource) o;
+        return getSystemId() != null && getSystemId().equals(that.getSystemId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getSystemId().hashCode();
     }
 
     @Override

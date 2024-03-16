@@ -1,9 +1,14 @@
 package org.basetools.util.cache;
 
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 /**
  * Simple cache implementation backed by a map. This implementation use ReadWritLock to ensure it's threadsave.
@@ -59,6 +64,21 @@ public class Cache<K, V> {
         }
     }
 
+    public V getOrCreate(K key, Supplier<V> creator) {
+        Lock writeLock = readWriteLock.writeLock();
+        try {
+            writeLock.lock();
+            V result = get(key);
+            if (result == null) {
+                result = creator.get();
+                put(key, result);
+            }
+            return result;
+        } finally {
+            writeLock.unlock();
+        }
+
+    }
     /**
      * Contains key boolean.
      *
@@ -70,6 +90,27 @@ public class Cache<K, V> {
         try {
             readLock.lock();
             return cache.containsKey(key);
+        } finally {
+            readLock.unlock();
+        }
+    }
+
+    public JsonObject getInfo() {
+        JsonArrayBuilder entries = Json.createArrayBuilder();
+        traverse((key, value) -> {
+            entries.add(key.toString());
+            return null;
+        });
+        return Json.createObjectBuilder()
+                .add("size", getCache().size())
+                .add("entries", entries).build();
+    }
+
+    public void traverse(BiFunction<K, V, Void> processor) {
+        Lock readLock = readWriteLock.readLock();
+        try {
+            readLock.lock();
+            getCache().entrySet().forEach((e) -> processor.apply(e.getKey(), e.getValue()));
         } finally {
             readLock.unlock();
         }
