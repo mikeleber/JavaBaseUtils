@@ -124,7 +124,7 @@ public class StringUtils {
         String content = string.trim();
         if (content.startsWith("<") && content.endsWith(">")) return ContentType.xml;
         if (content.startsWith("{") && content.endsWith("}")) {
-            if (content.indexOf("$schema") >= 0) return ContentType.jsonSchema;
+            if (content.indexOf("$schema") >= 0) return ContentType.xjson;
             else return ContentType.json;
         }
 
@@ -487,7 +487,19 @@ public class StringUtils {
         return val.replaceAll(what, with);
     }
 
-    public enum ContentType {unknown, xml, xmlSchema, jsonSchema, json, yaml}
+    public enum ContentType {
+        unknown, xml, xsd, xjson, json, yaml, csv, txt, nls;
+
+        public static ContentType valueOf(String name, ContentType defaultVal) {
+            for (ContentType aType : ContentType.values()) {
+                if (aType.name().equalsIgnoreCase(name)) {
+                    return aType;
+                }
+            }
+            return defaultVal;
+        }
+
+        }
 
     public static final int countChars(CharSequence src, char toCount, boolean retDelims) {
         int numOfElements = 0;

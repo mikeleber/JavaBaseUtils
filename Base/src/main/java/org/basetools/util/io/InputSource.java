@@ -5,7 +5,7 @@ import org.basetools.util.StringUtils;
 import java.io.*;
 
 public class InputSource extends org.xml.sax.InputSource {
-    private org.basetools.util.StringUtils.ContentType _payloadType;
+    private org.basetools.util.StringUtils.ContentType _contentType;
 
     public InputSource() {
         super();
@@ -23,8 +23,13 @@ public class InputSource extends org.xml.sax.InputSource {
         super(characterStream);
     }
 
-    public StringUtils.ContentType getPayloadType() {
-        return _payloadType;
+    public StringUtils.ContentType getContentType() {
+        if (_contentType != null) return _contentType;
+        if (getSystemId() != null) {
+            String ext = org.apache.commons.lang3.StringUtils.substringAfterLast(getSystemId(), ".");
+            return StringUtils.ContentType.valueOf(ext, StringUtils.ContentType.unknown);
+        }
+        return StringUtils.ContentType.unknown;
     }
 
     @Override
@@ -82,8 +87,8 @@ public class InputSource extends org.xml.sax.InputSource {
         return super.getCharacterStream();
     }
 
-    public InputSource withPayloadType(StringUtils.ContentType type) {
-        _payloadType = type;
+    public InputSource withContentType(StringUtils.ContentType type) {
+        _contentType = type;
         return this;
     }
 
