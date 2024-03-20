@@ -7,12 +7,20 @@ import java.util.stream.StreamSupport;
 import java.util.zip.CRC32;
 
 public class StreamHelper {
-    public static final void closeStream(InputStream inStream) {
-        if (inStream != null) {
+    public static final void close(InputStream stream) {
+        if (stream != null) {
             try {
-                inStream.close();
+                stream.close();
             } catch (IOException e) {
-                // forget about
+                throw new RuntimeException(e);
+            }
+        }
+    }public static final void close(Reader stream) {
+        if (stream != null) {
+            try {
+                stream.close();
+            } catch (IOException e) {
+              throw new RuntimeException(e);
             }
         }
     }

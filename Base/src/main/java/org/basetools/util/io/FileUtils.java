@@ -124,6 +124,16 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
         return is;
     }
 
+    public static InputSource inputSourceFrom(Path path) throws IOException {
+        if (path == null) {
+            return null;
+        }
+        File file = path.toFile();
+        InputSource is = new InputSource(new FileReader(file));
+        is.setSystemId(file.getPath());
+        return is;
+    }
+
     public static List<String> listFiles(String dir, int depth) throws IOException {
         try (Stream<Path> stream = Files.walk(Paths.get(dir), depth)) {
             return stream
