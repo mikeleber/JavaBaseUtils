@@ -3,6 +3,8 @@ package org.basetools.util.io;
 import org.basetools.util.StringUtils;
 
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class InputSource extends org.xml.sax.InputSource {
     private org.basetools.util.StringUtils.ContentType _contentType;
@@ -87,6 +89,18 @@ public class InputSource extends org.xml.sax.InputSource {
         return super.getCharacterStream();
     }
 
+    public URI getUriFromSystemId() {
+        try {
+            return new URI(getSystemId());
+        } catch (URISyntaxException e) {
+            return null;
+        }
+    }
+
+    public File getFileFromSystemId() {
+        return new File(getUriFromSystemId());
+    }
+
     public InputSource withContentType(StringUtils.ContentType type) {
         _contentType = type;
         return this;
@@ -108,10 +122,25 @@ public class InputSource extends org.xml.sax.InputSource {
             try {
                 return new InputStreamReader(super.getByteStream(), super.getEncoding());
             } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+               e.printStackTrace();
+            }
+        }
+        if (getUriFromSystemId()!=null){
+            try {
+                return new InputStreamReader(getUriFromSystemId().toURL().openStream(), super.getEncoding());
+            } catch (IOException e) {
+                return null;
             }
         }
         return null;
+    }
+
+    public boolean hasReader() {
+        if (super.getCharacterStream() != null) return true;
+        if (super.getByteStream() != null) {
+            return true;
+        }
+        return false;
     }
 
     public String readString() throws IOException {

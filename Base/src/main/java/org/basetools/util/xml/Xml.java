@@ -1,9 +1,10 @@
 package org.basetools.util.xml;
 
 import org.basetools.util.StringUtils;
+import org.basetools.util.io.InputSource;
+import org.basetools.util.io.StreamHelper;
 import org.basetools.util.sort.FastQSort;
 import org.w3c.dom.*;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -175,6 +176,18 @@ public class Xml {
 
     public static Xml from(Reader input, String rootName) {
         return new Xml(new InputSource(input), rootName);
+    }
+
+    public static Xml from(InputSource input, String rootName) {
+        if (input.hasReader()) {
+            Reader reader = input.evalReader();
+            try {
+                return from(reader, rootName);
+            } finally {
+                StreamHelper.close(reader);
+            }
+        } else
+            return new Xml(input, rootName);
     }
 
     public void setContent(String content) {

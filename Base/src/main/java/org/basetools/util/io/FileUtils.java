@@ -74,11 +74,11 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
     }
 
     public static Path changeExtension(Path source, String extension) {
-        String newFileName = changeExtension(extension, source.getFileName().toString());
+        String newFileName = changeExtension( source.getFileName().toString(),extension);
         return source.getParent().resolve(newFileName);
     }
 
-    public static String changeExtension(String extension, String fileName) {
+    public static String changeExtension( String fileName,String extension) {
         return fileName.substring(0, fileName.lastIndexOf(".")) + '.' + extension;
     }
 
@@ -132,6 +132,13 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
         InputSource is = new InputSource(new FileReader(file));
         is.setSystemId(file.getPath());
         return is;
+    }
+
+    public static InputSource inputSourceFrom(String systemId, String publicId) {
+        if (systemId == null) {
+            return null;
+        }
+        return new InputSource().withSystemId(systemId).withPublicId(publicId);
     }
 
     public static List<String> listFiles(String dir, int depth) throws IOException {
