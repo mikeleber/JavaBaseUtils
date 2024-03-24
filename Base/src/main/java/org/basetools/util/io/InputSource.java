@@ -6,7 +6,7 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-public class InputSource extends org.xml.sax.InputSource {
+public class InputSource extends org.xml.sax.InputSource implements AutoCloseable {
     private org.basetools.util.StringUtils.ContentType _contentType;
 
     public InputSource() {
@@ -129,10 +129,19 @@ public class InputSource extends org.xml.sax.InputSource {
             try {
                 return new InputStreamReader(getUriFromSystemId().toURL().openStream(), super.getEncoding());
             } catch (IOException e) {
-                return null;
+                try {
+                    return new FileReader(new File(getSystemId()));
+                } catch (FileNotFoundException ex) {
+                    throw new RuntimeException(ex);
+                }
+
             }
         }
-        return null;
+        try {
+            return new FileReader(getSystemId());
+        } catch (FileNotFoundException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     public boolean hasReader() {
@@ -145,7 +154,11 @@ public class InputSource extends org.xml.sax.InputSource {
 
     public String readString() throws IOException {
         Reader input = evalReader();
-        return input != null ? FileUtils.readAsString(input) : null;
+        try {
+            return input != null ? FileUtils.readAsString(input) : null;
+        } finally {
+            StreamHelper.close(input);
+        }
     }
 
     @Override
@@ -164,5 +177,10 @@ public class InputSource extends org.xml.sax.InputSource {
     @Override
     public boolean isEmpty() {
         return super.isEmpty();
+    }
+
+    @Override
+    public void close() {
+        System.out.println("closing: "+getSystemId());
     }
 }
