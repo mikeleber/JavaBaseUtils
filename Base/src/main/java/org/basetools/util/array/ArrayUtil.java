@@ -47,6 +47,15 @@ public final class ArrayUtil {
         }
         return null;
     }
+    public static  short[] toShortArray(String val) {
+        int s = val.length();
+        short[] result = new short[s];
+        for (int i = 0; i < s; i++) {
+            result[i] = Short.valueOf(val.substring(i, i + 1));
+        }
+        return result;
+    }
+
 
     public static final <T> T get(T[][] srcArr, int comCol, Object compVal, int getCol, T defaultValue) {
         int idx = contains(srcArr, comCol, compVal);
