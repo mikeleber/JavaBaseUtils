@@ -183,28 +183,28 @@ public class ResultListImpl extends ResultList<Object[]> implements IResult<Obje
     }
 
     @Override
-    public Object getValue(int row, String colName) {
+    public <T>T getValue(int row, String colName) {
         return getValue(row, colName, null);
     }
 
     @Override
-    public Object getValue(int row, String colName, Object defaultValue) {
+    public <T> T getValue(int row, String colName, T defaultValue) {
         if (colName == null) {
             return null;
         }
         if (row < 0 || row >= size()) {
-            return defaultValue;
+            return (T) defaultValue;
         }
         int col = getColumnForName(colName);
-        return getValue(row, col, defaultValue);
+        return (T)getValue(row, col, defaultValue);
     }
 
     @Override
-    public Object getValue(int row, int col, Object defaultValue) {
+    public <T> T getValue(int row, int col, T defaultValue) {
         if (row < 0 || row >= size()) {
-            return defaultValue;
+            return (T) defaultValue;
         }
-        return ArrayUtil.get(getRow(row), col, defaultValue);
+        return (T) ArrayUtil.get(getRow(row), col, defaultValue);
     }
 
     @Override

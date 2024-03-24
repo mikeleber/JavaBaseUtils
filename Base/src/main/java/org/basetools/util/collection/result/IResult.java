@@ -104,7 +104,7 @@ public interface IResult<E> extends Collection<E> {
      * @param colName the col name
      * @return the value
      */
-    Object getValue(int row, String colName);
+    <T>T getValue(int row, String colName);
 
     /**
      * Gets value.
@@ -114,7 +114,7 @@ public interface IResult<E> extends Collection<E> {
      * @param defaultValue the default value
      * @return the value
      */
-    Object getValue(int row, String colName, Object defaultValue);
+    <T>T getValue(int row, String colName, T defaultValue);
 
     /**
      * Gets value.
@@ -124,7 +124,7 @@ public interface IResult<E> extends Collection<E> {
      * @param defaultValue the default value
      * @return the value
      */
-    Object getValue(int row, int col, Object defaultValue);
+    <T>T getValue(int row, int col, T defaultValue);
 
     /**
      * Sets value.
