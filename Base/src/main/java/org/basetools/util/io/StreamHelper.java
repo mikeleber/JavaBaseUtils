@@ -12,7 +12,7 @@ public class StreamHelper {
             try {
                 stream.close();
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new ResourceNotFoundException(e);
             }
         }
     }public static final void close(Reader stream) {
@@ -20,7 +20,7 @@ public class StreamHelper {
             try {
                 stream.close();
             } catch (IOException e) {
-              throw new RuntimeException(e);
+              throw new ResourceNotFoundException(e);
             }
         }
     }

@@ -132,7 +132,7 @@ public class InputSource extends org.xml.sax.InputSource implements AutoCloseabl
                 try {
                     return new FileReader(new File(getSystemId()));
                 } catch (FileNotFoundException ex) {
-                    throw new RuntimeException(ex);
+                    throw new ResourceNotFoundException(ex);
                 }
 
             }
@@ -140,7 +140,7 @@ public class InputSource extends org.xml.sax.InputSource implements AutoCloseabl
         try {
             return new FileReader(getSystemId());
         } catch (FileNotFoundException ex) {
-            throw new RuntimeException(ex);
+            throw new ResourceNotFoundException(ex);
         }
     }
 
