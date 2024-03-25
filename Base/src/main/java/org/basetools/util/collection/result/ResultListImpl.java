@@ -72,6 +72,14 @@ public class ResultListImpl extends ResultList<Object[]> implements IResult<Obje
         columnDataTypes = createEmpty(colNames.length);
         return this;
     }
+    public ResultListImpl withData(Object[][] data) {
+        if (data != null) {
+            for (int d = 0; d < data.length; d++) {
+                add(data[d]);
+            }
+        }
+        return this;
+    }
 
     private static List<String> createEmpty(int resultColumnCount) {
         ArrayList colNames = new ArrayList();
