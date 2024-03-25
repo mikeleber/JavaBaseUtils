@@ -3,7 +3,7 @@ package org.basetools.util.compare;
 import java.util.Comparator;
 import java.util.HashMap;
 
-class StringSequenceComparator implements Comparator<String> {
+public class StringSequenceComparator implements Comparator<String> {
     private HashMap<String, Integer> _map;
     private boolean _desc;
 
