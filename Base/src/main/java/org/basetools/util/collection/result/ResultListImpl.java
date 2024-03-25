@@ -20,6 +20,9 @@ public class ResultListImpl extends ResultList<Object[]> implements IResult<Obje
     public ResultListImpl(int resultColumnCount) {
         this(createEmpty(resultColumnCount), null);
     }
+    public ResultListImpl(String... colNames) {
+        withColNames(colNames);
+    }
 
     public ResultListImpl(List<String> colNames, Collection columnData) {
         super();
