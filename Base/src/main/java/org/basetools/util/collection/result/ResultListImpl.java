@@ -2,6 +2,7 @@ package org.basetools.util.collection.result;
 
 import org.basetools.util.StringUtils;
 import org.basetools.util.array.ArrayUtil;
+import org.basetools.util.sort.FastQSort;
 
 import java.util.*;
 import java.util.function.Function;
@@ -83,6 +84,8 @@ public class ResultListImpl extends ResultList<Object[]> implements IResult<Obje
         }
         return this;
     }
+
+
 
     private static List<String> createEmpty(int resultColumnCount) {
         ArrayList colNames = new ArrayList();

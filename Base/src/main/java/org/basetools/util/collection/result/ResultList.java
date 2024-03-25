@@ -1,5 +1,7 @@
 package org.basetools.util.collection.result;
 
+import org.basetools.util.sort.FastQSort;
+
 import java.util.*;
 
 public class ResultList<E> implements List<E>, Cloneable {
@@ -25,7 +27,10 @@ public class ResultList<E> implements List<E>, Cloneable {
         dataHolder = Collections.unmodifiableList(dataHolder);
         return this;
     }
-
+    public ResultList sortFastQ(Comparator comparator) {
+        FastQSort.sortList(getDataHolder(), comparator);
+        return this;
+    }
     @Override
     public int size() {
         return dataHolder.size();
@@ -169,4 +174,5 @@ public class ResultList<E> implements List<E>, Cloneable {
             ((ArrayList) dataHolder).trimToSize();
         }
     }
+
 }
