@@ -178,7 +178,7 @@ public interface IResult<E> extends Collection<E> {
      * @param col the col
      * @return the value
      */
-    Object getValue(int row, int col);
+    <T>T getValue(int row, int col);
 
     /**
      * @param col
