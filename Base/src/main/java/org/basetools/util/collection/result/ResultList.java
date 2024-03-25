@@ -27,10 +27,8 @@ public class ResultList<E> implements List<E>, Cloneable {
         dataHolder = Collections.unmodifiableList(dataHolder);
         return this;
     }
-    public ResultList sortFastQ(Comparator comparator) {
-        FastQSort.sortList(getDataHolder(), comparator);
-        return this;
-    }
+
+
     @Override
     public int size() {
         return dataHolder.size();

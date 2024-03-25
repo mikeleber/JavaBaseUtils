@@ -17,7 +17,10 @@ public class ResultListImpl extends ResultList<Object[]> implements IResult<Obje
     public ResultListImpl() {
         this(new ArrayList(), null);
     }
-
+    public IResult sortFastQ(Comparator comparator) {
+        FastQSort.sortList(getDataHolder(), comparator);
+        return this;
+    }
     public ResultListImpl(int resultColumnCount) {
         this(createEmpty(resultColumnCount), null);
     }
@@ -131,8 +134,9 @@ public class ResultListImpl extends ResultList<Object[]> implements IResult<Obje
     }
 
     @Override
-    public void setColumnDataTypes(List<String> columnDataTypes) {
+    public IResult setColumnDataTypes(List<String> columnDataTypes) {
         this.columnDataTypes = columnDataTypes;
+        return this;
     }
 
     @Override
@@ -249,11 +253,12 @@ public class ResultListImpl extends ResultList<Object[]> implements IResult<Obje
     }
 
     @Override
-    public void setValue(int row, int col, Object value) {
+    public IResult setValue(int row, int col, Object value) {
         Object[] aRow = get(row);
         if (col >= 0) {
             aRow[col] = value;
         }
+        return this;
     }
 
     /**
@@ -298,8 +303,9 @@ public class ResultListImpl extends ResultList<Object[]> implements IResult<Obje
     }
 
     @Override
-    public void releaseResult() {
+    public IResult releaseResult() {
         clear();
+        return this;
     }
 
     @Override

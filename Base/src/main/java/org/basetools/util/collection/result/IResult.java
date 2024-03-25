@@ -1,6 +1,9 @@
 package org.basetools.util.collection.result;
 
+import org.basetools.util.sort.FastQSort;
+
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 
@@ -44,8 +47,8 @@ public interface IResult<E> extends Collection<E> {
      *
      * @param columnDataTypes the column data types
      */
-    void setColumnDataTypes(List<String> columnDataTypes);
-
+    IResult setColumnDataTypes(List<String> columnDataTypes);
+    IResult sortFastQ(Comparator comparator) ;
     /**
      * Sets column data types.
      *
@@ -133,7 +136,7 @@ public interface IResult<E> extends Collection<E> {
      * @param col   the col
      * @param value the value
      */
-    void setValue(int row, int col, Object value);
+    IResult setValue(int row, int col, Object value);
 
     /**
      * Add row object [ ].
@@ -169,7 +172,7 @@ public interface IResult<E> extends Collection<E> {
     /**
      * Release result.
      */
-    void releaseResult();
+    IResult releaseResult();
 
     /**
      * Gets value.
