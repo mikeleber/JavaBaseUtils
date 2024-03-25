@@ -47,7 +47,7 @@ public final class ArrayUtil {
         }
         return null;
     }
-    public static  short[] toShortArray(String val) {
+    public static  short[] charsToShortArray(String val) {
         int s = val.length();
         short[] result = new short[s];
         for (int i = 0; i < s; i++) {
@@ -55,6 +55,14 @@ public final class ArrayUtil {
         }
         return result;
     }
+
+    public static short getValueAtPos(short[] vals, int pos) {
+        if (pos >= 0 && pos < vals.length) {
+            return vals[pos];
+        }
+        return 0;
+    }
+
 
 
     public static final <T> T get(T[][] srcArr, int comCol, Object compVal, int getCol, T defaultValue) {
