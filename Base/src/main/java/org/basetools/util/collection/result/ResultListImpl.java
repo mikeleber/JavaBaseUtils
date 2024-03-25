@@ -6,6 +6,7 @@ import org.basetools.util.array.ArrayUtil;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ResultListImpl extends ResultList<Object[]> implements IResult<Object[]> {
     private List<String> columnNames;
@@ -13,19 +14,38 @@ public class ResultListImpl extends ResultList<Object[]> implements IResult<Obje
     private int resultColumnCount = -1;
 
     public ResultListImpl() {
-
         this(new ArrayList(), null);
     }
 
     public ResultListImpl(int resultColumnCount) {
-
         this(createEmpty(resultColumnCount), null);
     }
 
-    public ResultListImpl(List<String> colNames, Collection col) {
+    public ResultListImpl(List<String> colNames, Collection columnData) {
         super();
         resultColumnCount = colNames.size();
         columnNames = colNames;
+        if (columnData != null) {
+            Iterator valueIterator = columnData.iterator();
+            while (valueIterator.hasNext()) {
+                Object object = valueIterator.next();
+                if (object != null) {
+                    if (object instanceof Object[]) {
+                        add((Object[]) object);
+                    } else if (object instanceof List) {
+                        add(((List) object).toArray());
+                    } else {
+                        add(new Object[]{object});
+                    }
+                } else {
+                    add(new Object[resultColumnCount]);
+                }
+            }
+        }
+        columnDataTypes = createEmpty(colNames.size());
+    }
+
+    public ResultListImpl ResultListImpl(Collection col) {
         if (col != null) {
             Iterator valueIterator = col.iterator();
             while (valueIterator.hasNext()) {
@@ -43,7 +63,14 @@ public class ResultListImpl extends ResultList<Object[]> implements IResult<Obje
                 }
             }
         }
-        columnDataTypes = createEmpty(colNames.size());
+        return this;
+    }
+
+    public ResultListImpl withColNames(String... colNames) {
+        resultColumnCount = colNames.length;
+        columnNames = Stream.of(colNames).collect(Collectors.toList());
+        columnDataTypes = createEmpty(colNames.length);
+        return this;
     }
 
     private static List<String> createEmpty(int resultColumnCount) {

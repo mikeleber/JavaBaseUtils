@@ -47,7 +47,7 @@ public final class ArrayUtil {
         }
         return null;
     }
-    public static  short[] charsToShortArray(String val) {
+    public static  short[] toShortArray(String val) {
         int s = val.length();
         short[] result = new short[s];
         for (int i = 0; i < s; i++) {
