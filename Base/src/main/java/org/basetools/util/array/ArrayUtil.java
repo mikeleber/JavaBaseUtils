@@ -65,7 +65,10 @@ public final class ArrayUtil {
 
 
 
-    public static final <T> T get(T[][] srcArr, int comCol, Object compVal, int getCol, T defaultValue) {
+    public static  <T> T get(T[][] srcArr, int comCol, Object compVal, int getCol, T defaultValue) {
+       return getXY(srcArr, comCol, compVal, getCol, defaultValue);
+    }
+    public static  <T> T getXY(T[][] srcArr, int comCol, Object compVal, int getCol, T defaultValue) {
         int idx = contains(srcArr, comCol, compVal);
         if (idx >= 0) {
             return get(srcArr[idx], getCol, defaultValue);
@@ -73,7 +76,15 @@ public final class ArrayUtil {
             return defaultValue;
         }
     }
+    public static  <T> T getYX(T[][] srcArr, int comCol, Object compVal, int getCol, T defaultValue) {
+        int idx = contains(srcArr, comCol, compVal,true);
+        if (idx >= 0) {
+            return get(srcArr[idx], getCol, defaultValue);
 
+        } else {
+            return defaultValue;
+        }
+    }
     public static final <T> int contains(T[][] array, int col, Object value) {
         return contains(array, col, value, false);
     }
