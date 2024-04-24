@@ -5,9 +5,11 @@ import org.basetools.util.StringUtils;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 
 public class InputSource extends org.xml.sax.InputSource implements AutoCloseable {
     private org.basetools.util.StringUtils.ContentType _contentType;
+    private String _language;
 
     public InputSource() {
         super();
@@ -76,7 +78,7 @@ public class InputSource extends org.xml.sax.InputSource implements AutoCloseabl
 
     @Override
     public String getEncoding() {
-        return super.getEncoding();
+        return super.getEncoding() != null ? super.getEncoding() : Charset.defaultCharset().name();
     }
 
     @Override
@@ -111,23 +113,32 @@ public class InputSource extends org.xml.sax.InputSource implements AutoCloseabl
         return this;
     }
 
+    public InputSource withLanguage(String lang) {
+        _language = lang;
+        return this;
+    }
+
+    public String getLanguage() {
+        return _language;
+    }
+
     public InputSource withPublicId(String id) {
         setPublicId(id);
         return this;
     }
 
     public Reader evalReader() {
-        if (super.getCharacterStream() != null) return super.getCharacterStream();
-        if (super.getByteStream() != null) {
+        if (getCharacterStream() != null) return getCharacterStream();
+        if (getByteStream() != null) {
             try {
-                return new InputStreamReader(super.getByteStream(), super.getEncoding());
+                return new InputStreamReader(getByteStream(), getEncoding());
             } catch (UnsupportedEncodingException e) {
                e.printStackTrace();
             }
         }
         if (getUriFromSystemId()!=null){
             try {
-                return new InputStreamReader(getUriFromSystemId().toURL().openStream(), super.getEncoding());
+                return new InputStreamReader(getUriFromSystemId().toURL().openStream(), getEncoding());
             } catch (IOException e) {
                 try {
                     return new FileReader(new File(getSystemId()));
@@ -145,8 +156,8 @@ public class InputSource extends org.xml.sax.InputSource implements AutoCloseabl
     }
 
     public boolean hasReader() {
-        if (super.getCharacterStream() != null) return true;
-        if (super.getByteStream() != null) {
+        if (getCharacterStream() != null) return true;
+        if (getByteStream() != null) {
             return true;
         }
         return false;

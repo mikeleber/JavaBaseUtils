@@ -61,7 +61,6 @@
         </plugins>
     </build>
     <modules>
-        <module>Net</module>
         <module>Base</module>
         <module>Xml</module>
     </modules>
@@ -76,11 +75,6 @@
             <dependency>
                 <groupId>org.leber.basetools</groupId>
                 <artifactId>Base</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.leber.basetools</groupId>
-                <artifactId>Net</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

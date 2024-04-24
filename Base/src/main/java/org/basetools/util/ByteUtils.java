@@ -38,4 +38,5 @@ public class ByteUtils {
     public static final short combineBinary(short cumulated, short with) {
         return (short) (cumulated | with);
     }
+
 }
