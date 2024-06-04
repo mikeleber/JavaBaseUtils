@@ -1,5 +1,7 @@
 package org.basetools.util.info;
 
+import net.minidev.json.JSONObject;
+
 import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import java.util.Collections;
@@ -61,14 +63,14 @@ public class SystemInfoManager {
      *
      * @return All information provided by the registered providers.
      */
-    public JsonObjectBuilder getInfos() {
-        JsonObjectBuilder results = Json.createObjectBuilder();
+    public JSONObject getInfos() {
+        JSONObject results = new JSONObject();
         // results.add("versionInfo", JSONHelper.createFromPoJo(new Version()));
         // loop through each listener and pass on the event if needed
         for (Map.Entry<String, SystemInfoProvider> providerEntry : infoProviders.entrySet()) {
             SystemInfoProvider provider = providerEntry.getValue();
             if (provider != null) {
-                results.add(provider.getInfoProviderName(), provider.getInfo());
+                results.appendField(provider.getInfoProviderName(), provider.getInfo());
             }
         }
         return results;

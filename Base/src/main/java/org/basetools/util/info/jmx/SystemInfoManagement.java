@@ -11,7 +11,7 @@ public class SystemInfoManagement implements SystemInfoManagementMBean {
     }
 
     @Override
-    public String getInfo() throws IOException {
-        return SystemInfoManager.getInstance().getInfos().build().toString();
+    public String getInfo()  {
+        return SystemInfoManager.getInstance().getInfos().toString();
     }
 }

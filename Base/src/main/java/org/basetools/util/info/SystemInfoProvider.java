@@ -1,5 +1,7 @@
 package org.basetools.util.info;
 
+import net.minidev.json.JSONObject;
+
 import javax.json.JsonObjectBuilder;
 
 /**
@@ -11,7 +13,7 @@ public interface SystemInfoProvider {
      *
      * @return the info
      */
-    JsonObjectBuilder getInfo();
+    JSONObject getInfo();
 
     /**
      * Gets name.

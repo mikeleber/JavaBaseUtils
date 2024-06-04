@@ -1,5 +1,6 @@
 package org.basetools.util.io;
 
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.basetools.util.StringUtils;
 
 import java.io.*;
@@ -125,6 +126,36 @@ public class InputSource extends org.xml.sax.InputSource implements AutoCloseabl
     public InputSource withPublicId(String id) {
         setPublicId(id);
         return this;
+    }
+
+    public InputSource clone() {
+        InputSource is = new InputSource();
+        is.setSystemId(getSystemId());
+        is.setEncoding(getEncoding());
+        is._contentType = _contentType;
+        is._language = _language;
+        is.setPublicId(getPublicId());
+        if (getByteStream() != null) {
+
+            try (org.apache.commons.io.output.ByteArrayOutputStream output = new ByteArrayOutputStream(1024)) {
+                output.write(getByteStream());
+                is.setByteStream(output.toInputStream());
+                setByteStream(output.toInputStream());
+
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if (getCharacterStream() != null) {
+            try {
+                String content = FileUtils.readAsString(getCharacterStream());
+                is.setCharacterStream(new StringReader(content));
+                setCharacterStream(new StringReader(content));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return is;
     }
 
     public Reader evalReader() {

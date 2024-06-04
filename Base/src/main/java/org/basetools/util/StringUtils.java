@@ -44,7 +44,11 @@ public class StringUtils {
         sb.append(text);
         return (sb.toString());
     }
-
+    private static final DecimalFormat expDecimalFormat = new DecimalFormat("#");
+    public static final String convertExponentialValue(double value) throws NumberFormatException {
+        expDecimalFormat.setMaximumFractionDigits(0);
+        return expDecimalFormat.format(value);
+    }
     public static String replaceWhiteSpace(String toClean, char replacement, boolean collapseSpaces) {
         int size = toClean.length();
         StringBuilder result = new StringBuilder(toClean.length());
