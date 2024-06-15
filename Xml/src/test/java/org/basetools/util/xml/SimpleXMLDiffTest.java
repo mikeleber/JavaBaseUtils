@@ -50,7 +50,7 @@ class SimpleXMLDiffTest {
     @Test
     public void givenActualWithDifferentSequence_thenNoDiffIsRecognized() throws IOException, XmlDifferException, TransformerException, SAXException, ParserConfigurationException {
 
-        XMLDifferences diffs = xmlDiffer.difference(loadDocument(EXPECTED), loadDocument(NO_DIFF));
+        XMLDifferences diffs = SimpleXMLDiff.builder().withPosDiff(false).build().difference(loadDocument(EXPECTED), loadDocument(NO_DIFF));
         assertFalse(diffs.isDifferent());
     }
 
@@ -96,7 +96,7 @@ class SimpleXMLDiffTest {
 
     @Test
     public void givenActualWithDifferentChildNodes_thenDiffIsRecognized() throws IOException, XmlDifferException, TransformerException, SAXException, ParserConfigurationException {
-        XMLDifferences diffingResult = xmlDiffer.difference(loadDocument(EXPECTED), loadDocument(CHILD_DIFF));
+        XMLDifferences diffingResult = SimpleXMLDiff.builder().withPosDiff(false).build().difference(loadDocument(EXPECTED), loadDocument(CHILD_DIFF));
         assertTrue(diffingResult.isDifferent());
         assertEquals(2, diffTypeCount(diffingResult.getDifferences(), XMLNodeDiff.DiffType.VALUE_CHANGED));
     }

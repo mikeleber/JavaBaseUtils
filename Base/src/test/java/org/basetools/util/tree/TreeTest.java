@@ -1,5 +1,8 @@
 package org.basetools.util.tree;
 
+import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
+import net.minidev.json.parser.ParseException;
 import org.basetools.util.json.JSONUtilities;
 import org.junit.jupiter.api.Test;
 
@@ -19,15 +22,15 @@ public class TreeTest {
     }
 
     @Test
-    void givenTree_whenSerialized_thenGetvalidJSON() {
+    void givenTree_whenSerialized_thenGetvalidJSON() throws ParseException {
         Tree tree = new Tree();
         tree.addPath("/mein/name/ist/hase", false, null);
         tree.addPath("/mein/name/war/hase", false, null);
         tree.addPath("/mein/name/war/oder", false, null);
         JSONSerializationTreeNodeRenderer renderer = new JSONSerializationTreeNodeRenderer();
         tree.getRoot().render(renderer);
-        JsonObject current = renderer.build();
-        JsonObject expected = JSONUtilities.createJson(current.toString());
+        JSONObject current = renderer.build();
+        JSONObject expected = (JSONObject) new JSONParser(JSONParser.MODE_PERMISSIVE).parse(current.toString());
         assertEquals(expected, current);
     }
 }

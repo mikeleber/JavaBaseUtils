@@ -2,7 +2,6 @@ package org.basetools.util.info;
 
 import net.minidev.json.JSONObject;
 
-import javax.json.JsonObjectBuilder;
 
 /**
  * The interface System info provider.

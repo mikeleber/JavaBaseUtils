@@ -19,6 +19,7 @@ public class SimpleXMLDiff extends XmlDiffer {
     private static Logger LOGGER = LoggerFactory.getLogger(SimpleXMLDiff.class.getName());
     private boolean nodeTypeDiff = true;
     private boolean nodeValueDiff = true;
+    private boolean posDiff = true;
     private boolean normalizeCharSpacing = true;
     private boolean ignoreNS = true;
     private Node actualRootNode, expectedRootNode;
@@ -164,7 +165,7 @@ public class SimpleXMLDiff extends XmlDiffer {
     }
 
     private void checkPosition(XMLDifferences differences, Pair<Integer, Node> expectedChildPair, Pair<Integer, Node> actualChildPair) {
-        if (actualChildPair != null && expectedChildPair != null && !isTextNode(actualChildPair.getValue()) && !isTextNode(expectedChildPair.getValue()) && actualChildPair.getKey() != expectedChildPair.getKey()) {
+        if (posDiff && actualChildPair != null && expectedChildPair != null && !isTextNode(actualChildPair.getValue()) && !isTextNode(expectedChildPair.getValue()) && actualChildPair.getKey() != expectedChildPair.getKey()) {
             XMLNodeDiff.Builder diffBuilder = XMLNodeDiff.builder()
                     .withXpath(getPath(actualChildPair.getValue()))
                     .withActualNode(actualChildPair.getValue())
@@ -459,6 +460,7 @@ public class SimpleXMLDiff extends XmlDiffer {
     public static final class SimpleXmlDiffBuilder {
         private boolean nodeTypeDiff = true;
         private boolean nodeValueDiff = true;
+        private boolean posDiff = true;
         private boolean normalizeCharSpacing = true;
         private boolean ignoreNS = true;
         private Node actualNode;
@@ -470,6 +472,11 @@ public class SimpleXMLDiff extends XmlDiffer {
 
         public SimpleXmlDiffBuilder withNodeTypeDiff(boolean nodeTypeDiff) {
             this.nodeTypeDiff = nodeTypeDiff;
+            return this;
+        }
+
+        public SimpleXmlDiffBuilder withPosDiff(boolean sequenceDiff) {
+            this.posDiff = sequenceDiff;
             return this;
         }
 
@@ -502,6 +509,7 @@ public class SimpleXMLDiff extends XmlDiffer {
             simpleXmlDiff.normalizeCharSpacing = this.normalizeCharSpacing;
             simpleXmlDiff.nodeTypeDiff = this.nodeTypeDiff;
             simpleXmlDiff.ignoreNS = this.ignoreNS;
+            simpleXmlDiff.posDiff = this.posDiff;
             if (this.blacklistXpaths != null) {
                 simpleXmlDiff.blacklistXPaths = Arrays.stream(this.blacklistXpaths).collect(Collectors.toSet());
             }

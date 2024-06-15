@@ -23,9 +23,9 @@ class ArrayUtilTest {
 
     @Test
     void intersectionWithAll() {
-        Object[] expected = new Object[]{"1", "2", "3", "4", "5"};
-        Object[] src = new Object[]{"1", "3", "4", "5", "6"};
-        Object[] src2 = new Object[]{"1", "3", "4", "5", "6"};
+        Object[] expected = new Object[]{"1",  "4", "5"};
+        Object[] src = new Object[]{"1", "2", "4", "5", "6"};
+        Object[] src2 = new Object[]{"1", "3", "4", "5", "7"};
         Object[] merged = ArrayUtil.intersection(src, src2, String.class);
         Assertions.assertArrayEquals(expected, merged);
     }

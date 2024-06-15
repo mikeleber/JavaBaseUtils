@@ -382,6 +382,7 @@ public class TreeNode<T, U> {
     }
 
     public String getName() {
+        if (_name==null)return _id;
         return _name;
     }
 

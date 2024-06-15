@@ -326,11 +326,11 @@ public class Tree<T, U> {
                 setRoot(baseNode);
             }
             for (int i = 0; i < nodePath.length; i++) {
-                String pNode = nodePath[i];
-                if (pNode != null && pNode.length() > 0) {
-                    TreeNode<T, U> aChild = baseNode.getChildByID(pNode);
+                String partName = nodePath[i];
+                if (partName != null && partName.length() > 0) {
+                    TreeNode<T, U> aChild = baseNode.getChildByID(partName);
                     if (aChild == null) {
-                        aChild = new TreeNode<>(pNode, null);
+                        aChild = new TreeNode<>(partName, null);
                         baseNode.addChild(aChild);
                     }
                     baseNode = aChild;

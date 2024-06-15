@@ -1,51 +1,48 @@
 package org.basetools.util.tree;
 
-import org.basetools.util.json.JSONUtilities;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
 
-import javax.json.*;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Stack;
 
 public class JSONSerializationTreeNodeRenderer<T, U> implements TreeRenderer<T, U> {
-    private static final JsonObjectBuilder NULL_BUILDER = Json.createObjectBuilder();
     private final Stack builderStack = new Stack();
 
     public JSONSerializationTreeNodeRenderer() {
-        JsonObjectBuilder builder = Json.createObjectBuilder();
+        JSONObject builder = new JSONObject();
         pushToStack(builder);
     }
 
-    public JsonObject build() {
-        Object builder = builderStack.peek();
-        return ((JsonObjectBuilder) builder).build();
+    public JSONObject build() {
+        JSONObject builder = (JSONObject) builderStack.peek();
+        return builder;
     }
 
-    public JsonArray buildArray() {
+    public JSONArray buildArray() {
         Object builder = builderStack.peek();
-        if (builder instanceof JsonArrayBuilder) {
-            return ((JsonArrayBuilder) builder).build();
-        }
-        return null;
+
+        return (JSONArray) builder;
     }
 
     public void renderLeafStart(TreeNode node) {
         Object builder = builderStack.peek();
         if (node.getParent() != null && node.getParent().isList()) {
-            if (builder instanceof JsonArrayBuilder) {
-                JSONUtilities.add((JsonArrayBuilder) builder, node.getData());
+            if (builder instanceof JSONArray) {
+                ((JSONArray) builder).add(node.getData());
             } else {
-                JsonObjectBuilder simpleBuilder = Json.createObjectBuilder();
-                JSONUtilities.add(simpleBuilder, node.getID(), node.getData());
-                JSONUtilities.add((JsonArrayBuilder) builder, simpleBuilder);
+                JSONObject simpleBuilder = new JSONObject();
+                simpleBuilder.put(node.getID(), node.getData());
+                ((JSONArray) builder).add(simpleBuilder);
             }
         } else {
-            if (builder instanceof JsonArrayBuilder) {
-                JsonObjectBuilder simpleBuilder = Json.createObjectBuilder();
-                JSONUtilities.add(simpleBuilder, node.getID(), node.getData());
-                JSONUtilities.add((JsonArrayBuilder) builder, simpleBuilder);
+            if (builder instanceof JSONArray) {
+                JSONObject simpleBuilder = new JSONObject();
+                simpleBuilder.put(node.getID(), node.getData());
+                ((JSONArray) builder).add(simpleBuilder);
             } else {
-                JSONUtilities.add((JsonObjectBuilder) builder, node.getID(), node.getData());
+                ((JSONObject) builder).put(node.getID(), node.getData());
             }
         }
     }
@@ -54,16 +51,16 @@ public class JSONSerializationTreeNodeRenderer<T, U> implements TreeRenderer<T, 
         Object builder = builderStack.peek();
 
         if (node.getParent() != null && node.getParent().isList()) {
-            JsonObjectBuilder simpleBuilder = Json.createObjectBuilder();
+            JSONObject simpleBuilder = new JSONObject();
             pushToStack(simpleBuilder);
         } else {
-            JsonObjectBuilder baseBuilder = Json.createObjectBuilder();
-            if (builder instanceof JsonArrayBuilder) {
-                baseBuilder.add(node.getName(), baseBuilder);
-                builder = JSONUtilities.add((JsonArrayBuilder) builder, baseBuilder);
-                pushToStack((JsonArrayBuilder) builder);
+            JSONObject baseBuilder = new JSONObject();
+            if (builder instanceof JSONArray) {
+                baseBuilder.put(node.getName(), baseBuilder);
+                ((JSONArray) builder).add(baseBuilder);
+                pushToStack((JSONArray) builder);
             } else {
-                ((JsonObjectBuilder) builder).add(node.getID(), baseBuilder);
+                ((JSONObject) builder).put(node.getID(), baseBuilder);
                 pushToStack(baseBuilder);
             }
         }
@@ -71,7 +68,7 @@ public class JSONSerializationTreeNodeRenderer<T, U> implements TreeRenderer<T, 
 
     public void renderStart(TreeNode node) {
         if (node.getParent() == null) {
-            JsonObjectBuilder simpleBuilder = Json.createObjectBuilder();
+            JSONObject simpleBuilder = new JSONObject();
             pushToStack(simpleBuilder);
         } else if (node.hasChildren()) {
             renderCompositeStart(node);
@@ -80,11 +77,11 @@ public class JSONSerializationTreeNodeRenderer<T, U> implements TreeRenderer<T, 
         }
     }
 
-    private void pushToStack(JsonObjectBuilder simpleBuilder) {
+    private void pushToStack(JSONObject simpleBuilder) {
         builderStack.push(simpleBuilder);
     }
 
-    private void pushToStack(JsonArrayBuilder simpleBuilder) {
+    private void pushToStack(JSONArray simpleBuilder) {
         builderStack.push(simpleBuilder);
     }
 
@@ -93,17 +90,17 @@ public class JSONSerializationTreeNodeRenderer<T, U> implements TreeRenderer<T, 
             Object baseBuilder = builderStack.pop();
             Object parentBuilder = builderStack.peek();
 
-            if (parentBuilder instanceof JsonArrayBuilder) {
-                JSONUtilities.add((JsonArrayBuilder) parentBuilder, baseBuilder);
+            if (parentBuilder instanceof JSONArray) {
+                ((JSONArray) parentBuilder).add(baseBuilder);
             } else {
-                JSONUtilities.add((JsonObjectBuilder) parentBuilder, Objects.toString(node.getName(), node.getID()), baseBuilder);
+                ((JSONObject) parentBuilder).put(Objects.toString(node.getName(), node.getID()), baseBuilder);
             }
         }
     }
 
     @Override
     public void render(TreeNode genericTreeNode, boolean in, Map traverseData) {
-      //  System.out.println("in:" + in + " " + genericTreeNode.getID());
+        //  System.out.println("in:" + in + " " + genericTreeNode.getID());
         if (in)
             renderStart(genericTreeNode);
         else

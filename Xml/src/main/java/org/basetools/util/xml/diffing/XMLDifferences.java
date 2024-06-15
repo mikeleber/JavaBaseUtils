@@ -1,5 +1,7 @@
 package org.basetools.util.xml.diffing;
 
+import org.apache.commons.logging.Log;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -50,7 +52,12 @@ public class XMLDifferences<T> {
     }
 
     public void add(XMLNodeDiff diff) {
-        getDifferences().add(diff);
+        if (!getDifferences().contains(diff)){
+
+            getDifferences().add(diff);
+        }else{
+            //duplicate found, skip
+        }
     }
 
     public long countErrors() {

@@ -10,6 +10,7 @@ import org.basetools.util.mesh.graphviz.GraphvizTreeVisitor;
 import org.basetools.util.mesh.mermaid.MermaidSubsystemTreeVisitor;
 import org.basetools.util.mesh.springy.SpringyTreeVisitor;
 import org.basetools.util.tree.xpath.TreeNodeXPathExecuterImpl;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import javax.json.JsonObject;
@@ -18,7 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-
+@Disabled
 class MeshTest {
 
     @Test

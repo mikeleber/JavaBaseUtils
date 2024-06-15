@@ -18,6 +18,19 @@ public class XMLNodeDiff {
 
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        XMLNodeDiff that = (XMLNodeDiff) o;
+        return Objects.equals(currentValue, that.currentValue) && Objects.equals(expectedValue, that.expectedValue) && Objects.equals(actualNode, that.actualNode) && Objects.equals(expectNode, that.expectNode) && diffType == that.diffType && Objects.equals(xpath, that.xpath) && severity == that.severity;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(currentValue, expectedValue, actualNode, expectNode, diffType, xpath, severity);
+    }
+
     public static Builder builder() {
         return new Builder();
     }
