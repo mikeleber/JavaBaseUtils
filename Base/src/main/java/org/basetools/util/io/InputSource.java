@@ -11,6 +11,7 @@ import java.nio.charset.Charset;
 public class InputSource extends org.xml.sax.InputSource implements AutoCloseable {
     private org.basetools.util.StringUtils.ContentType _contentType;
     private String _language;
+    private boolean _cachable=false;
 
     public InputSource() {
         super();
@@ -107,6 +108,9 @@ public class InputSource extends org.xml.sax.InputSource implements AutoCloseabl
     public InputSource withContentType(StringUtils.ContentType type) {
         _contentType = type;
         return this;
+    } public InputSource withCachable(boolean cachable) {
+        _cachable = cachable;
+        return this;
     }
 
     public InputSource withSystemId(String id) {
@@ -128,11 +132,16 @@ public class InputSource extends org.xml.sax.InputSource implements AutoCloseabl
         return this;
     }
 
+    public boolean isCachable() {
+        return _cachable;
+    }
+
     public InputSource clone() {
         InputSource is = new InputSource();
         is.setSystemId(getSystemId());
         is.setEncoding(getEncoding());
         is._contentType = _contentType;
+        is._cachable = _cachable;
         is._language = _language;
         is.setPublicId(getPublicId());
         if (getByteStream() != null) {
