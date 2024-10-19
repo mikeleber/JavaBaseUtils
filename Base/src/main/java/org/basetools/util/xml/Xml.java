@@ -230,6 +230,9 @@ public class Xml {
         }
         return n == 0 ? null : children.get(0);
     }
+    public boolean hasAttr(String name) {
+        return optAttrString(name)!=null;
+    }
 
     public ArrayList<Xml> children(String name) {
         ArrayList<Xml> children = nameChildren.get(name);
@@ -266,6 +269,11 @@ public class Xml {
         String string = optAttrString(name);
         return string == null ? null : integerAttr(name);
     }
+    public Long optAttrLong(String name) {
+        String string = optAttrString(name);
+        return string == null ? null : longAttr(name);
+    }
+
 
     public String optAttrString(String name) {
         return nameAttributes.get(name);
@@ -306,6 +314,9 @@ public class Xml {
 
     public int integerAttr(String name) {
         return Integer.parseInt(stringAttr(name));
+    }
+ public long longAttr(String name) {
+        return Long.parseLong(stringAttr(name));
     }
 
     public Double optAttrDouble(String name) {
