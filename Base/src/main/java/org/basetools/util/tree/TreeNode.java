@@ -1361,14 +1361,14 @@ public class TreeNode<T, U> {
         }
     }
 
-    protected void parse(String key, JSONArray array, JSONNodeCreator creator) {
+    protected void parse( JSONArray array, JSONNodeCreator creator) {
         Iterator<Object> objects = array.iterator();
         while (objects.hasNext()) {
             Object next = objects.next();
             if (next instanceof JSONObject) {
-                parse(key, (JSONObject) next, creator);
+                parse((JSONObject) next, creator);
             } else if (next instanceof JSONArray) {
-                parse(key, (JSONArray) next, creator);
+                parse((JSONArray) next, creator);
             }
 
         }
@@ -1380,9 +1380,9 @@ public class TreeNode<T, U> {
         boolean stop = creator.createNode(key, this, value);
         if (!stop) {
             if (value instanceof JSONObject) {
-                parse(key, (JSONObject) value, creator);
+                parse((JSONObject) value, creator);
             } else if (value instanceof JSONArray) {
-                parse(key, (JSONArray) value, creator);
+                parse((JSONArray) value, creator);
             }
 
         }
