@@ -1,9 +1,8 @@
 package org.basetools.util;
 
+import net.minidev.json.JSONObject;
 import org.basetools.util.cache.Cache;
 
-import javax.json.Json;
-import javax.json.JsonObjectBuilder;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -63,15 +62,15 @@ public class TimingTable<I> extends Cache<String, Statistics<I>> {
     /**
      * @return
      */
-    public JsonObjectBuilder getTimings() {
-        JsonObjectBuilder result = Json.createObjectBuilder();
+    public JSONObject getTimings() {
+        JSONObject result = new JSONObject();
         Lock readLock = getReadWriteLock().readLock();
         try {
             readLock.lock();
             Iterator<Map.Entry<String, Statistics<I>>> it = getCache().entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry<String, Statistics<I>> entry = it.next();
-                result.add(entry.getKey(), entry.getValue().toJSON());
+                result.put(entry.getKey(), entry.getValue().toJSON());
             }
         } finally {
             readLock.unlock();

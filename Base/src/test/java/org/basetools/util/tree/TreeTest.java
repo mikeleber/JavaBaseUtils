@@ -3,10 +3,7 @@ package org.basetools.util.tree;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
-import org.basetools.util.json.JSONUtilities;
 import org.junit.jupiter.api.Test;
-
-import javax.json.JsonObject;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

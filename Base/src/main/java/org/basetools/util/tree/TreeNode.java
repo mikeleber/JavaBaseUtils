@@ -1,5 +1,8 @@
 package org.basetools.util.tree;
 
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONAware;
+import net.minidev.json.JSONObject;
 import org.apache.commons.collections4.map.MultiKeyMap;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
@@ -7,9 +10,6 @@ import org.basetools.util.collection.ValueFacade;
 import org.basetools.util.tree.creator.JSONNodeCreator;
 import org.basetools.util.tree.creator.NodeCreator;
 
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonValue;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -382,7 +382,7 @@ public class TreeNode<T, U> {
     }
 
     public String getName() {
-        if (_name==null)return _id;
+        if (_name == null) return _id;
         return _name;
     }
 
@@ -1345,36 +1345,46 @@ public class TreeNode<T, U> {
         return (R) baseNode;
     }
 
-    public void parse(JsonObject aDef, JSONNodeCreator creator) {
+    public void parse(JSONObject aDef, JSONNodeCreator creator) {
         TreeNode node = creator.createNode(this, aDef);
-        Iterator<Map.Entry<String, JsonValue>> entries = aDef.entrySet().iterator();
+        Iterator<Map.Entry<String, Object>> entries = aDef.entrySet().iterator();
         while (entries.hasNext()) {
-            Map.Entry<String, JsonValue> aEntry = entries.next();
-            JsonValue value = aEntry.getValue();
-            node.parse(aEntry.getKey(), value, creator);
+            Map.Entry<String, Object> aEntry = entries.next();
+            Object value = aEntry.getValue();
+            if (value instanceof JSONObject) {
+                node.parse(aEntry.getKey(), (JSONObject) value, creator);
+            } else if (value instanceof JSONArray) {
+                node.parse(aEntry.getKey(), (JSONArray) value, creator);
+            }
+
+
         }
     }
 
-    protected void parse(String key, JsonArray array, JSONNodeCreator creator) {
-        Iterator<JsonValue> objects = array.iterator();
+    protected void parse(String key, JSONArray array, JSONNodeCreator creator) {
+        Iterator<Object> objects = array.iterator();
         while (objects.hasNext()) {
-            parse(key, objects.next(), creator);
+            Object next = objects.next();
+            if (next instanceof JSONObject) {
+                parse(key, (JSONObject) next, creator);
+            } else if (next instanceof JSONArray) {
+                parse(key, (JSONArray) next, creator);
+            }
+
         }
     }
 
-    public void parse(JsonValue value, JSONNodeCreator creator) {
-        parse(null, value, creator);
-    }
 
-    protected void parse(String key, JsonValue value, JSONNodeCreator creator) {
+
+    protected void parse(String key, JSONAware value, JSONNodeCreator creator) {
         boolean stop = creator.createNode(key, this, value);
         if (!stop) {
-            JsonValue.ValueType type = value.getValueType();
-            if (type == JsonValue.ValueType.ARRAY) {
-                parse(key, value.asJsonArray(), creator);
-            } else if (type == JsonValue.ValueType.OBJECT) {
-                parse(value.asJsonObject(), creator);
+            if (value instanceof JSONObject) {
+                parse(key, (JSONObject) value, creator);
+            } else if (value instanceof JSONArray) {
+                parse(key, (JSONArray) value, creator);
             }
+
         }
     }
 

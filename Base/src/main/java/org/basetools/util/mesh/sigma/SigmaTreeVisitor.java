@@ -1,14 +1,12 @@
 package org.basetools.util.mesh.sigma;
 
-import org.basetools.util.json.JSONUtilities;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
 import org.basetools.util.mesh.NodeRelation;
 import org.basetools.util.mesh.RelationalTreeNode;
 import org.basetools.util.tree.TreeNode;
 import org.basetools.util.tree.TreeVisitor;
 
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObjectBuilder;
 import java.util.Iterator;
 
 public class SigmaTreeVisitor implements TreeVisitor {
@@ -24,21 +22,21 @@ public class SigmaTreeVisitor implements TreeVisitor {
 //    { id: "e2", source: "n2", target: "n0", color: '#FF0000', type:'line', size:2}
 //  ]
 //}
-    private JsonObjectBuilder builder;
-    private JsonArrayBuilder nodes;
-    private JsonArrayBuilder edges;
+    private JSONObject builder;
+    private JSONArray nodes;
+    private JSONArray edges;
 
-    public SigmaTreeVisitor(JsonObjectBuilder root) {
+    public SigmaTreeVisitor(JSONObject root) {
         this.builder = root;
-        nodes = Json.createArrayBuilder();
-        edges = Json.createArrayBuilder();
+        nodes = new JSONArray();
+        edges = new JSONArray();
     }
 
     public static StringBuilder toGraph(int level, RelationalTreeNode targetTree) {
-        JsonObjectBuilder builder = Json.createObjectBuilder();
+        JSONObject builder = new JSONObject();
         targetTree.accept(new SigmaTreeVisitor(builder));
 
-        return new StringBuilder(builder.build().toString());
+        return new StringBuilder(builder.toJSONString());
     }
 
     @Override
@@ -47,29 +45,29 @@ public class SigmaTreeVisitor implements TreeVisitor {
             return;
         }
         Iterator<NodeRelation> relations = ((RelationalTreeNode) aNode).getRelations().values().iterator();
-        JsonObjectBuilder node = Json.createObjectBuilder()
-                .add("x", (int) (Math.random() * 1000))
-                .add("y", (int) (Math.random() * 1000))
-                .add("label", aNode.getID())
-                .add("id", aNode.getID());
-        JSONUtilities.add(nodes, node);
+        JSONObject node = new JSONObject()
+                .appendField("x", (int) (Math.random() * 1000))
+                .appendField("y", (int) (Math.random() * 1000))
+                .appendField("label", aNode.getID())
+                .appendField("id", aNode.getID());
+        nodes.add(node);
 
         while (relations.hasNext()) {
-            JsonArrayBuilder singleEdge = Json.createArrayBuilder();
+            JSONArray singleEdge = new JSONArray();
             NodeRelation relation = relations.next();
             String fromTopLevelNodeId = relation.getRelationFrom().getID();
             TreeNode toTopLevelNode = relation.getRelationTo();
             String toTopLevelNodeId = toTopLevelNode.getID();
             String relationName = relation.getName();
 
-            JsonObjectBuilder edgeNode = Json.createObjectBuilder()
-                    .add("id", relationName)
-                    .add("source", fromTopLevelNodeId)
-                    .add("target", toTopLevelNodeId)
-                    .add("type", "curve");
+            JSONObject edgeNode = new JSONObject()
+                    .appendField("id", relationName)
+                    .appendField("source", fromTopLevelNodeId)
+                    .appendField("target", toTopLevelNodeId)
+                    .appendField("type", "curve");
 
 //            if (StringUtils.isNotEmpty(relationName) && !relationName.equals(toTopLevelNodeId)) {
-//                JsonObjectBuilder labelBuilder = Json.createObjectBuilder();
+//                JsonObjectBuilder labelBuilder = new JSONObject();
 //                labelBuilder.add("label", relationName);
 //                JSONUtilities.add(singleEdge, labelBuilder);
 //            }
@@ -80,8 +78,8 @@ public class SigmaTreeVisitor implements TreeVisitor {
     @Override
     public void visitEnd(TreeNode aNode) {
         if (aNode.isRoot()) {
-            JSONUtilities.add(builder, "nodes", nodes);
-            JSONUtilities.add(builder, "edges", edges);
+            builder.put("nodes", nodes);
+            builder.put("edges", edges);
         }
     }
 

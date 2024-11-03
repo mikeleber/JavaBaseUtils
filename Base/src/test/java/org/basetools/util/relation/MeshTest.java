@@ -1,7 +1,8 @@
 package org.basetools.util.relation;
 
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
 import org.basetools.util.io.FileUtils;
-import org.basetools.util.json.JSONUtilities;
 import org.basetools.util.mesh.Mesh;
 import org.basetools.util.mesh.RelationalTreeNode;
 import org.basetools.util.mesh.creator.RelationalJSONNodeCreator;
@@ -13,7 +14,6 @@ import org.basetools.util.tree.xpath.TreeNodeXPathExecuterImpl;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import javax.json.JsonObject;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,8 +28,8 @@ class MeshTest {
         RelationalTreeNode node = new RelationalTreeNode();
         node.setMesh(new Mesh());
         node.getMesh().addRoot(node);
-        JsonObject aDef = JSONUtilities.createJson(json);
-        node.parse(aDef.entrySet().iterator().next().getValue(), new RelationalJSONNodeCreator(node.getMesh()));
+        JSONObject aDef = (JSONObject) JSONValue.parse(json);
+        node.parse((JSONObject) aDef.entrySet().iterator().next().getValue(), new RelationalJSONNodeCreator(node.getMesh()));
         node.initialize();
         node.hasRelations();
         node.findRelations();
@@ -52,8 +52,8 @@ class MeshTest {
         RelationalTreeNode node = new RelationalTreeNode();
         node.setMesh(new Mesh());
         node.getMesh().addRoot(node);
-        JsonObject aDef = JSONUtilities.createJson(json);
-        node.parse(aDef.entrySet().iterator().next().getValue(), new RelationalJSONNodeCreator(node.getMesh()));
+        JSONObject aDef = (JSONObject) JSONValue.parse(json);
+        node.parse( (JSONObject) aDef.entrySet().iterator().next().getValue(), new RelationalJSONNodeCreator(node.getMesh()));
         node.initialize();
 
         List<RelationalTreeNode> selection = (List<RelationalTreeNode>) TreeNodeXPathExecuterImpl.getInstance().processXPathJaxen("/System", node);
@@ -66,8 +66,8 @@ class MeshTest {
         RelationalTreeNode node = new RelationalTreeNode();
         node.setMesh(new Mesh());
         node.getMesh().addRoot(node);
-        JsonObject aDef = JSONUtilities.createJson(json);
-        node.parse(aDef.entrySet().iterator().next().getValue(), new RelationalJSONNodeCreator(node.getMesh()));
+        JSONObject aDef = (JSONObject)  JSONValue.parse(json);
+        node.parse( (JSONObject) aDef.entrySet().iterator().next().getValue(), new RelationalJSONNodeCreator(node.getMesh()));
         node.initialize();
 
         List<RelationalTreeNode> selection = (List<RelationalTreeNode>) TreeNodeXPathExecuterImpl.getInstance().processXPathJaxen("/*", node);
@@ -80,8 +80,8 @@ class MeshTest {
         RelationalTreeNode node = new RelationalTreeNode();
         node.setMesh(new Mesh());
         node.getMesh().addRoot(node);
-        JsonObject aDef = JSONUtilities.createJson(json);
-        node.parse(aDef.entrySet().iterator().next().getValue(), new RelationalJSONNodeCreator(node.getMesh()));
+        JSONObject aDef =  (JSONObject) JSONValue.parse(json);
+        node.parse( (JSONObject) aDef.entrySet().iterator().next().getValue(), new RelationalJSONNodeCreator(node.getMesh()));
         node.initialize();
 
         List<RelationalTreeNode> selection = (List<RelationalTreeNode>) TreeNodeXPathExecuterImpl.getInstance().processXPathJaxen("/*", node);

@@ -1,12 +1,10 @@
 package org.basetools.util.cache;
 
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
 import org.apache.commons.collections4.keyvalue.MultiKey;
 import org.apache.commons.collections4.map.MultiKeyMap;
 
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
-import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -212,15 +210,15 @@ public class MultiKeyCache<K, V> {
         }
     }
 
-    public JsonObject getInfo() {
-        JsonArrayBuilder entries = Json.createArrayBuilder();
+    public JSONObject getInfo() {
+        JSONArray entries = new JSONArray();
         traverse((key, value) -> {
             entries.add(key.toString());
             return null;
         });
-        return Json.createObjectBuilder()
-                .add("size", getCache().size())
-                .add("entries", entries).build();
+        return new JSONObject()
+                .appendField("size", getCache().size())
+                .appendField("entries", entries);
     }
 
     public void traverse(BiFunction<MultiKey<? extends K>, V, Void> processor) {

@@ -1,33 +1,31 @@
 package org.basetools.util.mesh.cytoscape;
 
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
-import org.basetools.util.json.JSONUtilities;
 import org.basetools.util.mesh.NodeRelation;
 import org.basetools.util.mesh.RelationalTreeNode;
 import org.basetools.util.tree.TreeNode;
 import org.basetools.util.tree.TreeVisitor;
 
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObjectBuilder;
 import java.util.Iterator;
 
 public class CytoscapeTreeVisitor implements TreeVisitor {
-    private JsonArrayBuilder builder;
-    private JsonArrayBuilder nodes;
-    private JsonArrayBuilder edges;
+    private JSONArray builder;
+    private JSONArray nodes;
+    private JSONArray edges;
 
-    public CytoscapeTreeVisitor(JsonArrayBuilder root) {
+    public CytoscapeTreeVisitor(JSONArray root) {
         this.builder = root;
-        // nodes = Json.createArrayBuilder();
-        edges = nodes = root;//Json.createArrayBuilder();
+        // nodes = new JSONArray()
+        edges = nodes = root;//new JSONArray()
     }
 
     public static StringBuilder toGraph(int level, RelationalTreeNode targetTree) {
-        JsonArrayBuilder builder = Json.createArrayBuilder();
+        JSONArray builder = new JSONArray();
         targetTree.accept(new CytoscapeTreeVisitor(builder));
 
-        return new StringBuilder(builder.build().toString());
+        return new StringBuilder(builder.toJSONString());
     }
 
 //    elements: {
@@ -77,37 +75,37 @@ public class CytoscapeTreeVisitor implements TreeVisitor {
     public void visitStart(TreeNode aNode) {
         Iterator<NodeRelation> relations = ((RelationalTreeNode) aNode).getRelations().values().iterator();
 
-        JsonObjectBuilder cytoscapeNode = Json.createObjectBuilder();
-        JsonObjectBuilder nodeData = Json.createObjectBuilder();
-        nodeData.add("id", aNode.getID());
+        JSONObject cytoscapeNode = new JSONObject();
+        JSONObject nodeData = new JSONObject();
+        nodeData.appendField("id", aNode.getID());
         if (aNode.getName() != null) {
-            nodeData.add("name", aNode.getName());
+            nodeData.appendField("name", aNode.getName());
         }
         if (aNode.getParent() != null && !aNode.getParent().isRoot()) {
-            nodeData.add("parent", aNode.getParent().getID());
+            nodeData.appendField("parent", aNode.getParent().getID());
         }
-        nodeData.add("faveShape", "rectangle");
+        nodeData.appendField("faveShape", "rectangle");
         // nodeData.add("faveColor", "rectangle");
-        nodeData.add("weight", ((RelationalTreeNode) aNode).getRelations().size());
-        cytoscapeNode.add("data", nodeData);
-        JSONUtilities.add(nodes, cytoscapeNode);
+        nodeData.appendField("weight", ((RelationalTreeNode) aNode).getRelations().size());
+        cytoscapeNode.appendField("data", nodeData);
+        nodes.add(cytoscapeNode);
 
         while (relations.hasNext()) {
-            JsonObjectBuilder singleEdge = Json.createObjectBuilder();
-            JsonObjectBuilder singleEdgeData = Json.createObjectBuilder();
+            JSONObject singleEdge = new JSONObject();
+            JSONObject singleEdgeData = new JSONObject();
             NodeRelation relation = relations.next();
             String fromTopLevelNodeId = relation.getRelationFrom().getID();
             TreeNode toTopLevelNode = relation.getRelationTo();
             String toTopLevelNodeId = toTopLevelNode.getID();
             String relationName = relation.getName();
 
-            singleEdgeData.add("source", fromTopLevelNodeId);
-            singleEdgeData.add("target", toTopLevelNodeId);
+            singleEdgeData.appendField("source", fromTopLevelNodeId);
+            singleEdgeData.appendField("target", toTopLevelNodeId);
             //   singleEdgeData.add("strength", 1);
             if (StringUtils.isNotEmpty(relationName) && !relationName.equals(toTopLevelNodeId)) {
-                singleEdgeData.add("label", relationName);
+                singleEdgeData.appendField("label", relationName);
             }
-            singleEdge.add("data", singleEdgeData);
+            singleEdge.appendField("data", singleEdgeData);
             nodes.add(singleEdge);
         }
     }

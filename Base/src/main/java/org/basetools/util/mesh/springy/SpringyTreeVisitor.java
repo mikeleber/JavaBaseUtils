@@ -1,33 +1,31 @@
 package org.basetools.util.mesh.springy;
 
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
-import org.basetools.util.json.JSONUtilities;
 import org.basetools.util.mesh.NodeRelation;
 import org.basetools.util.mesh.RelationalTreeNode;
 import org.basetools.util.tree.TreeNode;
 import org.basetools.util.tree.TreeVisitor;
 
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObjectBuilder;
 import java.util.Iterator;
 
 public class SpringyTreeVisitor implements TreeVisitor {
-    private JsonObjectBuilder builder;
-    private JsonArrayBuilder nodes;
-    private JsonArrayBuilder edges;
+    private JSONObject builder;
+    private JSONArray nodes;
+    private JSONArray edges;
 
-    public SpringyTreeVisitor(JsonObjectBuilder root) {
+    public SpringyTreeVisitor(JSONObject root) {
         this.builder = root;
-        nodes = Json.createArrayBuilder();
-        edges = Json.createArrayBuilder();
+        nodes = new JSONArray();
+        edges = new JSONArray();
     }
 
     public static StringBuilder toGraph(int level, RelationalTreeNode targetTree) {
-        JsonObjectBuilder builder = Json.createObjectBuilder();
+        JSONObject builder = new JSONObject();
         targetTree.accept(new SpringyTreeVisitor(builder));
 
-        return new StringBuilder(builder.build().toString());
+        return new StringBuilder(builder.toJSONString());
     }
 
     @Override
@@ -36,21 +34,21 @@ public class SpringyTreeVisitor implements TreeVisitor {
             return;
         }
         Iterator<NodeRelation> relations = ((RelationalTreeNode) aNode).getRelations().values().iterator();
-        JSONUtilities.add(nodes, aNode.getID());
+        nodes.add(aNode.getID());
         while (relations.hasNext()) {
-            JsonArrayBuilder singleEdge = Json.createArrayBuilder();
+            JSONArray singleEdge = new JSONArray();
             NodeRelation relation = relations.next();
             String fromTopLevelNodeId = relation.getRelationFrom().getID();
             TreeNode toTopLevelNode = relation.getRelationTo();
             String toTopLevelNodeId = toTopLevelNode.getID();
             String relationName = relation.getName();
 
-            JSONUtilities.add(singleEdge, fromTopLevelNodeId);
-            JSONUtilities.add(singleEdge, toTopLevelNodeId);
+            singleEdge.add(fromTopLevelNodeId);
+            singleEdge.add(toTopLevelNodeId);
             if (StringUtils.isNotEmpty(relationName) && !relationName.equals(toTopLevelNodeId)) {
-                JsonObjectBuilder labelBuilder = Json.createObjectBuilder();
-                labelBuilder.add("label", relationName);
-                JSONUtilities.add(singleEdge, labelBuilder);
+                JSONObject labelBuilder = new JSONObject();
+                labelBuilder.put("label", relationName);
+                singleEdge.add(labelBuilder);
             }
             edges.add(singleEdge);
         }
@@ -59,8 +57,8 @@ public class SpringyTreeVisitor implements TreeVisitor {
     @Override
     public void visitEnd(TreeNode aNode) {
         if (aNode.isRoot()) {
-            JSONUtilities.add(builder, "nodes", nodes);
-            JSONUtilities.add(builder, "edges", edges);
+            builder.put("nodes", nodes);
+            builder.put("edges", edges);
         }
     }
 

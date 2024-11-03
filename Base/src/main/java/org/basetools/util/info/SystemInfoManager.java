@@ -2,8 +2,6 @@ package org.basetools.util.info;
 
 import net.minidev.json.JSONObject;
 
-import javax.json.Json;
-import javax.json.JsonObjectBuilder;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;

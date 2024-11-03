@@ -1,12 +1,10 @@
 package org.basetools.util;
 
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
 import org.basetools.util.array.ArrayUtil;
 import org.basetools.util.collection.LimitedQueue;
-import org.basetools.util.json.JSONUtilities;
 
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObjectBuilder;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -156,34 +154,34 @@ public class Statistics<I> extends DoubleSummaryStatistics {
      *
      * @return JSON Object containing statistic informations
      */
-    public JsonObjectBuilder toJSON() {
-        JsonObjectBuilder result = Json.createObjectBuilder();
-        result.add("Count", getCount());
-        result.add("Sum", getSum());
+    public JSONObject toJSON() {
+        JSONObject result = new JSONObject();
+        result.put("Count", getCount());
+        result.put("Sum", getSum());
         if (!Double.isNaN(getMin()) && !Double.isInfinite(getMin())) {
-            result.add("Min", getMin());
+            result.put("Min", getMin());
         }
-        result.add("MinCreated", toLocalDateTime(new Date(getMinCreated())).toString());
-        JSONUtilities.add(result, "MinInfo", getMinInfo());
-        result.add("Average", getAverage());
+        result.put("MinCreated", toLocalDateTime(new Date(getMinCreated())).toString());
+        result.put("MinInfo", getMinInfo());
+        result.put("Average", getAverage());
         if (!Double.isNaN(getMax()) && !Double.isInfinite(getMax())) {
-            result.add("Max", getMax());
+            result.put("Max", getMax());
         }
 
-        JSONUtilities.add(result, "MaxInfo", getMaxInfo());
-        result.add("MaxCreated", toLocalDateTime(new Date(getMaxCreated())).toString());
+        result.put("MaxInfo", getMaxInfo());
+        result.put("MaxCreated", toLocalDateTime(new Date(getMaxCreated())).toString());
         Iterator<Object[]> lasts = getHistory().iterator();
         int pos = getHistory().size();
-        JsonArrayBuilder historyArrayJSON = Json.createArrayBuilder();
+        JSONArray historyArrayJSON = new JSONArray();
         while (lasts.hasNext()) {
-            JsonObjectBuilder historyJSON = Json.createObjectBuilder();
+            JSONObject historyJSON = new JSONObject();
             Object[] entry = lasts.next();
-            JSONUtilities.add(historyJSON, "Pos", pos--);
-            JSONUtilities.add(historyJSON, "MaxInfo", ArrayUtil.get(entry, 0));
-            JSONUtilities.add(historyJSON, "Max", ArrayUtil.get(entry, 1));
+            historyJSON.put("Pos", pos--);
+            historyJSON.put("MaxInfo", ArrayUtil.get(entry, 0));
+            historyJSON.put("Max", ArrayUtil.get(entry, 1));
             historyArrayJSON.add(historyJSON);
         }
-        result.add("SlowestHistory", historyArrayJSON);
+        result.put("SlowestHistory", historyArrayJSON);
         return result;
     }
 
