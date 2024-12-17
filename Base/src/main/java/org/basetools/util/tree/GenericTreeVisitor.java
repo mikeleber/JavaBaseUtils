@@ -10,6 +10,7 @@ public class GenericTreeVisitor<T, U, R> extends StackedTreeVisitor<R> implement
     private Predicate<Node> _doRender;
     private BiFunction<TreeNode<T, U>, R, R> _containerRenderer;
     private BiFunction<TreeNode<T, U>, R, R> _leafRenderer;
+    private Predicate<TreeNode<T, U>> _breakPredicate;
 
     public GenericTreeVisitor() {
         this(null, null, null);
@@ -40,7 +41,15 @@ public class GenericTreeVisitor<T, U, R> extends StackedTreeVisitor<R> implement
 
     @Override
     public boolean doBreak(TreeNode<T, U> aNode) {
+        if (_breakPredicate != null) {
+            return _breakPredicate.test(aNode);
+        } else {
+            return false;
+        }
+    }
 
-        return false;
+    public <V extends TreeVisitor<T, U>> V withBreakPredicate(Predicate<TreeNode<T, U>> breakPredicate) {
+        _breakPredicate = breakPredicate;
+        return (V) this;
     }
 }
