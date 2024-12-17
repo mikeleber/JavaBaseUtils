@@ -11,6 +11,14 @@ public class ByteUtils {
             return (byte) (val ? 1 : 0);
     }
 
+    public static int bitwiseSubstract(int mask, int value) {
+        return mask & ~value;
+    }
+
+    public static int bitwiseAdd(int mask, int value) {
+        return mask | value;
+    }
+
     public static byte toByte(int val) {
         return (byte) (val == 1 ? 1 : 0);
     }
