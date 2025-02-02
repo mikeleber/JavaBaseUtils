@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 public class Xml {
 
     private final String name;
+    private final String ns;
     private final Map<String, String> nameAttributes = new LinkedHashMap<>();
     private final Map<String, ArrayList<Xml>> nameChildren = new LinkedHashMap<>();
     private String content;
@@ -32,6 +33,7 @@ public class Xml {
 
     private Xml(Element element) {
         name = element.getNodeName();
+        ns = element.getNamespaceURI();
         content = getTextContentOnly(element);
         NamedNodeMap namedNodeMap = element.getAttributes();
         int n = namedNodeMap.getLength();
@@ -106,18 +108,21 @@ public class Xml {
         else
             return defValue == -1 ? childToDouble(propName, defValue) : defValue;
     }
+
     public boolean getValue(String propName, Boolean defValue, boolean prefDef) {
         if (prefDef) return childToBoolean(propName, defValue);
         else
             return defValue == null ? childToBoolean(propName, defValue) : defValue;
     }
+
     public int getValue(String propName, int defValue, boolean prefDef) {
         if (prefDef) return childToInt(propName, defValue);
         else
             return defValue == -1 ? childToInt(propName, defValue) : defValue;
     }
+
     public short getValue(String propName, short defValue, boolean prefDef) {
-        if (prefDef) return (short)childToInt(propName, defValue);
+        if (prefDef) return (short) childToInt(propName, defValue);
         else
             return defValue == -1 ? (short) childToInt(propName, defValue) : defValue;
     }
@@ -144,17 +149,26 @@ public class Xml {
         return textContent != null ? textContent.toString() : null;
     }
 
-    public void addAttribute(String name, String value) {
+    public Xml addAttribute(String name, String value) {
         nameAttributes.put(name, value);
+        return this;
     }
 
-    private void addChild(String name, Xml child) {
+    public Xml addAttributeIfExist(String name, String value) {
+        if (value != null) {
+            nameAttributes.put(name, value);
+        }
+        return this;
+    }
+
+    private Xml addChild(String name, Xml child) {
         ArrayList<Xml> children = nameChildren.get(name);
         if (children == null) {
             children = new ArrayList<>();
             nameChildren.put(name, children);
         }
         children.add(child);
+        return this;
     }
 
     public Xml(InputSource input, String rootName) {
@@ -163,11 +177,19 @@ public class Xml {
 
     public Xml(String nodeName, String textContent) {
         name = nodeName;
+        ns=null;
+        content = textContent;
+    }
+
+    public Xml(String nodeName, String namespace, String textContent) {
+        name = nodeName;
+        ns = namespace;
         content = textContent;
     }
 
     public Xml(String rootName) {
         name = rootName;
+        ns=null;
     }
 
     public static Xml from(String xmlContent, String rootName) {
@@ -190,12 +212,14 @@ public class Xml {
             return new Xml(input, rootName);
     }
 
-    public void setContent(String content) {
+    public Xml setContent(String content) {
         this.content = content;
+        return this;
     }
 
-    public void addChild(Xml xml) {
+    public Xml addChild(Xml xml) {
         addChild(xml.name(), xml);
+        return this;
     }
 
     public String name() {
@@ -203,10 +227,10 @@ public class Xml {
     }
 
     public Xml getChild(String... pathNames) {
-        Xml current=this;
+        Xml current = this;
         for (String name : pathNames) {
-            current= current.optChild(name);
-            if (current==null){
+            current = current.optChild(name);
+            if (current == null) {
                 return null;
             }
         }
@@ -230,8 +254,9 @@ public class Xml {
         }
         return n == 0 ? null : children.get(0);
     }
+
     public boolean hasAttr(String name) {
-        return optAttrString(name)!=null;
+        return optAttrString(name) != null;
     }
 
     public ArrayList<Xml> children(String name) {
@@ -256,9 +281,10 @@ public class Xml {
         return children.stream();
     }
 
-    public void sortChild(String name, Comparator comparator) {
+    public Xml sortChild(String name, Comparator comparator) {
         ArrayList<Xml> nameChilds = nameChildren.get(name);
         FastQSort.sortList(nameChilds, comparator);
+        return this;
     }
 
     public boolean option(String name) {
@@ -269,6 +295,7 @@ public class Xml {
         String string = optAttrString(name);
         return string == null ? null : integerAttr(name);
     }
+
     public Long optAttrLong(String name) {
         String string = optAttrString(name);
         return string == null ? null : longAttr(name);
@@ -315,7 +342,8 @@ public class Xml {
     public int integerAttr(String name) {
         return Integer.parseInt(stringAttr(name));
     }
- public long longAttr(String name) {
+
+    public long longAttr(String name) {
         return Long.parseLong(stringAttr(name));
     }
 
@@ -416,12 +444,14 @@ public class Xml {
         }
         return Integer.parseInt(content);
     }
+
     public short contentToShort(short defaultValue) {
         if (content == null) {
             return defaultValue;
         }
         return Short.parseShort(content);
     }
+
     public byte childBooleanToByte(String name, byte defaultValue) {
         Xml child = optChild(name);
         if (child == null || child.content == null || child.content.length() == 0) {
@@ -462,8 +492,16 @@ public class Xml {
         return sb.toString();
     }
 
-    public void toXML(StringBuilder xml) {
+    public String namespace() {
+        return ns;
+    }
+
+    public Xml toXML(StringBuilder xml) {
         xml.append("<");
+        if (StringUtils.isNotEmpty(ns)) {
+            xml.append(ns);
+            xml.append(":");
+        }
         xml.append(name);
 
         for (Map.Entry attrib : nameAttributes.entrySet()) {
@@ -482,7 +520,12 @@ public class Xml {
             xml.append(content);
         }
         xml.append("</");
+        if (StringUtils.isNotEmpty(ns)) {
+            xml.append(ns);
+            xml.append(":");
+        }
         xml.append(name);
         xml.append(">");
+        return this;
     }
 }
