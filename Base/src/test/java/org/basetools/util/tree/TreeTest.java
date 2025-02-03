@@ -12,18 +12,18 @@ public class TreeTest {
     @Test
     void whenCallAddPath_withGivenXPaths_ThenCreateTree() {
         Tree tree = new Tree();
-        tree.addPath("/mein/name/ist/hase", false, null);
-        tree.addPath("/mein/name/war/hase", false, null);
-        tree.addPath("/mein/name/war/oder", false, null);
+        tree.addPath("/mein/name/ist/hase", null);
+        tree.addPath("/mein/name/war/hase", null);
+        tree.addPath("/mein/name/war/oder", null);
         assertEquals("mein", tree.getRoot().getFirstChild().getID());
     }
 
     @Test
     void givenTree_whenSerialized_thenGetvalidJSON() throws ParseException {
         Tree tree = new Tree();
-        tree.addPath("/mein/name/ist/hase", false, null);
-        tree.addPath("/mein/name/war/hase", false, null);
-        tree.addPath("/mein/name/war/oder", false, null);
+        tree.addPath("/mein/name/ist/hase", null);
+        tree.addPath("/mein/name/war/hase", null);
+        tree.addPath("/mein/name/war/oder", null);
         JSONSerializationTreeNodeRenderer renderer = new JSONSerializationTreeNodeRenderer();
         tree.getRoot().render(renderer);
         JSONObject current = renderer.build();

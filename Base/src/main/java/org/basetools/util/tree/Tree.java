@@ -311,7 +311,7 @@ public class Tree<T, U> {
         return getRoot().getFirstChild();
     }
 
-    public void addPath(String path, boolean check, T data) {
+    public void addPath(String path, T data) {
         if (path != null) {
             String[] elems = path.split("/");
             addNode(elems, data);

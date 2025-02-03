@@ -12,9 +12,9 @@ class TreeNodeXPathExecuterImplTest {
     @Test
     void processXPathJaxen() throws TransformerException {
         Tree tree = new Tree<>();
-        tree.addPath("/mein/name/ist/hase", false, null);
-        tree.addPath("/mein/name/war/hase", false, null);
-        tree.addPath("/mein/name/war/oder", false, null);
+        tree.addPath("/mein/name/ist/hase", null);
+        tree.addPath("/mein/name/war/hase", null);
+        tree.addPath("/mein/name/war/oder", null);
         assertEquals("mein", tree.getRoot().getFirstChild().getID());
 
         assertEquals(7, TreeNodeXPathExecuterImpl.getInstance().processXPathJaxen("//*", tree.getRoot()).size());
