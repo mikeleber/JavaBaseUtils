@@ -12,7 +12,8 @@ public final class SystemInfoManagementAgent {
             if (!server.isRegistered(name)) {
                 server.registerMBean(new SystemInfoManagement(), name);
             }
-        } catch (MalformedObjectNameException | MBeanRegistrationException | NotCompliantMBeanException | InstanceAlreadyExistsException e) {
+        } catch (MalformedObjectNameException | MBeanRegistrationException | NotCompliantMBeanException |
+                 InstanceAlreadyExistsException e) {
             e.printStackTrace();
         }
     }

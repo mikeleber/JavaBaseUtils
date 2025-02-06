@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+
 @Disabled
 class MeshTest {
 
@@ -53,7 +54,7 @@ class MeshTest {
         node.setMesh(new Mesh());
         node.getMesh().addRoot(node);
         JSONObject aDef = (JSONObject) JSONValue.parse(json);
-        node.parse( (JSONObject) aDef.entrySet().iterator().next().getValue(), new RelationalJSONNodeCreator(node.getMesh()));
+        node.parse((JSONObject) aDef.entrySet().iterator().next().getValue(), new RelationalJSONNodeCreator(node.getMesh()));
         node.initialize();
 
         List<RelationalTreeNode> selection = (List<RelationalTreeNode>) TreeNodeXPathExecuterImpl.getInstance().processXPathJaxen("/System", node);
@@ -66,8 +67,8 @@ class MeshTest {
         RelationalTreeNode node = new RelationalTreeNode();
         node.setMesh(new Mesh());
         node.getMesh().addRoot(node);
-        JSONObject aDef = (JSONObject)  JSONValue.parse(json);
-        node.parse( (JSONObject) aDef.entrySet().iterator().next().getValue(), new RelationalJSONNodeCreator(node.getMesh()));
+        JSONObject aDef = (JSONObject) JSONValue.parse(json);
+        node.parse((JSONObject) aDef.entrySet().iterator().next().getValue(), new RelationalJSONNodeCreator(node.getMesh()));
         node.initialize();
 
         List<RelationalTreeNode> selection = (List<RelationalTreeNode>) TreeNodeXPathExecuterImpl.getInstance().processXPathJaxen("/*", node);
@@ -80,8 +81,8 @@ class MeshTest {
         RelationalTreeNode node = new RelationalTreeNode();
         node.setMesh(new Mesh());
         node.getMesh().addRoot(node);
-        JSONObject aDef =  (JSONObject) JSONValue.parse(json);
-        node.parse( (JSONObject) aDef.entrySet().iterator().next().getValue(), new RelationalJSONNodeCreator(node.getMesh()));
+        JSONObject aDef = (JSONObject) JSONValue.parse(json);
+        node.parse((JSONObject) aDef.entrySet().iterator().next().getValue(), new RelationalJSONNodeCreator(node.getMesh()));
         node.initialize();
 
         List<RelationalTreeNode> selection = (List<RelationalTreeNode>) TreeNodeXPathExecuterImpl.getInstance().processXPathJaxen("/*", node);

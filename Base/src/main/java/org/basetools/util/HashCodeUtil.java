@@ -5,6 +5,8 @@ import java.security.NoSuchAlgorithmException;
 
 public class HashCodeUtil {
 
+    private static final char[] hex = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+
     public static final int createHashCode(String val) {
         int hash = 0;
         if (val != null) {
@@ -24,8 +26,6 @@ public class HashCodeUtil {
         return hash;
     }
 
-    private static final char[] hex = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-
     public static String getStringFromSHA256(String stringToEncrypt) {
 
         try {
@@ -36,6 +36,7 @@ public class HashCodeUtil {
             throw new RuntimeException(e);
         }
     }
+
     public static String getStringFromSHA128(String stringToEncrypt) {
 
         try {
@@ -46,9 +47,11 @@ public class HashCodeUtil {
             throw new RuntimeException(e);
         }
     }
+
     public static String getStringFromMurmur(String stringToEncrypt) {
         return Integer.toHexString(StringUtils.hashMurmur(stringToEncrypt));
     }
+
     public static String byteArray2Hex(byte[] bytes) {
         StringBuffer sb = new StringBuffer(bytes.length * 2);
         for (final byte b : bytes) {

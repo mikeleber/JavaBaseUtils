@@ -9,17 +9,16 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Consumer;
 
 public class MapMap<K, K2, V> {
+    private ReadWriteLock _readWriteLock = new ReentrantReadWriteLock();
+    private Map<K, Map<K2, V>> _holder;
+
     public MapMap(Map<K, Map<K2, V>> impl) {
         Objects.requireNonNull(impl);
         _holder = impl;
     }
-
     public MapMap() {
         _holder = new HashMap<>();
     }
-
-    private ReadWriteLock _readWriteLock = new ReentrantReadWriteLock();
-    private Map<K, Map<K2, V>> _holder;
 
     public V put(K key, K2 key2, V value) {
         Lock lock = _readWriteLock.writeLock();
@@ -27,7 +26,7 @@ public class MapMap<K, K2, V> {
             lock.lock();
             Map<K2, V> innerMap = _holder.get(key);
             if (innerMap == null) {
-                innerMap =Reflecter.on(_holder).create().get();
+                innerMap = Reflecter.on(_holder).create().get();
             }
             _holder.put(key, innerMap);
             return innerMap.put(key2, value);
@@ -43,6 +42,7 @@ public class MapMap<K, K2, V> {
         _holder.clear();
         lock.unlock();
     }
+
     public void clear(K key) {
         Lock lock = _readWriteLock.writeLock();
         lock.lock();

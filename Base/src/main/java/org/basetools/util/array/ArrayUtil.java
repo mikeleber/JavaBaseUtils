@@ -47,7 +47,8 @@ public final class ArrayUtil {
         }
         return null;
     }
-    public static  short[] toShortArray(String val) {
+
+    public static short[] toShortArray(String val) {
         int s = val.length();
         short[] result = new short[s];
         for (int i = 0; i < s; i++) {
@@ -64,11 +65,11 @@ public final class ArrayUtil {
     }
 
 
-
-    public static  <T> T get(T[][] srcArr, int comCol, Object compVal, int getCol, T defaultValue) {
-       return getXY(srcArr, comCol, compVal, getCol, defaultValue);
+    public static <T> T get(T[][] srcArr, int comCol, Object compVal, int getCol, T defaultValue) {
+        return getXY(srcArr, comCol, compVal, getCol, defaultValue);
     }
-    public static  <T> T getXY(T[][] srcArr, int comCol, Object compVal, int getCol, T defaultValue) {
+
+    public static <T> T getXY(T[][] srcArr, int comCol, Object compVal, int getCol, T defaultValue) {
         int idx = contains(srcArr, comCol, compVal);
         if (idx >= 0) {
             return get(srcArr[idx], getCol, defaultValue);
@@ -76,8 +77,9 @@ public final class ArrayUtil {
             return defaultValue;
         }
     }
-    public static  <T> T getYX(T[][] srcArr, int comCol, Object compVal, int getCol, T defaultValue) {
-        int idx = contains(srcArr, comCol, compVal,true);
+
+    public static <T> T getYX(T[][] srcArr, int comCol, Object compVal, int getCol, T defaultValue) {
+        int idx = contains(srcArr, comCol, compVal, true);
         if (idx >= 0) {
             return get(srcArr[idx], getCol, defaultValue);
 
@@ -85,6 +87,7 @@ public final class ArrayUtil {
             return defaultValue;
         }
     }
+
     public static final <T> int contains(T[][] array, int col, Object value) {
         return contains(array, col, value, false);
     }
@@ -191,6 +194,7 @@ public final class ArrayUtil {
         System.arraycopy(array, pos, newArray, pos + 1, array.length - pos);
         return newArray;
     }
+
     public static final <V> V[] add(V[] array, V element) {
         if (array == null) {
             V[] newArray = toGenericArray(element, 1);

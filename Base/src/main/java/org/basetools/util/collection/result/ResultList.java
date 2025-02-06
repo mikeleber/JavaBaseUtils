@@ -1,7 +1,5 @@
 package org.basetools.util.collection.result;
 
-import org.basetools.util.sort.FastQSort;
-
 import java.util.*;
 
 public class ResultList<E> implements List<E>, Cloneable {

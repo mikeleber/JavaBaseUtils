@@ -44,13 +44,13 @@ public class TreeDocumentNavigator extends DefaultNavigator {
         _nodeHandler = handler;
     }
 
+    public static Navigator getInstance() {
+        return SINGLETON;
+    }
+
     public TreeDocumentNavigator withUseIdAsName(boolean usIdAsName) {
         this._usIdAsName = usIdAsName;
         return this;
-    }
-
-    public static Navigator getInstance() {
-        return SINGLETON;
     }
 
     public void reset() {

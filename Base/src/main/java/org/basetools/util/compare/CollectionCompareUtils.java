@@ -1,11 +1,8 @@
 package org.basetools.util.compare;
 
-import org.basetools.util.array.ArrayUtil;
 import org.basetools.util.collection.CollectionUtils;
 
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class CollectionCompareUtils {
 

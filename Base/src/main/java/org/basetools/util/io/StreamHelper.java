@@ -15,12 +15,14 @@ public class StreamHelper {
                 throw new ResourceNotFoundException(e);
             }
         }
-    }public static final void close(Reader stream) {
+    }
+
+    public static final void close(Reader stream) {
         if (stream != null) {
             try {
                 stream.close();
             } catch (IOException e) {
-              throw new ResourceNotFoundException(e);
+                throw new ResourceNotFoundException(e);
             }
         }
     }

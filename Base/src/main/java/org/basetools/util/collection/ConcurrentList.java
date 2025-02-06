@@ -114,7 +114,7 @@ public class ConcurrentList<T> implements List<T> {
     public boolean addAll(int index, Collection<? extends T> c) {
         readWriteLock.readLock().lock();
         try {
-            return list.addAll(index,c);
+            return list.addAll(index, c);
         } finally {
             readWriteLock.readLock().unlock();
         }
@@ -134,7 +134,7 @@ public class ConcurrentList<T> implements List<T> {
     public boolean retainAll(Collection<?> c) {
         readWriteLock.readLock().lock();
         try {
-           return list.retainAll(c);
+            return list.retainAll(c);
         } finally {
             readWriteLock.readLock().unlock();
         }
@@ -162,7 +162,7 @@ public class ConcurrentList<T> implements List<T> {
     public T set(int index, T element) {
         readWriteLock.readLock().lock();
         try {
-           return  list.set(index,element);
+            return list.set(index, element);
         } finally {
             readWriteLock.readLock().unlock();
         }
@@ -172,7 +172,7 @@ public class ConcurrentList<T> implements List<T> {
     public void add(int index, T element) {
         readWriteLock.readLock().lock();
         try {
-             list.add(index,element);
+            list.add(index, element);
         } finally {
             readWriteLock.readLock().unlock();
         }
@@ -231,12 +231,9 @@ public class ConcurrentList<T> implements List<T> {
     @Override
     public List<T> subList(int fromIndex, int toIndex) {
         readWriteLock.readLock().lock();
-        try
-        {
-            return list.subList(fromIndex,toIndex);
-        }
-        finally
-        {
+        try {
+            return list.subList(fromIndex, toIndex);
+        } finally {
             readWriteLock.readLock().unlock();
         }
     }

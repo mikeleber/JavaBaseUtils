@@ -8,6 +8,7 @@ public abstract class StackedTreeVisitor<T> {
     public T peek() {
         return builderStack.peek();
     }
+
     public boolean isEmpty() {
         return builderStack.isEmpty();
     }

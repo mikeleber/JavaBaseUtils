@@ -26,26 +26,34 @@ import java.util.function.Predicate;
  * This iterator decorates the underlying iterator, only allowing through
  * those elements that match the specified {@link Predicate Predicate}.
  *
- * @since Commons Collections 1.0
- * @version $Revision: 646777 $ $Date: 2008-04-10 14:33:15 +0200 (Thu, 10 Apr 2008) $
- * 
  * @author James Strachan
  * @author Jan Sorensen
  * @author Ralph Wagner
  * @author Stephen Colebourne
+ * @version $Revision: 646777 $ $Date: 2008-04-10 14:33:15 +0200 (Thu, 10 Apr 2008) $
+ * @since Commons Collections 1.0
  */
 public class FilterIterator implements Iterator {
 
-    /** The iterator being used */
+    /**
+     * The iterator being used
+     */
     private Iterator iterator;
-    /** The predicate being used */
+    /**
+     * The predicate being used
+     */
     private Predicate predicate;
-    /** The next object in the iteration */
+    /**
+     * The next object in the iteration
+     */
     private Object nextObject;
-    /** Whether the next object has been calculated yet */
+    /**
+     * Whether the next object has been calculated yet
+     */
     private boolean nextObjectSet = false;
 
     //-----------------------------------------------------------------------
+
     /**
      * Constructs a new <code>FilterIterator</code> that will not function
      * until {@link #setIterator(Iterator) setIterator} is invoked.
@@ -58,7 +66,7 @@ public class FilterIterator implements Iterator {
      * Constructs a new <code>FilterIterator</code> that will not function
      * until {@link #setPredicate(Predicate) setPredicate} is invoked.
      *
-     * @param iterator  the iterator to use
+     * @param iterator the iterator to use
      */
     public FilterIterator(Iterator iterator) {
         super();
@@ -70,7 +78,7 @@ public class FilterIterator implements Iterator {
      * given iterator and predicate.
      *
      * @param iterator  the iterator to use
-     * @param predicate  the predicate to use
+     * @param predicate the predicate to use
      */
     public FilterIterator(Iterator iterator, Predicate predicate) {
         super();
@@ -79,8 +87,9 @@ public class FilterIterator implements Iterator {
     }
 
     //-----------------------------------------------------------------------
-    /** 
-     * Returns true if the underlying iterator contains an object that 
+
+    /**
+     * Returns true if the underlying iterator contains an object that
      * matches the predicate.
      *
      * @return true if there is another object that matches the predicate
@@ -94,13 +103,13 @@ public class FilterIterator implements Iterator {
         }
     }
 
-    /** 
+    /**
      * Returns the next object that matches the predicate.
      *
      * @return the next object which matches the given predicate
-     * @throws NullPointerException if either the iterator or predicate are null
+     * @throws NullPointerException   if either the iterator or predicate are null
      * @throws NoSuchElementException if there are no more elements that
-     *  match the predicate 
+     *                                match the predicate
      */
     public Object next() {
         if (!nextObjectSet) {
@@ -121,7 +130,7 @@ public class FilterIterator implements Iterator {
      * changes the base iterator.
      *
      * @throws IllegalStateException if <code>hasNext()</code> has already
-     *  been called.
+     *                               been called.
      */
     public void remove() {
         if (nextObjectSet) {
@@ -131,7 +140,8 @@ public class FilterIterator implements Iterator {
     }
 
     //-----------------------------------------------------------------------
-    /** 
+
+    /**
      * Gets the iterator this iterator is using.
      *
      * @return the iterator
@@ -140,11 +150,11 @@ public class FilterIterator implements Iterator {
         return iterator;
     }
 
-    /** 
+    /**
      * Sets the iterator for this iterator to use.
      * If iteration has started, this effectively resets the iterator.
      *
-     * @param iterator  the iterator to use
+     * @param iterator the iterator to use
      */
     public void setIterator(Iterator iterator) {
         this.iterator = iterator;
@@ -153,7 +163,8 @@ public class FilterIterator implements Iterator {
     }
 
     //-----------------------------------------------------------------------
-    /** 
+
+    /**
      * Gets the predicate this iterator is using.
      *
      * @return the predicate
@@ -162,10 +173,10 @@ public class FilterIterator implements Iterator {
         return predicate;
     }
 
-    /** 
+    /**
      * Sets the predicate this the iterator to use.
      *
-     * @param predicate  the predicate to use
+     * @param predicate the predicate to use
      */
     public void setPredicate(Predicate predicate) {
         this.predicate = predicate;
@@ -174,8 +185,9 @@ public class FilterIterator implements Iterator {
     }
 
     //-----------------------------------------------------------------------
+
     /**
-     * Set nextObject to the next object. If there are no more 
+     * Set nextObject to the next object. If there are no more
      * objects then return false. Otherwise, return true.
      */
     private boolean setNextObject() {

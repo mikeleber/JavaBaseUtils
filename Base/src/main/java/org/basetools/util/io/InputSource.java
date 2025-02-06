@@ -11,7 +11,7 @@ import java.nio.charset.Charset;
 public class InputSource extends org.xml.sax.InputSource implements AutoCloseable {
     private org.basetools.util.StringUtils.ContentType _contentType;
     private String _language;
-    private boolean _cachable=false;
+    private boolean _cachable = false;
 
     public InputSource() {
         super();
@@ -39,23 +39,18 @@ public class InputSource extends org.xml.sax.InputSource implements AutoCloseabl
     }
 
     @Override
-    public void setPublicId(String publicId) {
-        super.setPublicId(publicId);
-    }
-
-    @Override
     public String getPublicId() {
         return super.getPublicId();
     }
 
     @Override
-    public void setSystemId(String systemId) {
-        super.setSystemId(systemId);
+    public void setPublicId(String publicId) {
+        super.setPublicId(publicId);
     }
 
     @Override
     public String toString() {
-        return getSystemId()+":"+getPublicId();
+        return getSystemId() + ":" + getPublicId();
     }
 
     @Override
@@ -64,8 +59,8 @@ public class InputSource extends org.xml.sax.InputSource implements AutoCloseabl
     }
 
     @Override
-    public void setByteStream(InputStream byteStream) {
-        super.setByteStream(byteStream);
+    public void setSystemId(String systemId) {
+        super.setSystemId(systemId);
     }
 
     @Override
@@ -74,8 +69,8 @@ public class InputSource extends org.xml.sax.InputSource implements AutoCloseabl
     }
 
     @Override
-    public void setEncoding(String encoding) {
-        super.setEncoding(encoding);
+    public void setByteStream(InputStream byteStream) {
+        super.setByteStream(byteStream);
     }
 
     @Override
@@ -84,13 +79,18 @@ public class InputSource extends org.xml.sax.InputSource implements AutoCloseabl
     }
 
     @Override
-    public void setCharacterStream(Reader characterStream) {
-        super.setCharacterStream(characterStream);
+    public void setEncoding(String encoding) {
+        super.setEncoding(encoding);
     }
 
     @Override
     public Reader getCharacterStream() {
         return super.getCharacterStream();
+    }
+
+    @Override
+    public void setCharacterStream(Reader characterStream) {
+        super.setCharacterStream(characterStream);
     }
 
     public URI getUriFromSystemId() {
@@ -108,7 +108,9 @@ public class InputSource extends org.xml.sax.InputSource implements AutoCloseabl
     public InputSource withContentType(StringUtils.ContentType type) {
         _contentType = type;
         return this;
-    } public InputSource withCachable(boolean cachable) {
+    }
+
+    public InputSource withCachable(boolean cachable) {
         _cachable = cachable;
         return this;
     }
@@ -173,10 +175,10 @@ public class InputSource extends org.xml.sax.InputSource implements AutoCloseabl
             try {
                 return new InputStreamReader(getByteStream(), getEncoding());
             } catch (UnsupportedEncodingException e) {
-               e.printStackTrace();
+                e.printStackTrace();
             }
         }
-        if (getUriFromSystemId()!=null){
+        if (getUriFromSystemId() != null) {
             try {
                 return new InputStreamReader(getUriFromSystemId().toURL().openStream(), getEncoding());
             } catch (IOException e) {
@@ -232,6 +234,6 @@ public class InputSource extends org.xml.sax.InputSource implements AutoCloseabl
 
     @Override
     public void close() {
-        System.out.println("closing: "+getSystemId());
+        System.out.println("closing: " + getSystemId());
     }
 }

@@ -50,7 +50,6 @@ public class JSONSmartUtil {
     }
 
 
-
     public static String toString(JSONObject gridObject, String valName, String defaultValue) {
         Object jVal = gridObject.get(valName);
         if (jVal != null) {
@@ -67,8 +66,8 @@ public class JSONSmartUtil {
         return (T) JSONValue.parse(json);
     }
 
-    public static boolean isTrue(Object object ,boolean defaultValue) {
-        if (object==null)return defaultValue;
+    public static boolean isTrue(Object object, boolean defaultValue) {
+        if (object == null) return defaultValue;
         return Boolean.valueOf(object.toString());
     }
 }

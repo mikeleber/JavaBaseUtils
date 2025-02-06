@@ -18,6 +18,19 @@ public class XMLNodeDiff {
 
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static final String cut(String value, int length, String cutTail) {
+
+        if (value == null || value.length() < length) {
+            return value;
+        } else {
+            return value.substring(0, length) + (cutTail != null ? cutTail : "");
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -29,10 +42,6 @@ public class XMLNodeDiff {
     @Override
     public int hashCode() {
         return Objects.hash(currentValue, expectedValue, actualNode, expectNode, diffType, xpath, severity);
-    }
-
-    public static Builder builder() {
-        return new Builder();
     }
 
     public Object getCurrentValue() {
@@ -60,15 +69,6 @@ public class XMLNodeDiff {
         }
         String stringValue = Objects.toString(value, "&lt;nothing&gt;");
         return cut(StringUtils.normalizeSpace(stringValue), 30, "...");
-    }
-
-    public static final String cut(String value, int length, String cutTail) {
-
-        if (value == null || value.length() < length) {
-            return value;
-        } else {
-            return value.substring(0, length) + (cutTail != null ? cutTail : "");
-        }
     }
 
     public Servity getSeverity() {

@@ -2,8 +2,6 @@ package org.basetools.util.info.jmx;
 
 import org.basetools.util.info.SystemInfoManager;
 
-import java.io.IOException;
-
 public class SystemInfoManagement implements SystemInfoManagementMBean {
 
     public SystemInfoManagement() {
@@ -11,7 +9,7 @@ public class SystemInfoManagement implements SystemInfoManagementMBean {
     }
 
     @Override
-    public String getInfo()  {
+    public String getInfo() {
         return SystemInfoManager.getInstance().getInfos().toString();
     }
 }

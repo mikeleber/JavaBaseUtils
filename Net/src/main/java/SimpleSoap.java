@@ -12,7 +12,7 @@ import java.io.InputStream;
 
 public class SimpleSoap {
     public static void main(String[] args) throws IOException {
-        new SimpleSoap().call("http://currencyconverter.kowabunga.net/converter.asmx",null);
+        new SimpleSoap().call("http://currencyconverter.kowabunga.net/converter.asmx", null);
     }
 
     public void call(String soapEndpoint, String strSoapAction) throws IOException {

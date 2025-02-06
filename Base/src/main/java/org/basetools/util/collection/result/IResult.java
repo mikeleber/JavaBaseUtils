@@ -1,7 +1,5 @@
 package org.basetools.util.collection.result;
 
-import org.basetools.util.sort.FastQSort;
-
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -48,7 +46,9 @@ public interface IResult<E> extends Collection<E> {
      * @param columnDataTypes the column data types
      */
     IResult setColumnDataTypes(List<String> columnDataTypes);
-    IResult sortFastQ(Comparator comparator) ;
+
+    IResult sortFastQ(Comparator comparator);
+
     /**
      * Sets column data types.
      *
@@ -107,7 +107,7 @@ public interface IResult<E> extends Collection<E> {
      * @param colName the col name
      * @return the value
      */
-    <T>T getValue(int row, String colName);
+    <T> T getValue(int row, String colName);
 
     /**
      * Gets value.
@@ -117,7 +117,7 @@ public interface IResult<E> extends Collection<E> {
      * @param defaultValue the default value
      * @return the value
      */
-    <T>T getValue(int row, String colName, T defaultValue);
+    <T> T getValue(int row, String colName, T defaultValue);
 
     /**
      * Gets value.
@@ -127,7 +127,7 @@ public interface IResult<E> extends Collection<E> {
      * @param defaultValue the default value
      * @return the value
      */
-    <T>T getValue(int row, int col, T defaultValue);
+    <T> T getValue(int row, int col, T defaultValue);
 
     /**
      * Sets value.
@@ -181,7 +181,7 @@ public interface IResult<E> extends Collection<E> {
      * @param col the col
      * @return the value
      */
-    <T>T getValue(int row, int col);
+    <T> T getValue(int row, int col);
 
     /**
      * @param col

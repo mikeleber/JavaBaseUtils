@@ -46,39 +46,13 @@ public class TreeNode<T, U> {
         setUserObject(usrobj);
     }
 
-    public TreeNode<T, U> addChild(TreeNode<T, U> child) {
-        depth = -1;
-        getChildren().add(child);
-        child.setParent(this);
-        return child;
-    }
-
-    private void reset() {
-        _strucId = null;
-    }
-
     public TreeNode(T data) {
         this();
         setData(data);
     }
 
-    public List<TreeNode<T, U>> getChildren() {
-        if (children == null) {
-            children = new ArrayList<>();
-        }
-        return children;
-    }
-
     public TreeNode() {
         super();
-    }
-
-    public void setChildren(List<TreeNode<T, U>> children) {
-        depth = -1;
-        this.children = children;
-        for (TreeNode<T, U> child : children) {
-            child.setParent(this);
-        }
     }
 
     public TreeNode(T data, U usrobj, String name) {
@@ -105,10 +79,6 @@ public class TreeNode<T, U> {
         setData(data);
     }
 
-    public void setId(String id) {
-        _id = id;
-    }
-
     public TreeNode(TreeNode<T, U> parent, T data) {
         this(parent, data, null);
     }
@@ -118,6 +88,36 @@ public class TreeNode<T, U> {
         if (parent != null) {
             parent.addChild(this);
         }
+    }
+
+    public TreeNode<T, U> addChild(TreeNode<T, U> child) {
+        depth = -1;
+        getChildren().add(child);
+        child.setParent(this);
+        return child;
+    }
+
+    private void reset() {
+        _strucId = null;
+    }
+
+    public List<TreeNode<T, U>> getChildren() {
+        if (children == null) {
+            children = new ArrayList<>();
+        }
+        return children;
+    }
+
+    public void setChildren(List<TreeNode<T, U>> children) {
+        depth = -1;
+        this.children = children;
+        for (TreeNode<T, U> child : children) {
+            child.setParent(this);
+        }
+    }
+
+    public void setId(String id) {
+        _id = id;
     }
 
     public TreeNode<T, U> find(TreeNode<T, U> nodeToFind) {
@@ -597,17 +597,17 @@ public class TreeNode<T, U> {
         return parent;
     }
 
+    public void setParent(TreeNode<T, U> parent) {
+        this.parent = parent;
+        reset();
+    }
+
     public TreeNode<T, U> getParent(Predicate<TreeNode<T, U>> condition) {
         if (parent == null) return null;
         if (condition.test(parent)) {
             return parent;
         }
         return parent.getParent(condition);
-    }
-
-    public void setParent(TreeNode<T, U> parent) {
-        this.parent = parent;
-        reset();
     }
 
     public TreeNode<T, U> getParent(int minChilds) {
@@ -1361,7 +1361,7 @@ public class TreeNode<T, U> {
         }
     }
 
-    protected void parse( JSONArray array, JSONNodeCreator creator) {
+    protected void parse(JSONArray array, JSONNodeCreator creator) {
         Iterator<Object> objects = array.iterator();
         while (objects.hasNext()) {
             Object next = objects.next();
@@ -1373,7 +1373,6 @@ public class TreeNode<T, U> {
 
         }
     }
-
 
 
     protected void parse(String key, JSONAware value, JSONNodeCreator creator) {

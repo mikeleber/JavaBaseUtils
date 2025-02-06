@@ -13,6 +13,7 @@ public class StringUtils {
     public static final char CHAR_NEWLINE = (char) 10;
     public static final String newLine = System.getProperty("line.separator");
     public static final DecimalFormat FROM_FLOATINGNUMBER_FORMAT = new DecimalFormat();
+    private static final DecimalFormat expDecimalFormat = new DecimalFormat("#");
 
     static {
         FROM_FLOATINGNUMBER_FORMAT.setGroupingUsed(false);
@@ -44,11 +45,12 @@ public class StringUtils {
         sb.append(text);
         return (sb.toString());
     }
-    private static final DecimalFormat expDecimalFormat = new DecimalFormat("#");
+
     public static final String convertExponentialValue(double value) throws NumberFormatException {
         expDecimalFormat.setMaximumFractionDigits(0);
         return expDecimalFormat.format(value);
     }
+
     public static String replaceWhiteSpace(String toClean, char replacement, boolean collapseSpaces) {
         int size = toClean.length();
         StringBuilder result = new StringBuilder(toClean.length());
@@ -490,6 +492,7 @@ public class StringUtils {
         if (val == null) return val;
         return val.replaceAll(what, with);
     }
+
     public static boolean isInteger(String str) {
         if (str == null) {
             return false;
@@ -513,19 +516,6 @@ public class StringUtils {
         }
         return true;
     }
-    public enum ContentType {
-        unknown, xml, xsd, xjson, json, yaml, csv, txt, nls;
-
-        public static ContentType valueOf(String name, ContentType defaultVal) {
-            for (ContentType aType : ContentType.values()) {
-                if (aType.name().equalsIgnoreCase(name)) {
-                    return aType;
-                }
-            }
-            return defaultVal;
-        }
-
-        }
 
     public static final int countChars(CharSequence src, char toCount, boolean retDelims) {
         int numOfElements = 0;
@@ -559,5 +549,19 @@ public class StringUtils {
             numOfElements++;
         }
         return numOfElements;
+    }
+
+    public enum ContentType {
+        unknown, xml, xsd, xjson, json, yaml, csv, txt, nls;
+
+        public static ContentType valueOf(String name, ContentType defaultVal) {
+            for (ContentType aType : ContentType.values()) {
+                if (aType.name().equalsIgnoreCase(name)) {
+                    return aType;
+                }
+            }
+            return defaultVal;
+        }
+
     }
 }

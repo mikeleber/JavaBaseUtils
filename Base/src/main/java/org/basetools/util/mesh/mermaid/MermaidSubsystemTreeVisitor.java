@@ -29,6 +29,10 @@ public class MermaidSubsystemTreeVisitor implements TreeVisitor {
         return builder;
     }
 
+    private static boolean drawSubgraph(TreeNode aNode) {
+        return ((RelationalTreeNode) aNode).isSubgraph() || (aNode.getParent() != null && ((RelationalTreeNode) aNode.getParent()).isSubgraph());
+    }
+
     @Override
     public void visitStart(TreeNode aNode) {
         System.out.println("visit " + aNode.getName());
@@ -72,10 +76,6 @@ public class MermaidSubsystemTreeVisitor implements TreeVisitor {
         if (drawSubgraph(aNode)) {
             builder.append("end" + Mesh.NEWLINE);
         }
-    }
-
-    private static boolean drawSubgraph(TreeNode aNode) {
-        return ((RelationalTreeNode) aNode).isSubgraph() || (aNode.getParent() != null && ((RelationalTreeNode) aNode.getParent()).isSubgraph());
     }
 
     @Override

@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 //https://argonrain.wordpress.com/2009/10/27/000/
-public class Xml {
+public class Xml<T extends Xml> {
 
     private final String name;
     private final String ns;
@@ -54,6 +54,27 @@ public class Xml {
         }
     }
 
+    public Xml(InputSource input, String rootName) {
+        this(rootElement(input, rootName));
+    }
+
+    public Xml(String nodeName, String textContent) {
+        name = nodeName;
+        ns = null;
+        content = textContent;
+    }
+
+    public Xml(String nodeName, String namespace, String textContent) {
+        name = nodeName;
+        ns = namespace;
+        content = textContent;
+    }
+
+    public Xml(String rootName) {
+        name = rootName;
+        ns = null;
+    }
+
     private static Element rootElement(InputSource inputStream, String rootName) {
         try {
             DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
@@ -71,6 +92,33 @@ public class Xml {
         } catch (SAXException exception) {
             throw new RuntimeException(exception);
         }
+    }
+
+    public static Xml from(String xmlContent, String rootName) {
+        return new Xml(new ByteArrayInputStream(xmlContent.getBytes()), rootName);
+    }
+
+    public static Xml from(Reader input, String rootName) {
+        return new Xml(new InputSource(input), rootName);
+    }
+
+    public static Xml from(InputSource input, String rootName) {
+        if (input.hasReader()) {
+            Reader reader = input.evalReader();
+            try {
+                return from(reader, rootName);
+            } finally {
+                StreamHelper.close(reader);
+            }
+        } else
+            return new Xml(input, rootName);
+    }
+
+    private static boolean isTrue(String val, boolean defaultValue) {
+        if (val == null || val.length() == 0) {
+            return defaultValue;
+        }
+        return (val.equalsIgnoreCase("true") || val.equalsIgnoreCase("y") || val.equalsIgnoreCase("yes") || val.equalsIgnoreCase("1") || val.equalsIgnoreCase("1.0"));
     }
 
     public byte getValue(String propName, byte defValue, boolean prefDef) {
@@ -149,84 +197,53 @@ public class Xml {
         return textContent != null ? textContent.toString() : null;
     }
 
-    public Xml addAttribute(String name, String value) {
+    public T addAttribute(String name, String value) {
         nameAttributes.put(name, value);
-        return this;
+        return self();
     }
 
-    public Xml addAttributeIfExist(String name, String value) {
+    public T addAttributeIfExist(String name, String value) {
         if (value != null) {
             nameAttributes.put(name, value);
         }
-        return this;
+        return self();
     }
 
-    private Xml addChild(String name, Xml child) {
+    private T addChild(String name, Xml child) {
         ArrayList<Xml> children = nameChildren.get(name);
         if (children == null) {
             children = new ArrayList<>();
             nameChildren.put(name, children);
         }
         children.add(child);
-        return this;
+        return self();
     }
 
-    public Xml(InputSource input, String rootName) {
-        this(rootElement(input, rootName));
-    }
-
-    public Xml(String nodeName, String textContent) {
-        name = nodeName;
-        ns=null;
-        content = textContent;
-    }
-
-    public Xml(String nodeName, String namespace, String textContent) {
-        name = nodeName;
-        ns = namespace;
-        content = textContent;
-    }
-
-    public Xml(String rootName) {
-        name = rootName;
-        ns=null;
-    }
-
-    public static Xml from(String xmlContent, String rootName) {
-        return new Xml(new ByteArrayInputStream(xmlContent.getBytes()), rootName);
-    }
-
-    public static Xml from(Reader input, String rootName) {
-        return new Xml(new InputSource(input), rootName);
-    }
-
-    public static Xml from(InputSource input, String rootName) {
-        if (input.hasReader()) {
-            Reader reader = input.evalReader();
-            try {
-                return from(reader, rootName);
-            } finally {
-                StreamHelper.close(reader);
-            }
-        } else
-            return new Xml(input, rootName);
-    }
-
-    public Xml setContent(String content) {
+    public T setContent(String content) {
         this.content = content;
-        return this;
+        return self();
     }
 
-    public Xml addChild(Xml xml) {
+    public T addChild(Xml xml) {
         addChild(xml.name(), xml);
-        return this;
+        return self();
+    }
+
+    public T addChild(boolean ignoreNull, Xml xml) {
+        if (ignoreNull && xml == null) return self();
+        addChild(xml.name(), xml);
+        return self();
+    }
+
+    private T self() {
+        return (T) this;
     }
 
     public String name() {
         return name;
     }
 
-    public Xml getChild(String... pathNames) {
+    public T getChild(String... pathNames) {
         Xml current = this;
         for (String name : pathNames) {
             current = current.optChild(name);
@@ -234,25 +251,24 @@ public class Xml {
                 return null;
             }
         }
-        return current;
+        return (T) current;
     }
 
-
-    public Xml child(String name) {
+    public T child(String name) {
         Xml child = optChild(name);
         if (child == null) {
             throw new RuntimeException("Could not find child node: " + name);
         }
-        return child;
+        return (T) child;
     }
 
-    public Xml optChild(String name) {
+    public T optChild(String name) {
         ArrayList<Xml> children = children(name);
         int n = children.size();
         if (n > 1) {
             throw new RuntimeException("Could not find individual child node: " + name);
         }
-        return n == 0 ? null : children.get(0);
+        return n == 0 ? null : (T) children.get(0);
     }
 
     public boolean hasAttr(String name) {
@@ -281,10 +297,10 @@ public class Xml {
         return children.stream();
     }
 
-    public Xml sortChild(String name, Comparator comparator) {
+    public T sortChild(String name, Comparator comparator) {
         ArrayList<Xml> nameChilds = nameChildren.get(name);
         FastQSort.sortList(nameChilds, comparator);
-        return this;
+        return self();
     }
 
     public boolean option(String name) {
@@ -300,7 +316,6 @@ public class Xml {
         String string = optAttrString(name);
         return string == null ? null : longAttr(name);
     }
-
 
     public String optAttrString(String name) {
         return nameAttributes.get(name);
@@ -382,13 +397,6 @@ public class Xml {
 
     public boolean booleanAttrValue(String name, boolean defaultValue) {
         return isTrue(optAttrString(name), defaultValue);
-    }
-
-    private static boolean isTrue(String val, boolean defaultValue) {
-        if (val == null || val.length() == 0) {
-            return defaultValue;
-        }
-        return (val.equalsIgnoreCase("true") || val.equalsIgnoreCase("y") || val.equalsIgnoreCase("yes") || val.equalsIgnoreCase("1") || val.equalsIgnoreCase("1.0"));
     }
 
     public Optional<String> getFirstChildName() {

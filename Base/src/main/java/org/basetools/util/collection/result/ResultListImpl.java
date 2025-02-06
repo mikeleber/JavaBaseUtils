@@ -17,13 +17,11 @@ public class ResultListImpl extends ResultList<Object[]> implements IResult<Obje
     public ResultListImpl() {
         this(new ArrayList(), null);
     }
-    public IResult sortFastQ(Comparator comparator) {
-        FastQSort.sortList(getDataHolder(), comparator);
-        return this;
-    }
+
     public ResultListImpl(int resultColumnCount) {
         this(createEmpty(resultColumnCount), null);
     }
+
     public ResultListImpl(String... colNames) {
         withColNames(colNames);
     }
@@ -50,6 +48,70 @@ public class ResultListImpl extends ResultList<Object[]> implements IResult<Obje
             }
         }
         columnDataTypes = createEmpty(colNames.size());
+    }
+
+    private static List<String> createEmpty(int resultColumnCount) {
+        ArrayList colNames = new ArrayList();
+        for (int i = 0; i < resultColumnCount; i++) {
+            colNames.add(null);
+        }
+        return colNames;
+    }
+
+    public static String createRowKey(int[] posses, Object[] row) {
+        return (posses == null ? StringUtils.toString(row, ",") : toString(posses, row, ","));
+    }
+
+    public static final String toString(int[] itemsPos, Object[] list, String delim) {
+        return toString(itemsPos, list, delim, null);
+    }
+
+    public static final String toString(String delim, String quali, String prefix, String postfix, Object... parts) {
+        StringBuilder buindings = new StringBuilder();
+        if (prefix != null) {
+            buindings.append(prefix);
+        }
+        for (int i = 0; i < parts.length; i++) {
+            if (quali != null) {
+                buindings.append(quali);
+            }
+            buindings.append(parts[i]);
+            if (quali != null) {
+                buindings.append(quali);
+            }
+            if (delim != null) {
+                if (i + 1 < parts.length) {
+                    buindings.append(delim);
+                }
+            }
+        }
+        if (postfix != null) {
+            buindings.append(postfix);
+        }
+        return buindings.toString();
+    }
+
+    public static final String toString(int[] itemsPos, Object[] list, String delim, String qualifier) {
+        int s = itemsPos.length;
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < s; i++) {
+            if (qualifier != null) {
+                result.append(qualifier);
+            }
+            result.append(list[itemsPos[i]]);
+            if (qualifier != null) {
+                result.append(qualifier);
+            }
+            if (i < (s - 1) && delim != null) {
+                result.append(delim);
+            }
+        }
+        return result.toString();
+    }
+
+    public IResult sortFastQ(Comparator comparator) {
+        FastQSort.sortList(getDataHolder(), comparator);
+        return this;
     }
 
     public ResultListImpl ResultListImpl(Collection col) {
@@ -79,6 +141,7 @@ public class ResultListImpl extends ResultList<Object[]> implements IResult<Obje
         columnDataTypes = createEmpty(colNames.length);
         return this;
     }
+
     public ResultListImpl withData(Object[][] data) {
         if (data != null) {
             for (int d = 0; d < data.length; d++) {
@@ -86,16 +149,6 @@ public class ResultListImpl extends ResultList<Object[]> implements IResult<Obje
             }
         }
         return this;
-    }
-
-
-
-    private static List<String> createEmpty(int resultColumnCount) {
-        ArrayList colNames = new ArrayList();
-        for (int i = 0; i < resultColumnCount; i++) {
-            colNames.add(null);
-        }
-        return colNames;
     }
 
     @Override
@@ -189,10 +242,6 @@ public class ResultListImpl extends ResultList<Object[]> implements IResult<Obje
         }
     }
 
-    public static String createRowKey(int[] posses, Object[] row) {
-        return (posses == null ? StringUtils.toString(row, ",") : toString(posses, row, ","));
-    }
-
     @Override
     public String getColumnName(int col) {
         if (columnNames != null) {
@@ -228,7 +277,7 @@ public class ResultListImpl extends ResultList<Object[]> implements IResult<Obje
     }
 
     @Override
-    public <T>T getValue(int row, String colName) {
+    public <T> T getValue(int row, String colName) {
         return getValue(row, colName, null);
     }
 
@@ -241,7 +290,7 @@ public class ResultListImpl extends ResultList<Object[]> implements IResult<Obje
             return (T) defaultValue;
         }
         int col = getColumnForName(colName);
-        return (T)getValue(row, col, defaultValue);
+        return (T) getValue(row, col, defaultValue);
     }
 
     @Override
@@ -350,53 +399,6 @@ public class ResultListImpl extends ResultList<Object[]> implements IResult<Obje
             }
             addAll(tempList);
         }
-    }
-
-    public static final String toString(int[] itemsPos, Object[] list, String delim) {
-        return toString(itemsPos, list, delim, null);
-    }
-
-    public static final String toString(String delim, String quali, String prefix, String postfix, Object... parts) {
-        StringBuilder buindings = new StringBuilder();
-        if (prefix != null) {
-            buindings.append(prefix);
-        }
-        for (int i = 0; i < parts.length; i++) {
-            if (quali != null) {
-                buindings.append(quali);
-            }
-            buindings.append(parts[i]);
-            if (quali != null) {
-                buindings.append(quali);
-            }
-            if (delim != null) {
-                if (i + 1 < parts.length) {
-                    buindings.append(delim);
-                }
-            }
-        }
-        if (postfix != null) {
-            buindings.append(postfix);
-        }
-        return buindings.toString();
-    }
-
-    public static final String toString(int[] itemsPos, Object[] list, String delim, String qualifier) {
-        int s = itemsPos.length;
-        StringBuilder result = new StringBuilder();
-        for (int i = 0; i < s; i++) {
-            if (qualifier != null) {
-                result.append(qualifier);
-            }
-            result.append(list[itemsPos[i]]);
-            if (qualifier != null) {
-                result.append(qualifier);
-            }
-            if (i < (s - 1) && delim != null) {
-                result.append(delim);
-            }
-        }
-        return result.toString();
     }
 
     public void shrinkToLast(int[] idCols) {
