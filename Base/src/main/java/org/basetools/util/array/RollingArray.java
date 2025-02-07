@@ -1,7 +1,9 @@
 package org.basetools.util.array;
-
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class RollingArray<T> {
@@ -52,24 +54,20 @@ public class RollingArray<T> {
         return returnValue;
     }
 
-    @Override
+
     public String toString() {
-        return "";
-//        if (_currentSize <= 0) {
-//            return "";
-//        }
-//        int toEnd = _actPos - _currentSize;
-//        if (toEnd >= 0) {
-//            return new String(_theArray, toEnd, _actPos);
-//        } else if (toEnd < 0) {
-//            StringBuffer res = new StringBuffer();
-//            toEnd = toEnd * -1;
-//            res.append(new String(_theArray, _theArray.length - toEnd, toEnd));
-//            res.append(new String(_theArray, 0, _actPos));
-//            return res.toString();
-//        } else {
-//            return new String(_theArray, startPos, _currentSize);
-//        }
+        if (_actSize <= 0) {
+            return "";
+        }
+        StringBuffer result = new StringBuffer();
+        int start = _startPos;
+        for (int i = 0; i < _actSize; i++) {
+            result.append(_array[start++]);
+            if (start >= _array.length) {
+                start = 0;
+            }
+        }
+        return result.toString();
     }
 
     private int decrement(int val) {
@@ -104,6 +102,8 @@ public class RollingArray<T> {
     public synchronized void moveVorward() {
         if (_actSize < _array.length) {
             _actSize++;
+        } else {
+            _startPos = increment(_startPos);
         }
         _actPos = increment(_actPos);
     }
@@ -117,10 +117,6 @@ public class RollingArray<T> {
     private int increment(int x) {
         if (++x == _array.length) {
             x = 0;
-            _startPos++;
-            if (_startPos == _array.length) {
-                _startPos = 0;
-            }
         }
         return x;
     }
@@ -129,18 +125,41 @@ public class RollingArray<T> {
         return "currentPos: " + _actPos + " currentSize: " + _actSize + " arraySize: " + _array.length;
     }
 
-    public T[] getArray() {
+    private T[] getArray() {
         return _array;
     }
 
+    public List<T> toList() {
+        List<T> result = new ArrayList<>();
+        traverse(entry -> result.add(entry));
+        return result;
+    }
+
+    public T[] toArray() {
+        T[] array = Arrays.copyOf(_array, _actSize);
+        if (_actSize <= 0) {
+            return array;
+        }
+        int start = _startPos;
+        for (int i = 0; i < _actSize; i++) {
+            array[i] = _array[start++];
+            if (start >= _array.length) {
+                start = 0;
+            }
+        }
+        return array;
+    }
+
     public synchronized void traverse(Consumer<T> consumer) {
-        int pos = _startPos;
-        int size = _actSize;
-        T[] array = Arrays.copyOf(_array, size);
-        makeEmpty();
-        for (int i = 0; i < size; i++) {
-            consumer.accept(array[pos]);
-            pos = increment(pos);
+        if (_actSize <= 0) {
+            return;
+        }
+        int start = _startPos;
+        for (int i = 0; i < _actSize; i++) {
+            consumer.accept(_array[start++]);
+            if (start >= _array.length) {
+                start = 0;
+            }
         }
     }
 
@@ -149,7 +168,11 @@ public class RollingArray<T> {
         makeEmpty();
     }
 
-    public void drainOutAsync(Consumer<T> consumer) {
-        new Thread(() -> drainOut(consumer)).start();
+    public CompletableFuture<RollingArray> drainOutAsync(Consumer<T> consumer) {
+        return CompletableFuture.supplyAsync(() -> {
+            drainOut(consumer);
+            return this;
+        });
+
     }
 }

@@ -24,7 +24,7 @@ public class Xml<T extends Xml> {
     private final String name;
     private final String ns;
     private final Map<String, String> nameAttributes = new LinkedHashMap<>();
-    private final Map<String, ArrayList<Xml>> nameChildren = new LinkedHashMap<>();
+    private final Map<String, ArrayList<T>> nameChildren = new LinkedHashMap<>();
     private String content;
 
     public Xml(InputStream inputStream, String rootName) {
@@ -48,7 +48,7 @@ public class Xml<T extends Xml> {
             Node node = nodes.item(i);
             int type = node.getNodeType();
             if (type == Node.ELEMENT_NODE) {
-                Xml child = new Xml((Element) node);
+                T child = (T)new Xml((Element) node);
                 addChild(node.getNodeName(), child);
             }
         }
@@ -209,8 +209,8 @@ public class Xml<T extends Xml> {
         return self();
     }
 
-    private T addChild(String name, Xml child) {
-        ArrayList<Xml> children = nameChildren.get(name);
+    private T addChild(String name, T child) {
+        ArrayList<T> children = nameChildren.get(name);
         if (children == null) {
             children = new ArrayList<>();
             nameChildren.put(name, children);
@@ -224,12 +224,12 @@ public class Xml<T extends Xml> {
         return self();
     }
 
-    public T addChild(Xml xml) {
+    public T addChild(T xml) {
         addChild(xml.name(), xml);
         return self();
     }
 
-    public T addChild(boolean ignoreNull, Xml xml) {
+    public T addChild(boolean ignoreNull, T xml) {
         if (ignoreNull && xml == null) return self();
         addChild(xml.name(), xml);
         return self();
@@ -263,7 +263,7 @@ public class Xml<T extends Xml> {
     }
 
     public T optChild(String name) {
-        ArrayList<Xml> children = children(name);
+        ArrayList<T> children = children(name);
         int n = children.size();
         if (n > 1) {
             throw new RuntimeException("Could not find individual child node: " + name);
@@ -275,9 +275,9 @@ public class Xml<T extends Xml> {
         return optAttrString(name) != null;
     }
 
-    public ArrayList<Xml> children(String name) {
-        ArrayList<Xml> children = nameChildren.get(name);
-        return children == null ? new ArrayList<>() : children;
+    public ArrayList<T> children(String name) {
+        ArrayList<T> children = nameChildren.get(name);
+        return children == null ? new ArrayList<T>() : children;
     }
 
     public String[] childContent(String name) {
@@ -288,8 +288,8 @@ public class Xml<T extends Xml> {
         return content;
     }
 
-    public Stream<Xml> childStream(String name) {
-        ArrayList<Xml> children = children(name);
+    public Stream<T> childStream(String name) {
+        ArrayList<T> children = children(name);
         int n = children.size();
         if (n > 1) {
             throw new RuntimeException("Could not find individual child node: " + name);
@@ -298,7 +298,7 @@ public class Xml<T extends Xml> {
     }
 
     public T sortChild(String name, Comparator comparator) {
-        ArrayList<Xml> nameChilds = nameChildren.get(name);
+        ArrayList<T> nameChilds = nameChildren.get(name);
         FastQSort.sortList(nameChilds, comparator);
         return self();
     }
@@ -521,7 +521,7 @@ public class Xml<T extends Xml> {
             xml.append("\"");
         }
         xml.append(">");
-        for (Map.Entry<String, ArrayList<Xml>> child : nameChildren.entrySet()) {
+        for (Map.Entry<String, ArrayList<T>> child : nameChildren.entrySet()) {
             child.getValue().forEach(xmlEntry -> xmlEntry.toXML(xml));
         }
         if (content != null && content.length() > 0 && content.trim().length() > 0) {
