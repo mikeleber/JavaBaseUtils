@@ -11,6 +11,7 @@ import org.basetools.util.tree.creator.JSONNodeCreator;
 import org.basetools.util.tree.creator.NodeCreator;
 
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -882,13 +883,21 @@ public class TreeNode<T, U> {
         if (!visitor.doBreak(this)) {
             visitor.visitStart(this);
             List<TreeNode<T, U>> childs = getChildren();
-            for (int c = 0; c < childs.size(); c++) {
-                TreeNode<T, U> achild = childs.get(c);
+            for (TreeNode<T, U> achild : childs) {
                 achild.accept(visitor);
             }
             visitor.visitEnd(this);
         }
     }
+
+    public void accept(BiFunction<T, U, Void> visitor) {
+        visitor.apply(getData(), getUserObject());
+        List<TreeNode<T, U>> childs = getChildren();
+        for (TreeNode<T, U> child : childs) {
+            child.accept(visitor);
+        }
+    }
+
 
     public boolean isList() {
         return _isList;

@@ -9,6 +9,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -149,20 +150,22 @@ public class MRUMap<K, O, T, S> implements Runnable {
         }
     }
 
+    public O getOrCreate(K key, Function<K, O> creator) {
+            O result = get(key);
+            if (result == null) {
+                result = creator.apply(key);
+                put(key, result);
+            }
+            return result;
+    }
+
     public O getOrCreate(K key, Supplier<O> creator) {
-        Lock writeLock = readWriteLock.writeLock();
-        try {
-            writeLock.lock();
             O result = get(key);
             if (result == null) {
                 result = creator.get();
                 put(key, result);
             }
             return result;
-        } finally {
-            writeLock.unlock();
-        }
-
     }
 
     /**
