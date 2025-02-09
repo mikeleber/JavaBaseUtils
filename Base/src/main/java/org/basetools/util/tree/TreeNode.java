@@ -234,7 +234,7 @@ public class TreeNode<T, U> {
 
     public String getStructureId() {
         if (_strucId == null) {
-            String id = null;
+            String id;
             if (getParent() != null) {
                 int pos = getPos() + 1;
                 id = getParent().getStructureId() + "_" + pos;

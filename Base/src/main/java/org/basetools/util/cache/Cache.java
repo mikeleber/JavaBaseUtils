@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 public class Cache<K, V> {
     private final int cacheSize;
     private Map<K, V> cache = null;
-    private ReadWriteLock readWriteLock = null;
+    protected ReadWriteLock readWriteLock = null;
 
 
     /**
