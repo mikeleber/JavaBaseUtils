@@ -883,7 +883,8 @@ public class TreeNode<T, U> {
         if (!visitor.doBreak(this)) {
             visitor.visitStart(this);
             List<TreeNode<T, U>> childs = getChildren();
-            for (TreeNode<T, U> achild : childs) {
+            for (int c = 0; c < childs.size(); c++) {
+                TreeNode<T, U> achild = childs.get(c);
                 achild.accept(visitor);
             }
             visitor.visitEnd(this);
@@ -893,8 +894,9 @@ public class TreeNode<T, U> {
     public void accept(BiFunction<T, U, Void> visitor) {
         visitor.apply(getData(), getUserObject());
         List<TreeNode<T, U>> childs = getChildren();
-        for (TreeNode<T, U> child : childs) {
-            child.accept(visitor);
+        for (int c = 0; c < childs.size(); c++) {
+            TreeNode<T, U> achild = childs.get(c);
+            achild.accept(visitor);
         }
     }
 
