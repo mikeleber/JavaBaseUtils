@@ -151,21 +151,21 @@ public class MRUMap<K, O, T, S> implements Runnable {
     }
 
     public O getOrCreate(K key, Function<K, O> creator) {
-            O result = get(key);
-            if (result == null) {
-                result = creator.apply(key);
-                put(key, result);
-            }
-            return result;
+        O result = get(key);
+        if (result == null) {
+            result = creator.apply(key);
+            put(key, result);
+        }
+        return result;
     }
 
     public O getOrCreate(K key, Supplier<O> creator) {
-            O result = get(key);
-            if (result == null) {
-                result = creator.get();
-                put(key, result);
-            }
-            return result;
+        O result = get(key);
+        if (result == null) {
+            result = creator.get();
+            put(key, result);
+        }
+        return result;
     }
 
     /**

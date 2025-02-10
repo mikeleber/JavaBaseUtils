@@ -11,6 +11,7 @@ public class UniqueStack<E> extends LinkedHashSet<E> {
 
     public UniqueStack() {
     }
+
     public UniqueStack(boolean keepFirst) {
         _keepFirst = keepFirst;
     }

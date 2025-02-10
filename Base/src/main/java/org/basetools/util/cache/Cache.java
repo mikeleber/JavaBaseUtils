@@ -8,6 +8,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -18,8 +19,8 @@ import java.util.function.Supplier;
  */
 public class Cache<K, V> {
     private final int cacheSize;
-    private Map<K, V> cache = null;
     protected ReadWriteLock readWriteLock = null;
+    private Map<K, V> cache = null;
 
 
     /**
@@ -48,6 +49,7 @@ public class Cache<K, V> {
         }
         return cache.put(key, value);
     }
+
 
     /**
      * Get v.
@@ -79,6 +81,21 @@ public class Cache<K, V> {
             writeLock.unlock();
         }
 
+    }
+
+    public V getOrCreate(K key, Function<K, V> creator) {
+        Lock writeLock = readWriteLock.writeLock();
+        try {
+            writeLock.lock();
+            V result = get(key);
+            if (result == null) {
+                result = creator.apply(key);
+                put(key, result);
+            }
+            return result;
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     /**

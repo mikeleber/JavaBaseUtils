@@ -19,12 +19,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 //https://argonrain.wordpress.com/2009/10/27/000/
-public class Xml<T extends Xml> {
+public class Xml {
 
     private final String name;
     private final String ns;
     private final Map<String, String> nameAttributes = new LinkedHashMap<>();
-    private final Map<String, ArrayList<T>> nameChildren = new LinkedHashMap<>();
+    private final Map<String, ArrayList<Xml>> nameChildren = new LinkedHashMap<>();
     private String content;
 
     public Xml(InputStream inputStream, String rootName) {
@@ -48,7 +48,7 @@ public class Xml<T extends Xml> {
             Node node = nodes.item(i);
             int type = node.getNodeType();
             if (type == Node.ELEMENT_NODE) {
-                T child = (T)new Xml((Element) node);
+                Xml child = (Xml) new Xml((Element) node);
                 addChild(node.getNodeName(), child);
             }
         }
@@ -197,20 +197,20 @@ public class Xml<T extends Xml> {
         return textContent != null ? textContent.toString() : null;
     }
 
-    public T addAttribute(String name, String value) {
+    public Xml addAttribute(String name, String value) {
         nameAttributes.put(name, value);
         return self();
     }
 
-    public T addAttributeIfExist(String name, String value) {
+    public Xml addAttributeIfExist(String name, String value) {
         if (value != null) {
             nameAttributes.put(name, value);
         }
         return self();
     }
 
-    private T addChild(String name, T child) {
-        ArrayList<T> children = nameChildren.get(name);
+    private Xml addChild(String name, Xml child) {
+        ArrayList<Xml> children = nameChildren.get(name);
         if (children == null) {
             children = new ArrayList<>();
             nameChildren.put(name, children);
@@ -219,31 +219,31 @@ public class Xml<T extends Xml> {
         return self();
     }
 
-    public T setContent(String content) {
+    public Xml setContent(String content) {
         this.content = content;
         return self();
     }
 
-    public T addChild(T xml) {
+    public Xml addChild(Xml xml) {
         addChild(xml.name(), xml);
         return self();
     }
 
-    public T addChild(boolean ignoreNull, T xml) {
+    public Xml addChild(boolean ignoreNull, Xml xml) {
         if (ignoreNull && xml == null) return self();
         addChild(xml.name(), xml);
         return self();
     }
 
-    private T self() {
-        return (T) this;
+    private Xml self() {
+        return (Xml) this;
     }
 
     public String name() {
         return name;
     }
 
-    public T getChild(String... pathNames) {
+    public Xml getChild(String... pathNames) {
         Xml current = this;
         for (String name : pathNames) {
             current = current.optChild(name);
@@ -251,33 +251,33 @@ public class Xml<T extends Xml> {
                 return null;
             }
         }
-        return (T) current;
+        return (Xml) current;
     }
 
-    public T child(String name) {
+    public Xml child(String name) {
         Xml child = optChild(name);
         if (child == null) {
             throw new RuntimeException("Could not find child node: " + name);
         }
-        return (T) child;
+        return (Xml) child;
     }
 
-    public T optChild(String name) {
-        ArrayList<T> children = children(name);
+    public Xml optChild(String name) {
+        ArrayList<Xml> children = children(name);
         int n = children.size();
         if (n > 1) {
             throw new RuntimeException("Could not find individual child node: " + name);
         }
-        return n == 0 ? null : (T) children.get(0);
+        return n == 0 ? null : (Xml) children.get(0);
     }
 
     public boolean hasAttr(String name) {
         return optAttrString(name) != null;
     }
 
-    public ArrayList<T> children(String name) {
-        ArrayList<T> children = nameChildren.get(name);
-        return children == null ? new ArrayList<T>() : children;
+    public ArrayList<Xml> children(String name) {
+        ArrayList<Xml> children = nameChildren.get(name);
+        return children == null ? new ArrayList<Xml>() : children;
     }
 
     public String[] childContent(String name) {
@@ -288,8 +288,8 @@ public class Xml<T extends Xml> {
         return content;
     }
 
-    public Stream<T> childStream(String name) {
-        ArrayList<T> children = children(name);
+    public Stream<Xml> childStream(String name) {
+        ArrayList<Xml> children = children(name);
         int n = children.size();
         if (n > 1) {
             throw new RuntimeException("Could not find individual child node: " + name);
@@ -297,8 +297,8 @@ public class Xml<T extends Xml> {
         return children.stream();
     }
 
-    public T sortChild(String name, Comparator comparator) {
-        ArrayList<T> nameChilds = nameChildren.get(name);
+    public Xml sortChild(String name, Comparator comparator) {
+        ArrayList<Xml> nameChilds = nameChildren.get(name);
         FastQSort.sortList(nameChilds, comparator);
         return self();
     }
@@ -521,7 +521,7 @@ public class Xml<T extends Xml> {
             xml.append("\"");
         }
         xml.append(">");
-        for (Map.Entry<String, ArrayList<T>> child : nameChildren.entrySet()) {
+        for (Map.Entry<String, ArrayList<Xml>> child : nameChildren.entrySet()) {
             child.getValue().forEach(xmlEntry -> xmlEntry.toXML(xml));
         }
         if (content != null && content.length() > 0 && content.trim().length() > 0) {

@@ -16,6 +16,7 @@ public class MapMap<K, K2, V> {
         Objects.requireNonNull(impl);
         _holder = impl;
     }
+
     public MapMap() {
         _holder = new HashMap<>();
     }
