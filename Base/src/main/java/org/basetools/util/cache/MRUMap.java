@@ -640,7 +640,7 @@ public class MRUMap<K, O, T, S> implements Runnable {
                     + "'s ";
         }
 
-        public Object getKey() {
+        public K getKey() {
             return key;
         }
 
@@ -673,7 +673,7 @@ public class MRUMap<K, O, T, S> implements Runnable {
             return ttl;
         }
 
-        public Object getValue() {
+        public O getValue() {
             return object;
         }
     }
