@@ -421,6 +421,24 @@ public class TreeNode<T, U> {
         return removed;
     }
 
+    public <R extends TreeNode<T, U>> R addNodeUsingCreatorByName(String[] nodeNamePath, NodeCreator creator) {
+        TreeNode<T, U> baseNode = this;
+
+        for(int i = 0; i < nodeNamePath.length; ++i) {
+            String nodeName = nodeNamePath[i];
+            if (nodeName != null && nodeName.length() > 0) {
+                TreeNode<T, U> aChild = baseNode.getChildByName(nodeName);
+                if (aChild == null) {
+                    aChild = creator.createNode(nodeName, baseNode);
+                    baseNode.addChild(aChild);
+                }
+
+                baseNode = aChild;
+            }
+        }
+
+        return (R)baseNode;
+    }
     public boolean moveTo(TreeNode newParent) throws IndexOutOfBoundsException {
         boolean removed = false;
         if (getParent() != null && newParent != null) {
@@ -1327,11 +1345,11 @@ public class TreeNode<T, U> {
     public <R extends TreeNode<T, U>> R addNodeUsingCreator(String[] nodeIDPath, NodeCreator creator) {
         TreeNode<T, U> baseNode = this;
         for (int i = 0; i < nodeIDPath.length; i++) {
-            String pNode = nodeIDPath[i];
-            if (pNode != null && pNode.length() > 0) {
-                TreeNode<T, U> aChild = baseNode.getChildByID(pNode);
+            String nodeId = nodeIDPath[i];
+            if (nodeId != null && nodeId.length() > 0) {
+                TreeNode<T, U> aChild = baseNode.getChildByID(nodeId);
                 if (aChild == null) {
-                    aChild = creator.createNode(pNode, null);
+                    aChild = creator.createNode(nodeId, baseNode);
                     baseNode.addChild(aChild);
                 }
                 baseNode = aChild;
@@ -1340,10 +1358,10 @@ public class TreeNode<T, U> {
         return (R) baseNode;
     }
 
-    public <R extends TreeNode<T, U>> R addNode(List<R> nodeIDPath, NodeCreator creator) {
+    public <R extends TreeNode<T, U>> R addNode(List<R> nodeElements, NodeCreator creator) {
         TreeNode<T, U> baseNode = this;
-        for (int i = 0; i < nodeIDPath.size(); i++) {
-            R pNode = nodeIDPath.get(i);
+        for (int i = 0; i < nodeElements.size(); i++) {
+            R pNode = nodeElements.get(i);
             if (pNode != null) {
                 TreeNode<T, U> aChild = baseNode.getChildByID(pNode.getID());
                 if (aChild == null) {
