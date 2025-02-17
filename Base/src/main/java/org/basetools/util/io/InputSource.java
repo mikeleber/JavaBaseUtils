@@ -101,6 +101,11 @@ public class InputSource extends org.xml.sax.InputSource implements AutoCloseabl
         }
     }
 
+    public InputSource setStringAsByteStream(String content) {
+        super.setByteStream(new ByteArrayInputStream(content.getBytes()));
+        return this;
+    }
+
     public File getFileFromSystemId() {
         return new File(getUriFromSystemId());
     }

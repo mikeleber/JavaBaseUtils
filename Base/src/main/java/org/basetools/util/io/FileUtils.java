@@ -51,6 +51,26 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
     }
 
     /**
+     * Reads the contents of a file into a String.
+     *
+     * @param reader the file to read, must not be {@code null}
+     * @return the file contents
+     * @throws IOException in case of an I/O error
+     */
+    public static List<String> readAllLines(Reader reader) throws IOException {
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader bReader = new BufferedReader(reader)) {
+            String line;
+            while ((line = bReader.readLine()) != null) {
+                lines.add(line);
+            }
+        } catch (IOException e) {
+           throw e;
+        }
+        return lines;
+    }
+
+    /**
      * Creates a File if the file does not exist, or returns a
      * reference to the File if it already exists.
      */
