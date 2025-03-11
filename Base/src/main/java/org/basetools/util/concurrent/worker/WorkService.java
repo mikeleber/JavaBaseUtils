@@ -191,7 +191,7 @@ public class WorkService<I> {
 
     public CompletableFuture shutdownAndExecute(boolean force) {
         CompletableFuture<Boolean> completableFuture
-                = CompletableFuture.supplyAsync(() -> shutdown(true));
+                = CompletableFuture.supplyAsync(() -> shutdown(force));
 
         return completableFuture;
     }
@@ -202,7 +202,7 @@ public class WorkService<I> {
         } else {
             while (!isIddle()) {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                 } catch (InterruptedException ex) {
                     Thread.currentThread().interrupt();
                 }
