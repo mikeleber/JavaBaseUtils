@@ -26,6 +26,7 @@ public class Xml {
     private final Map<String, String> nameAttributes = new LinkedHashMap<>();
     private final Map<String, ArrayList<Xml>> nameChildren = new LinkedHashMap<>();
     private String content;
+    private Xml parent;
 
     public Xml(InputStream inputStream, String rootName) {
         this(rootElement(new InputSource(inputStream), rootName));
@@ -216,6 +217,7 @@ public class Xml {
             nameChildren.put(name, children);
         }
         children.add(child);
+        child.parent = this;
         return self();
     }
 
@@ -236,7 +238,7 @@ public class Xml {
     }
 
     private Xml self() {
-        return (Xml) this;
+        return  this;
     }
 
     public String name() {
@@ -352,6 +354,25 @@ public class Xml {
     public Integer optAttrInteger(String name, int defaultValue) {
         String string = optAttrString(name);
         return string == null ? defaultValue : integerAttr(name);
+    }
+
+    public Xml getParent() {
+        return parent;
+    }
+
+    public Xml getRoot() {
+        Xml parent = this;
+        while (parent.parent != null) {
+            parent = parent.parent;
+        }
+        return parent;
+    }
+
+    public <T extends Xml> Xml with(T... elements) {
+        for (T element : elements) {
+            addChild(element);
+        }
+        return self();
     }
 
     public int integerAttr(String name) {

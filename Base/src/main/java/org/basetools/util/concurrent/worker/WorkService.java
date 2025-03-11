@@ -178,8 +178,10 @@ public class WorkService<I> {
 
     public void shutdown() {
         isRunning = false;
-        executorService.shutdown();
-        consumerService.shutdown();
+        if (executorService != null)
+            executorService.shutdown();
+        if (consumerService != null)
+            consumerService.shutdown();
         isShutdowned = true;
     }
 
@@ -187,7 +189,14 @@ public class WorkService<I> {
         return isShutdowned;
     }
 
-    public void shutdown(boolean force) {
+    public CompletableFuture shutdownAndExecute(boolean force) {
+        CompletableFuture<Boolean> completableFuture
+                = CompletableFuture.supplyAsync(() -> shutdown(true));
+
+        return completableFuture;
+    }
+
+    public boolean shutdown(boolean force) {
         if (force) {
             shutdown();
         } else {
@@ -201,6 +210,7 @@ public class WorkService<I> {
 
             shutdown();
         }
+        return true;
     }
 
     public Queue<Runnable> getWorklist() {
