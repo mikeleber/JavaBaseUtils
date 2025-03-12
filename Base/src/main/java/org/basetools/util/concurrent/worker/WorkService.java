@@ -6,12 +6,20 @@ import org.basetools.util.concurrent.ThreadFactoryWithNamePrefix;
 import java.util.Queue;
 import java.util.concurrent.*;
 
+import static java.lang.Thread.sleep;
+
 /**
  * Generic Class to execute a multi queued, pooled unit of works. Thread locals has to be instances of InheritableThreadLocal.
  *
  * @param <I>
  */
 public class WorkService<I> {
+    public static final int INIT_STATE_NOT_INITIALIZED = 0;
+    public static final int INIT_STATE_INITIALIZED = 1;
+    public static final int INIT_STATE_RUNNING = 2;
+    public static final int INIT_STATE_PAUSED = 3;
+    public static final int INIT_STATE_THREAD_EXIT = 4;
+    public static final int INIT_STATE_DESTROYED = 5;
     private int jobQueueSize = 10;
     private int corePoolSize = 10;
     private int maximumPoolSize = 100;
@@ -20,6 +28,8 @@ public class WorkService<I> {
     private BlockingQueue<Runnable> jobQueue = new ArrayBlockingQueue<>(jobQueueSize);
     private boolean isPaused = false;
     private boolean isRunning = false;
+    private short initState = INIT_STATE_NOT_INITIALIZED;
+    private boolean goesDown = false;
     private boolean isShutdowned = false;
     private Queue<Runnable> worklist = new ConcurrentLinkedQueue();
     private ExecutorService consumerService = Executors.newSingleThreadExecutor();
@@ -31,7 +41,7 @@ public class WorkService<I> {
         super();
     }
 
-    public WorkService initialize() {
+    public WorkService <I> initialize() {
 
         RejectedExecutionHandler rejectedExecutionHandler = new ThreadPoolExecutor.CallerRunsPolicy();
         executorService = new ThreadPoolExecutor(
@@ -43,6 +53,7 @@ public class WorkService<I> {
                 new ThreadFactoryWithNamePrefix("WorkService"),
                 rejectedExecutionHandler
         );
+        initState = INIT_STATE_INITIALIZED;
         return this;
     }
 
@@ -50,7 +61,7 @@ public class WorkService<I> {
      * @param size the number of threads to keep in the pool, even
      *             if they are idle, unless {@code allowCoreThreadTimeOut} is set
      */
-    public WorkService withCorePoolSize(int size) {
+    public WorkService<I> withCorePoolSize(int size) {
         corePoolSize = size;
         return this;
     }
@@ -59,7 +70,7 @@ public class WorkService<I> {
      * @param size the maximum number of threads to allow in the
      *             pool
      */
-    public WorkService withMaximumPoolSize(int size) {
+    public WorkService<I>  withMaximumPoolSize(int size) {
         maximumPoolSize = size;
         return this;
     }
@@ -67,7 +78,7 @@ public class WorkService<I> {
     /**
      * @param use set to collect statistic data
      */
-    public WorkService withStatistics(boolean use) {
+    public WorkService<I>  withStatistics(boolean use) {
         useStatistics = use;
         return this;
     }
@@ -77,7 +88,7 @@ public class WorkService<I> {
      *             the core, this is the maximum time that excess idle threads
      *             will wait for new tasks before terminating.
      */
-    public WorkService withKeepAliveTime(long time) {
+    public WorkService <I> withKeepAliveTime(long time) {
         keepAliveTime = time;
         return this;
     }
@@ -85,20 +96,22 @@ public class WorkService<I> {
     /**
      * @param size max size of the internal job queue
      */
-    public WorkService withJobQueueSize(int size) {
+    public WorkService<I>  withJobQueueSize(int size) {
         jobQueueSize = size;
         return this;
     }
 
-    public WorkService startWork() {
+    public WorkService<I>  startWork() {
         initialize();
         isRunning = true;
         consumerService.submit(() -> doWork());
+
         return this;
     }
 
-    public WorkService doWork() {
+    public WorkService <I> doWork() {
         while (isRunning) {
+            initState = INIT_STATE_RUNNING;
             synchronized (worklist) {
 
                 while (worklist.peek() != null) {
@@ -106,7 +119,7 @@ public class WorkService<I> {
                     if (isPaused) {
                         try {
                             isIddle = true;
-                            worklist.wait();
+                            worklist.wait(1000);
                         } catch (InterruptedException ie) {
                             Thread.currentThread().interrupt();
                         }
@@ -123,23 +136,26 @@ public class WorkService<I> {
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
-                        long timeComsumption = System.currentTimeMillis() - start;
-                        addToStatistic(timeComsumption, info);
+                        addToStatistic(System.currentTimeMillis() - start, info);
                     }
                 }
                 try {
                     isIddle = true;
-                    worklist.wait();
+                    worklist.wait(1000);
+                    if (goesDown&&worklist.size()==0){
+                        isRunning=false;
+                    }
                 } catch (InterruptedException ie) {
                     Thread.currentThread().interrupt();
                 }
             }
         }
+        initState = INIT_STATE_THREAD_EXIT;
         return this;
     }
 
     public boolean isIddle() {
-        return isIddle && getWorklist().size() == 0;
+        return isIddle && getWorklist().isEmpty();
     }
 
     public Statistics getStatistics() {
@@ -159,13 +175,14 @@ public class WorkService<I> {
         }
     }
 
-    public WorkService stopWork() {
+    public WorkService <I> stopWork() {
         isRunning = false;
         return this;
     }
 
-    public WorkService pauseWork(boolean pause) {
+    public WorkService <I> pauseWork(boolean pause) {
         isPaused = pause;
+        initState = (short) (isPaused ? INIT_STATE_PAUSED : INIT_STATE_RUNNING);
         synchronized (worklist) {
             getWorklist().notifyAll();
         }
@@ -178,31 +195,30 @@ public class WorkService<I> {
 
     public void shutdown() {
         isRunning = false;
+        goesDown = true;
         if (executorService != null)
             executorService.shutdown();
         if (consumerService != null)
             consumerService.shutdown();
         isShutdowned = true;
+        initState = INIT_STATE_DESTROYED;
     }
 
     public boolean isShutdowned() {
         return isShutdowned;
     }
 
-    public CompletableFuture shutdownAndExecute(boolean force) {
-        CompletableFuture<Boolean> completableFuture
-                = CompletableFuture.supplyAsync(() -> shutdown(force));
 
-        return completableFuture;
-    }
 
     public boolean shutdown(boolean force) {
         if (force) {
             shutdown();
         } else {
-            while (!isIddle()) {
+            while (initState != INIT_STATE_THREAD_EXIT) {
                 try {
-                    Thread.sleep(500);
+                    goesDown = true;
+                    sleep(1000);
+                 //   System.out.println("waiting for shutdown:" + initState);
                 } catch (InterruptedException ex) {
                     Thread.currentThread().interrupt();
                 }
@@ -217,13 +233,13 @@ public class WorkService<I> {
         return worklist;
     }
 
-    public WorkService pushWorkUnit(Runnable work, I info) {
+    public WorkService<I>  pushWorkUnit(Runnable work, I info) {
         pushWorkUnit(new RunnableWrapper(work, info));
         return this;
     }
 
-    public WorkService pushWorkUnit(Runnable work) {
-        checkShutdowned();
+    public WorkService<I>  pushWorkUnit(Runnable work) {
+        checkShutdownd();
         worklist.add(work);
         synchronized (worklist) {
             worklist.notifyAll();
@@ -231,8 +247,8 @@ public class WorkService<I> {
         return this;
     }
 
-    private void checkShutdowned() {
-        if (isShutdowned()) {
+    private void checkShutdownd() {
+        if (goesDown || isShutdowned()) {
             throw new IllegalStateException("Workservice shutdowned");
         }
     }

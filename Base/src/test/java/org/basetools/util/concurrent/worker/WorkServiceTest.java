@@ -11,9 +11,15 @@ class WorkServiceTest {
     void shutdownAndExecute() throws ExecutionException, InterruptedException {
         WorkService<Xml> workService = new WorkService<Xml>();
         workService.startWork();
-        for (int i = 0; i < 1000000; i++) {
-            workService.pushWorkUnit(() -> System.out.println("work unit"));
+        for (int i = 0; i < 100; i++) {
+            workService.pushWorkUnit(() -> {
+                try {
+                    Thread.sleep(1000);
+                } catch (Exception e) {
+                }
+                System.out.println("work unit");
+            });
         }
-        System.out.println("executed:"+ workService.shutdownAndExecute(false).get());
+        System.out.println("executed:" + workService.shutdown(false));
     }
 }
