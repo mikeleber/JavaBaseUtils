@@ -552,7 +552,7 @@ public class StringUtils {
     }
 
     public enum ContentType {
-        unknown, xml, xsd, xjson, json, yaml, csv, txt, nls;
+        unknown, xml, xsd, xjson, json, yaml, csv, txt,avro, nls;
 
         public static ContentType valueOf(String name, ContentType defaultVal) {
             for (ContentType aType : ContentType.values()) {

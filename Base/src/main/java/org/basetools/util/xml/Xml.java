@@ -121,6 +121,12 @@ public class Xml {
         }
         return (val.equalsIgnoreCase("true") || val.equalsIgnoreCase("y") || val.equalsIgnoreCase("yes") || val.equalsIgnoreCase("1") || val.equalsIgnoreCase("1.0"));
     }
+    private static Boolean isTrue(String val, Boolean defaultValue) {
+        if (val == null || val.length() == 0) {
+            return defaultValue;
+        }
+        return (val.equalsIgnoreCase("true") || val.equalsIgnoreCase("y") || val.equalsIgnoreCase("yes") || val.equalsIgnoreCase("1") || val.equalsIgnoreCase("1.0"));
+    }
 
     public byte getValue(String propName, byte defValue, boolean prefDef) {
         if (prefDef) return childBooleanToByte(propName, defValue);
@@ -417,6 +423,9 @@ public class Xml {
     }
 
     public boolean booleanAttrValue(String name, boolean defaultValue) {
+        return isTrue(optAttrString(name), defaultValue);
+    }
+    public Boolean booleanAttrValue(String name, Boolean defaultValue) {
         return isTrue(optAttrString(name), defaultValue);
     }
 

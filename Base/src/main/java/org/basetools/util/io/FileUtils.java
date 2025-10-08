@@ -65,7 +65,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
                 lines.add(line);
             }
         } catch (IOException e) {
-           throw e;
+            throw e;
         }
         return lines;
     }
@@ -99,6 +99,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
     }
 
     public static String changeExtension(String fileName, String extension) {
+        if (fileName.lastIndexOf(".") == -1) return fileName;
         return fileName.substring(0, fileName.lastIndexOf(".")) + '.' + extension;
     }
 
