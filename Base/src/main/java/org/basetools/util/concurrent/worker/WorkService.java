@@ -1,10 +1,14 @@
 package org.basetools.util.concurrent.worker;
 
 import org.basetools.util.Statistics;
+import org.basetools.util.collection.ConcurrentList;
 import org.basetools.util.concurrent.ThreadFactoryWithNamePrefix;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.lang.Thread.sleep;
 
@@ -36,12 +40,13 @@ public class WorkService<I> {
     private Statistics statistics;
     private boolean useStatistics;
     private boolean isIddle;
+    private List<WorkListener> listeners = new ConcurrentList<>(new ArrayList<>());
 
     public WorkService() {
         super();
     }
 
-    public WorkService <I> initialize() {
+    public WorkService<I> initialize() {
 
         RejectedExecutionHandler rejectedExecutionHandler = new ThreadPoolExecutor.CallerRunsPolicy();
         executorService = new ThreadPoolExecutor(
@@ -70,7 +75,7 @@ public class WorkService<I> {
      * @param size the maximum number of threads to allow in the
      *             pool
      */
-    public WorkService<I>  withMaximumPoolSize(int size) {
+    public WorkService<I> withMaximumPoolSize(int size) {
         maximumPoolSize = size;
         return this;
     }
@@ -78,7 +83,7 @@ public class WorkService<I> {
     /**
      * @param use set to collect statistic data
      */
-    public WorkService<I>  withStatistics(boolean use) {
+    public WorkService<I> withStatistics(boolean use) {
         useStatistics = use;
         return this;
     }
@@ -88,7 +93,7 @@ public class WorkService<I> {
      *             the core, this is the maximum time that excess idle threads
      *             will wait for new tasks before terminating.
      */
-    public WorkService <I> withKeepAliveTime(long time) {
+    public WorkService<I> withKeepAliveTime(long time) {
         keepAliveTime = time;
         return this;
     }
@@ -96,12 +101,12 @@ public class WorkService<I> {
     /**
      * @param size max size of the internal job queue
      */
-    public WorkService<I>  withJobQueueSize(int size) {
+    public WorkService<I> withJobQueueSize(int size) {
         jobQueueSize = size;
         return this;
     }
 
-    public WorkService<I>  startWork() {
+    public WorkService<I> startWork() {
         initialize();
         isRunning = true;
         consumerService.submit(() -> doWork());
@@ -109,7 +114,7 @@ public class WorkService<I> {
         return this;
     }
 
-    public WorkService <I> doWork() {
+    public WorkService<I> doWork() {
         while (isRunning) {
             initState = INIT_STATE_RUNNING;
             synchronized (worklist) {
@@ -132,7 +137,7 @@ public class WorkService<I> {
                             if (toDo instanceof RunnableWrapper) {
                                 info = ((RunnableWrapper) toDo).getInfo();
                             }
-                            executorService.submit(toDo);
+                            Future submitted = executorService.submit(toDo);
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -142,8 +147,8 @@ public class WorkService<I> {
                 try {
                     isIddle = true;
                     worklist.wait(1000);
-                    if (goesDown&&worklist.size()==0){
-                        isRunning=false;
+                    if (goesDown && worklist.size() == 0) {
+                        isRunning = false;
                     }
                 } catch (InterruptedException ie) {
                     Thread.currentThread().interrupt();
@@ -175,12 +180,12 @@ public class WorkService<I> {
         }
     }
 
-    public WorkService <I> stopWork() {
+    public WorkService<I> stopWork() {
         isRunning = false;
         return this;
     }
 
-    public WorkService <I> pauseWork(boolean pause) {
+    public WorkService<I> pauseWork(boolean pause) {
         isPaused = pause;
         initState = (short) (isPaused ? INIT_STATE_PAUSED : INIT_STATE_RUNNING);
         synchronized (worklist) {
@@ -209,7 +214,6 @@ public class WorkService<I> {
     }
 
 
-
     public boolean shutdown(boolean force) {
         if (force) {
             shutdown();
@@ -218,7 +222,7 @@ public class WorkService<I> {
                 try {
                     goesDown = true;
                     sleep(1000);
-                 //   System.out.println("waiting for shutdown:" + initState);
+                    //   System.out.println("waiting for shutdown:" + initState);
                 } catch (InterruptedException ex) {
                     Thread.currentThread().interrupt();
                 }
@@ -233,18 +237,74 @@ public class WorkService<I> {
         return worklist;
     }
 
-    public WorkService<I>  pushWorkUnit(Runnable work, I info) {
-        pushWorkUnit(new RunnableWrapper(work, info));
+    public WorkService<I> pushWorkUnit(List<Runnable> works, I info, int batchSize) {
+        int totalSize = works.size();
+        if (totalSize == 0) return this;
+        final List<Runnable> batchWorks = new ArrayList<Runnable>(batchSize);
+        AtomicInteger counter = new AtomicInteger(0);
+        final Object monitor = counter;
+
+        WorkListener listener = rw -> {
+            synchronized (monitor) {
+                counter.incrementAndGet();
+                monitor.notify();
+            }
+        };
+        listeners.add(listener);
+        try {
+            int toProcess = totalSize;
+            for (int i = 0; i < totalSize; ) {
+
+                int todoSize = (toProcess >= batchSize) ? batchSize : toProcess;
+                batchWorks.addAll(works.subList(i, i + todoSize));
+                i = i + todoSize;
+                toProcess = toProcess - todoSize;
+
+                for (Runnable work : batchWorks) {
+                    pushWorkUnitInternal(new RunnableWrapper(this, work, info));
+                }
+                while (counter.get() < todoSize) {
+                    synchronized (monitor) {
+                        try {
+                            monitor.wait(200);
+                        } catch (InterruptedException e) {
+                        }
+                    }
+                }
+                batchWorks.clear();
+                counter.set(0);
+                if (toProcess == totalSize) {
+                    break;
+                }
+            }
+        } finally {
+            listeners.remove(listener);
+        }
         return this;
     }
 
-    public WorkService<I>  pushWorkUnit(Runnable work) {
+    public WorkService<I> pushWorkUnit(Runnable work, I info) {
+        pushWorkUnitInternal(new RunnableWrapper(work, info));
+        return this;
+    }
+
+    public WorkService<I> pushWorkUnit(Runnable work) {
+        return pushWorkUnitInternal(work);
+    }
+
+    private WorkService<I> pushWorkUnitInternal(Runnable work) {
         checkShutdownd();
         worklist.add(work);
         synchronized (worklist) {
             worklist.notifyAll();
         }
         return this;
+    }
+
+    private void notifyDone(RunnableWrapper<I> iRunnableWrapper) {
+        for (WorkListener listener : listeners) {
+            listener.finished(iRunnableWrapper);
+        }
     }
 
     private void checkShutdownd() {
@@ -256,10 +316,21 @@ public class WorkService<I> {
     class RunnableWrapper<I> implements Runnable {
         I info;
         Runnable run;
+        WorkService<I> work;
 
         RunnableWrapper(Runnable runable, I info) {
             run = runable;
             this.info = info;
+        }
+
+        RunnableWrapper(WorkService<I> work, Runnable runable, I info) {
+            run = runable;
+            this.info = info;
+            this.work = work;
+        }
+
+        public Runnable getRun() {
+            return run;
         }
 
         public I getInfo() {
@@ -268,7 +339,15 @@ public class WorkService<I> {
 
         @Override
         public void run() {
-            run.run();
+            try {
+                run.run();
+            } finally {
+                if (work != null) {
+                    work.notifyDone((WorkService<I>.RunnableWrapper<I>) this);
+                }
+            }
         }
     }
+
+
 }
