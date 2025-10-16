@@ -1,6 +1,7 @@
 package org.basetools.util.concurrent.worker;
 
 import org.basetools.util.Statistics;
+import org.basetools.util.StreamUtils;
 import org.basetools.util.collection.ConcurrentList;
 import org.basetools.util.concurrent.ThreadFactoryWithNamePrefix;
 
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 import static java.lang.Thread.sleep;
 
@@ -236,6 +238,17 @@ public class WorkService<I> {
     public Queue<Runnable> getWorklist() {
         return worklist;
     }
+
+    public void pushWorkUnit(Stream<Runnable> works, I info, int batchSize) {
+        Stream<List<Runnable>> chunks = StreamUtils.chunked(works, batchSize);
+        chunks.forEach(chunk -> pushWorkUnit(chunk, null, batchSize));
+    }
+
+//    public void pushWorkUnit2(Stream<Runnable> works, I info, int batchSize) {
+//        works.gather(Gatherers.windowFixed(batchSize)).forEach(batch -> {
+//            pushWorkUnit(batch, null, batchSize);
+//        });
+//    }
 
     public WorkService<I> pushWorkUnit(List<Runnable> works, I info, int batchSize) {
         int totalSize = works.size();
