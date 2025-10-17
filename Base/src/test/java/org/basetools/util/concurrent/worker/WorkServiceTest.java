@@ -31,7 +31,7 @@ class WorkServiceTest {
         workService.startWork();
         List<Runnable> runnables = new ArrayList<Runnable>();
         final AtomicInteger counter= new AtomicInteger();
-        for (int i = 0; i < 100001; i++) {
+        for (int i = 0; i < 1001; i++) {
             runnables.add(() -> {
 //                try {
 //                    Thread.sleep(1);
@@ -48,7 +48,7 @@ class WorkServiceTest {
         workService.startWork();
         List<Runnable> runnables = new ArrayList<Runnable>();
         final AtomicInteger counter= new AtomicInteger();
-        for (int i = 0; i < 100001; i++) {
+        for (int i = 0; i < 1001; i++) {
             runnables.add(() -> {
 //                try {
 //                    Thread.sleep(1);
@@ -58,6 +58,35 @@ class WorkServiceTest {
             });
         }
         workService.pushWorkUnit(runnables.stream(),null,200);
+        //  System.out.println("executed:" + workService.shutdown(false));
+    }
+    @Test
+    void shutdownWithTombstoneAndExecuteStream() throws ExecutionException, InterruptedException {
+        WorkService<Xml> workService = new WorkService<Xml>();
+        workService.startWork();
+        List<Runnable> runnables = new ArrayList<Runnable>();
+        final AtomicInteger counter= new AtomicInteger();
+        for (int i = 0; i < 1001; i++) {
+            runnables.add(() -> {
+//                try {
+//                    Thread.sleep(1);
+//                } catch (Exception e) {
+//                }
+                System.out.println("work unit:"+counter.incrementAndGet()+" "+this.hashCode());
+            });
+        }
+        runnables.add(null);
+        runnables.add(() -> {
+//                try {
+//                    Thread.sleep(1);
+//                } catch (Exception e) {
+//                }
+            System.out.println("work unit:"+counter.incrementAndGet()+" "+this.hashCode());
+        });
+        try {
+
+            workService.pushWorkUnit(runnables.stream(),null);
+        }catch (RuntimeException re){}
         //  System.out.println("executed:" + workService.shutdown(false));
     }
 }

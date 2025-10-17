@@ -244,6 +244,12 @@ public class WorkService<I> {
         chunks.forEach(chunk -> pushWorkUnit(chunk, null, batchSize));
     }
 
+    public void pushWorkUnit(Stream<Runnable> works, I info) {
+        works.peek(runnable -> {
+            if (runnable == null) throw new RuntimeException("Tombstone received");
+        }).forEach(chunk -> pushWorkUnit(chunk, info));
+    }
+
 //    public void pushWorkUnit2(Stream<Runnable> works, I info, int batchSize) {
 //        works.gather(Gatherers.windowFixed(batchSize)).forEach(batch -> {
 //            pushWorkUnit(batch, null, batchSize);
@@ -255,7 +261,7 @@ public class WorkService<I> {
         if (totalSize == 0) return this;
         final List<Runnable> batchWorks = new ArrayList<Runnable>(batchSize);
         AtomicInteger counter = new AtomicInteger(0);
-        final Object monitor = counter;
+        final Object monitor = worklist;
 
         WorkListener listener = rw -> {
             synchronized (monitor) {
@@ -283,10 +289,11 @@ public class WorkService<I> {
                         } catch (InterruptedException e) {
                         }
                     }
+                    if (goesDown) break;
                 }
                 batchWorks.clear();
                 counter.set(0);
-                if (toProcess == totalSize) {
+                if ((toProcess == totalSize) || goesDown) {
                     break;
                 }
             }
