@@ -1,11 +1,15 @@
 package org.basetools.util;
 
+import org.basetools.util.array.ArrayUtil;
 import org.basetools.util.hash.MurmurHash;
+import org.basetools.util.xml.XMLChar;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.Stack;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.util.function.Function;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class StringUtils {
     public static final char CHAR_SPACE = (char) 0x20;
@@ -51,7 +55,7 @@ public class StringUtils {
         return expDecimalFormat.format(value);
     }
 
-    public static String replaceWhiteSpace(String toClean, char replacement, boolean collapseSpaces) {
+    public static final String replaceWhiteSpace(String toClean, char replacement, boolean collapseSpaces) {
         int size = toClean.length();
         StringBuilder result = new StringBuilder(toClean.length());
         char old = CHAR_EMPTY;
@@ -121,11 +125,11 @@ public class StringUtils {
         return result.toString();
     }
 
-    public static boolean isXML(String string) {
+    public static final boolean isXML(String string) {
         return string != null && string.trim().startsWith("<") && string.trim().endsWith(">");
     }
 
-    public static ContentType getDataType(String string) {
+    public static final ContentType getDataType(String string) {
         if (string == null) return ContentType.unknown;
         String content = string.trim();
         if (content.startsWith("<") && content.endsWith(">")) return ContentType.xml;
@@ -137,7 +141,7 @@ public class StringUtils {
         return ContentType.unknown;
     }
 
-    public static boolean regionMatches(final CharSequence cs, final boolean ignoreCase, final int thisStart, final CharSequence substring, final int start, final int length) {
+    public static final boolean regionMatches(final CharSequence cs, final boolean ignoreCase, final int thisStart, final CharSequence substring, final int start, final int length) {
         if (cs instanceof String && substring instanceof String) {
             return ((String) cs).regionMatches(ignoreCase, thisStart, (String) substring, start, length);
         }
@@ -223,7 +227,7 @@ public class StringUtils {
         return aString.split(splitter);
     }
 
-    public static String prependIfMissing(final String str, final CharSequence prefix, final CharSequence toPrepend, final boolean ignoreCase, final CharSequence... prefixes) {
+    public static final String prependIfMissing(final String str, final CharSequence prefix, final CharSequence toPrepend, final boolean ignoreCase, final CharSequence... prefixes) {
         if (str == null || EmptyUtil.isEmpty(prefix) || startsWith(str, prefix, ignoreCase)) {
             return str;
         }
@@ -237,7 +241,7 @@ public class StringUtils {
         return (toPrepend != null ? toPrepend.toString() : prefix.toString()) + str;
     }
 
-    public static boolean startsWith(final CharSequence str, final CharSequence prefix, final boolean ignoreCase) {
+    public static final boolean startsWith(final CharSequence str, final CharSequence prefix, final boolean ignoreCase) {
         if (str == null || prefix == null) {
             return str == prefix;
         }
@@ -247,7 +251,7 @@ public class StringUtils {
         return regionMatches(str, ignoreCase, 0, prefix, 0, prefix.length());
     }
 
-    public static String[] getTokensArray(String strData, String strDelimiters, boolean returnDelims) {
+    public static final String[] getTokensArray(String strData, String strDelimiters, boolean returnDelims) {
 
         String[] strTokenArray = null;
 
@@ -288,7 +292,7 @@ public class StringUtils {
         return result.toString();
     }
 
-    public static String convertExponentialValue(String number) throws NumberFormatException {
+    public static final String convertExponentialValue(String number) throws NumberFormatException {
         if (number != null && (number.indexOf("e") > -1 || number.indexOf("E") > -1)) {
             number = FROM_FLOATINGNUMBER_FORMAT.format(Double.parseDouble(number));
             if (number.endsWith(".0")) {
@@ -298,11 +302,11 @@ public class StringUtils {
         return number;
     }
 
-    public static StringBuilder wrapQuoted(StringBuilder builder, CharSequence aString) {
+    public static final StringBuilder wrapQuoted(StringBuilder builder, CharSequence aString) {
         return builder.append(wrapQuoted(aString));
     }
 
-    public static CharSequence wrapQuoted(CharSequence aString) {
+    public static final CharSequence wrapQuoted(CharSequence aString) {
 
         if (aString == null || aString.length() == 0) {
             return aString;
@@ -362,7 +366,7 @@ public class StringUtils {
         return cleared.toString();
     }
 
-    public static boolean isNumeric(final CharSequence cs) {
+    public static final boolean isNumeric(final CharSequence cs) {
         if (isEmpty(cs)) {
             return false;
         }
@@ -382,7 +386,7 @@ public class StringUtils {
      * @param token
      * @return
      */
-    public static String[] tokenizeSegmented(String token) {
+    public static final String[] tokenizeSegmented(String token) {
         String delims = "_-:#";
         String[] results = new String[delims.length() + 1];
         int size = token.length();
@@ -430,7 +434,7 @@ public class StringUtils {
         return results;
     }
 
-    public static String[] tokenizeSegmented(String delims, String token) {
+    public static final String[] tokenizeSegmented(String delims, String token) {
         String[] results = new String[delims.length() + 1];
         int size = token.length();
         int pos = 0;
@@ -460,7 +464,7 @@ public class StringUtils {
         return results;
     }
 
-    public static int hash(int prime, String s) {
+    public static final int hash(int prime, String s) {
         int h = 0;
         for (int i = 0; i < s.length(); i++) {
             h = prime * h + s.charAt(i);
@@ -468,32 +472,32 @@ public class StringUtils {
         return h;
     }
 
-    public static boolean isEmpty(final CharSequence cs) {
+    public static final boolean isEmpty(final CharSequence cs) {
         return cs == null || cs.length() == 0;
     }
 
-    public static boolean isNotEmpty(final CharSequence cs) {
+    public static final boolean isNotEmpty(final CharSequence cs) {
         return !isEmpty(cs);
     }
 
-    public static CharSequence getNonEmpty(final CharSequence cs, final CharSequence defaultCs) {
+    public static final CharSequence getNonEmpty(final CharSequence cs, final CharSequence defaultCs) {
         return !isEmpty(cs) ? cs : defaultCs;
     }
 
-    public static String getNonEmpty(final String cs, final String defaultCs) {
+    public static final String getNonEmpty(final String cs, final String defaultCs) {
         return !isEmpty(cs) ? cs : defaultCs;
     }
 
-    public static int hashMurmur(String s) {
+    public static final int hashMurmur(String s) {
         return MurmurHash.hash32(s);
     }
 
-    public static String replace(String val, String what, String with) {
+    public static final String replace(String val, String what, String with) {
         if (val == null) return val;
         return val.replaceAll(what, with);
     }
 
-    public static boolean isInteger(String str) {
+    public static final boolean isInteger(String str) {
         if (str == null) {
             return false;
         }
@@ -552,7 +556,7 @@ public class StringUtils {
     }
 
     public enum ContentType {
-        unknown, xml, xsd, xjson, json, yaml, csv, txt,avro, nls;
+        unknown, xml, xsd, xjson, json, yaml, csv, txt, avro, nls;
 
         public static ContentType valueOf(String name, ContentType defaultVal) {
             for (ContentType aType : ContentType.values()) {
@@ -563,5 +567,176 @@ public class StringUtils {
             return defaultVal;
         }
 
+    }
+
+    public static final String EMPTY_STRING = "";
+
+
+    static {
+        FROM_FLOATINGNUMBER_FORMAT.setGroupingUsed(false);
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setDecimalSeparator('.');
+        FROM_FLOATINGNUMBER_FORMAT.setDecimalFormatSymbols(symbols);
+        FROM_FLOATINGNUMBER_FORMAT.setMaximumFractionDigits(340);
+    }
+
+
+    public static final String getRightPart(String content, char delim) {
+        int currPos = content.length();
+        int length = currPos;
+        int off = 0; /* avoid getfield opcode */
+        char[] val = content.toCharArray(); /* avoid getfield opcode */
+        while ((currPos >= 0) && (val[off + currPos - 1] != delim)) {
+            currPos--;
+        }
+        return currPos > 0 ? content.substring(currPos, length) : content;
+    }
+
+
+    public static final String intToString(int number, int groupSize) {
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 31; i >= 0; i--) {
+            int mask = 1 << i;
+            result.append((number & mask) != 0 ? "1" : "0");
+
+            if (i % groupSize == 0)
+                result.append(" ");
+        }
+        result.replace(result.length() - 1, result.length(), "");
+
+        return result.toString();
+    }
+
+    public static final String[] splitByRegex(String value, String regex) {
+        Object[] resultArray = null;
+        String[] x = Pattern.compile(regex).split(value);
+        for (int i = 0; i < x.length; i++) {
+            resultArray = ArrayUtil.addToGrowArray(resultArray, x[i], 10);
+        }
+        return (String[]) ArrayUtil.finalizeGrowArray(String.class, resultArray);
+    }
+
+
+    /**
+     * Split every string in tupple if starts with pattern and returns the right part.
+     * getList(["col-1","row-1","col-2"],"col-",'-')-> 1,2
+     *
+     * @param tupples
+     * @param pattern
+     * @param valSplitter
+     * @return
+     */
+    public static List<String> getList(String[] tupples, String pattern, char valSplitter) {
+        return Arrays.stream(tupples).filter(name -> name.toLowerCase().startsWith(pattern.toLowerCase())).map(clazz -> StringUtils.getRightPart(clazz, valSplitter)).collect(Collectors.toList());
+    }
+
+    /**
+     * Split every string in tupple if starts with pattern and returns the first right part.
+     * getList(["col-1","row-1","col-2"],"col-",'-')-> 1
+     *
+     * @param tupples
+     * @param pattern
+     * @param valSplitter
+     * @return
+     */
+    public static String getFirstMatch(String[] tupples, String pattern, char valSplitter) {
+        for (String tup : tupples) {
+            if (tup != null && tup.startsWith(pattern)) {
+                return StringUtils.getRightPart(tup, valSplitter);
+            }
+        }
+        return null;
+    }
+
+    public static final String shredder(String text, int length, int startAt) {
+        String base = text.substring(startAt);
+        String trail = text.substring(0, startAt);
+        length = length - startAt;
+        if (length <= 0) {
+            return trail;
+        } else if (base.length() > length) {
+            int difFactor = (int) Math.ceil((double) base.length() / length);
+            StringBuilder newSeqName = new StringBuilder(length);
+            for (int s = 0; s < base.length(); s = s + difFactor) {
+                newSeqName.append(base.charAt(s));
+            }
+            if (newSeqName.length() < length) {
+                int addChars = length - newSeqName.length();
+                newSeqName.append(base.substring(base.length() - addChars, base.length()));
+            }
+            base = newSeqName.toString();
+        }
+        return trail + base;
+    }
+
+    public static final String toStringForEmpty(Object value, String defaultValue) {
+        String simpleValue = Objects.toString(value, null);
+        if (org.basetools.util.StringUtils.isEmpty(simpleValue)) {
+            simpleValue = null;
+        }
+        return simpleValue;
+    }
+
+    public static final <T> String toString(List<T> elements, Function<T, String> toStringer) {
+        StringBuilder result = new StringBuilder();
+        for (T element : elements) {
+            result.append(toStringer.apply(element));
+        }
+        return result.toString();
+    }
+
+    public static final <T> String toString(T[] elements, Function<T, String> toStringer) {
+        StringBuilder result = new StringBuilder();
+        for (T element : elements) {
+            if (toStringer == null) {
+                result.append(Objects.toString(element, null));
+            } else {
+                result.append(toStringer.apply((T) element));
+            }
+        }
+        return result.toString();
+    }
+
+    public static final String toString(short[] elements, String separator) {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < elements.length; i++) {
+            result.append(Objects.toString(elements[i], null));
+            if (elements.length > i + 1) {
+                result.append(separator);
+            }
+        }
+        return result.toString();
+    }
+
+    public static final boolean contains(final CharSequence seq, final CharSequence searchSeq) {
+        return org.apache.commons.lang3.StringUtils.contains(seq, searchSeq);
+    }
+
+    public static final String trim(String expression) {
+        return expression != null ? expression.trim() : null;
+    }
+
+    public static final String toLowerCase(String text, String defaultVal) {
+        return text != null ? text.toLowerCase() : defaultVal;
+    }
+    public static String cleanXSDName(String name) {
+        if (name.length() == 0) {
+            return name;
+        } else {
+            char ch = name.charAt(0);
+            StringBuilder result = new StringBuilder();
+            for (int i = 1; i < name.length(); ++i) {
+                ch = name.charAt(i);
+                if (!XMLChar.isName(ch)) {
+                    //return false;
+                } else {
+                    result.append(ch);
+                }
+            }
+
+            return result.toString();
+
+        }
     }
 }
