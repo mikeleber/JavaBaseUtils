@@ -424,7 +424,7 @@ public class TreeNode<T, U> {
     public <R extends TreeNode<T, U>> R addNodeUsingCreatorByName(String[] nodeNamePath, NodeCreator creator) {
         TreeNode<T, U> baseNode = this;
 
-        for(int i = 0; i < nodeNamePath.length; ++i) {
+        for (int i = 0; i < nodeNamePath.length; ++i) {
             String nodeName = nodeNamePath[i];
             if (nodeName != null && nodeName.length() > 0) {
                 TreeNode<T, U> aChild = baseNode.getChildByName(nodeName);
@@ -437,8 +437,9 @@ public class TreeNode<T, U> {
             }
         }
 
-        return (R)baseNode;
+        return (R) baseNode;
     }
+
     public boolean moveTo(TreeNode newParent) throws IndexOutOfBoundsException {
         boolean removed = false;
         if (getParent() != null && newParent != null) {
@@ -877,23 +878,27 @@ public class TreeNode<T, U> {
         return sb.toString();
     }
 
+    public static final String SKIP_MARKER = "SkipMarker";
+
     public void createPath(StringBuffer sb, Function<TreeNode<T, U>, String> nameGetter) {
 
         String name = nameGetter != null ? nameGetter.apply(this) : getID();
-        if (getParent() != null) {
-            getParent().createPath(sb, nameGetter);
-            if (!isList()) {
+        if (SKIP_MARKER != name) {
+            if (getParent() != null) {
+                getParent().createPath(sb, nameGetter);
+                if (!isList()) {
+                    sb.append("/");
+                    sb.append(name);
+                    if (getParent() != null && getParent().isList() && getParent().size() > 0) {
+                        sb.append("[");
+                        sb.append(getParent().getChildren().indexOf(this) + 1);
+                        sb.append("]");
+                    }
+                }
+            } else {
                 sb.append("/");
                 sb.append(name);
-                if (getParent() != null && getParent().isList() && getParent().size() > 0) {
-                    sb.append("[");
-                    sb.append(getParent().getChildren().indexOf(this) + 1);
-                    sb.append("]");
-                }
             }
-        } else {
-            sb.append("/");
-            sb.append(name);
         }
     }
 
