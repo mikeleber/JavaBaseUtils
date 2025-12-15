@@ -225,7 +225,7 @@ public final class XPathNode<U> {
         _xNodeName = name;
     }
 
-     void addChild(XPathNode<U> node) {
+    public void addChild(XPathNode<U> node) {
         if (_childs == null) {
             _childs = new ArrayList<>(5);
         }
