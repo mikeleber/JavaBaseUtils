@@ -103,7 +103,7 @@ public final class XPathNode<U> {
         return null;
     }
 
-    protected void parse(String xNodeValue, boolean check, Map<String, String> nsMappings) throws XPathError {
+     void parse(String xNodeValue, boolean check, Map<String, String> nsMappings) throws XPathError {
         _isAsterix = false;
         _nodeType = DEFAULT_NODE;
         _xNodeNSPfix = extractNodeNS(xNodeValue);
@@ -177,7 +177,7 @@ public final class XPathNode<U> {
         }
     }
 
-    protected void parse(String xNodeValue, boolean check) throws XPathError {
+     void parse(String xNodeValue, boolean check) throws XPathError {
         parse(xNodeValue, check, null);
     }
 
@@ -201,11 +201,11 @@ public final class XPathNode<U> {
         return _endPos;
     }
 
-    protected void setEndPos(int pos) {
+     void setEndPos(int pos) {
         _endPos = pos;
     }
 
-    protected XPathNode<U> getChild(String name) {
+     XPathNode<U> getChild(String name) {
         if (_childs != null) {
             for (int i = 0; i < _childs.size(); i++) {
                 XPathNode<U> node = _childs.get(i);
@@ -221,11 +221,11 @@ public final class XPathNode<U> {
         return _xNodeName;
     }
 
-    protected void setNodeName(String name) {
+     void setNodeName(String name) {
         _xNodeName = name;
     }
 
-    protected void addChild(XPathNode<U> node) {
+     void addChild(XPathNode<U> node) {
         if (_childs == null) {
             _childs = new ArrayList<>(5);
         }
@@ -240,7 +240,7 @@ public final class XPathNode<U> {
         return _sameAxis;
     }
 
-    protected void addSameAxis(XPathNode<U> node) {
+     void addSameAxis(XPathNode<U> node) {
         if (_sameAxis == null) {
             _sameAxis = new ArrayList<>(5);
         }
