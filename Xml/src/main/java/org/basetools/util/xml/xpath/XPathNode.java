@@ -77,7 +77,7 @@ public final class XPathNode<U> {
         this(xNodeValue, check, false);
     }
 
-    private static String extractNodeNS(String value) {
+    public static String extractNodeNS(String value) {
         int nsIndex = value.lastIndexOf(NS_SEP);
         if (nsIndex >= 0) {
             return value.substring(0, nsIndex);
@@ -86,7 +86,7 @@ public final class XPathNode<U> {
         }
     }
 
-    private static String extractNodeName(int start, String value) {
+    public static String extractNodeName(int start, String value) {
         int bIndex = value.indexOf(OPEN_BRACKET, start);
         if (bIndex >= 0) {
             value = value.substring(start, bIndex);
@@ -94,7 +94,7 @@ public final class XPathNode<U> {
         return value;
     }
 
-    private static String extractNodeExpression(int start, String value) {
+    public static String extractNodeExpression(int start, String value) {
         int lastBIndex = value.lastIndexOf(CLOSE_BRACKET);
         if (lastBIndex >= 0) {
             int firstBIndex = value.indexOf(OPEN_BRACKET, start);
@@ -103,7 +103,7 @@ public final class XPathNode<U> {
         return null;
     }
 
-     void parse(String xNodeValue, boolean check, Map<String, String> nsMappings) throws XPathError {
+    public  void parse(String xNodeValue, boolean check, Map<String, String> nsMappings) throws XPathError {
         _isAsterix = false;
         _nodeType = DEFAULT_NODE;
         _xNodeNSPfix = extractNodeNS(xNodeValue);
@@ -177,7 +177,7 @@ public final class XPathNode<U> {
         }
     }
 
-     void parse(String xNodeValue, boolean check) throws XPathError {
+    public  void parse(String xNodeValue, boolean check) throws XPathError {
         parse(xNodeValue, check, null);
     }
 
@@ -205,7 +205,7 @@ public final class XPathNode<U> {
         _endPos = pos;
     }
 
-     XPathNode<U> getChild(String name) {
+    public XPathNode<U> getChild(String name) {
         if (_childs != null) {
             for (int i = 0; i < _childs.size(); i++) {
                 XPathNode<U> node = _childs.get(i);
@@ -221,7 +221,7 @@ public final class XPathNode<U> {
         return _xNodeName;
     }
 
-     void setNodeName(String name) {
+    public void setNodeName(String name) {
         _xNodeName = name;
     }
 
@@ -240,7 +240,7 @@ public final class XPathNode<U> {
         return _sameAxis;
     }
 
-     void addSameAxis(XPathNode<U> node) {
+    public void addSameAxis(XPathNode<U> node) {
         if (_sameAxis == null) {
             _sameAxis = new ArrayList<>(5);
         }
