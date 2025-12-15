@@ -923,6 +923,29 @@ public class TreeNode<T, U> {
         }
     }
 
+    public static TreeNode walkNormalizedXpathUp(String xpath, TreeNode start) {
+        final String[] upPath = org.basetools.util.StringUtils.tokenize(xpath, "/");
+        TreeNode parent = start;
+        for (int u = upPath.length - 1; u >= 0; u--) {
+            if (!".".equals(upPath[u])) {
+                if (parent == null) {
+                    return null;
+                }
+
+                final String parName = parent.getName();
+                String upName = upPath[u];
+                if ((parName.equals(upName) || upName.equals("*"))) {
+                } else {
+                    return null;
+                }
+                parent = parent.getParent();
+                if (parent != null && parent.isList()) {
+                    parent = parent.getParent();
+                }
+            }
+        }
+        return parent;
+    }
 
     public boolean isList() {
         return _isList;

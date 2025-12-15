@@ -433,6 +433,18 @@ public class StringUtils {
 
         return results;
     }
+    public static String[] tokenize(String s, String delimiter) {
+        if (s == null) {
+            return new String[0];
+        }
+        final java.util.StringTokenizer tokenizer = new java.util.StringTokenizer(s, delimiter);
+        final String[] token = new String[tokenizer.countTokens()];
+        int k = 0;
+        while (tokenizer.hasMoreTokens()) {
+            token[k++] = tokenizer.nextToken(delimiter);
+        }
+        return token;
+    }
 
     public static final String[] tokenizeSegmented(String delims, String token) {
         String[] results = new String[delims.length() + 1];
