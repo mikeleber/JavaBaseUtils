@@ -141,7 +141,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
             return null;
         }
         InputSource is = new InputSource(new FileReader(input.getFile()));
-        is.setSystemId(input.getPath());
+        is.setSystemId(input.toExternalForm());
         return is;
     }
 
@@ -151,7 +151,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
         }
         File file = path.toFile();
         InputSource is = new InputSource(new FileReader(file));
-        is.setSystemId(file.getPath());
+        is.setSystemId(file.toURI().toURL().toExternalForm());
         return is;
     }
 

@@ -934,8 +934,7 @@ public class TreeNode<T, U> {
 
                 final String parName = parent.getName();
                 String upName = upPath[u];
-                if ((parName.equals(upName) || upName.equals("*"))) {
-                } else {
+                if ((!parName.equals(upName) && !upName.equals("*"))) {
                     return null;
                 }
                 parent = parent.getParent();

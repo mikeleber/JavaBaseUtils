@@ -288,6 +288,7 @@ public class Xml {
         return children == null ? new ArrayList<Xml>() : children;
     }
 
+
     public String[] childContent(String name) {
         return children(name).stream().map((xmlev) -> xmlev.content()).toArray(String[]::new);
     }
