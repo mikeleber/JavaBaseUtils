@@ -121,6 +121,7 @@ public class Xml {
         }
         return (val.equalsIgnoreCase("true") || val.equalsIgnoreCase("y") || val.equalsIgnoreCase("yes") || val.equalsIgnoreCase("1") || val.equalsIgnoreCase("1.0"));
     }
+
     private static Boolean isTrue(String val, Boolean defaultValue) {
         if (val == null || val.length() == 0) {
             return defaultValue;
@@ -165,6 +166,12 @@ public class Xml {
     }
 
     public boolean getValue(String propName, Boolean defValue, boolean prefDef) {
+        if (prefDef) return childToBoolean(propName, defValue);
+        else
+            return defValue == null ? childToBoolean(propName, defValue) : defValue;
+    }
+
+    public Boolean getBooleanValue(String propName, Boolean defValue, boolean prefDef) {
         if (prefDef) return childToBoolean(propName, defValue);
         else
             return defValue == null ? childToBoolean(propName, defValue) : defValue;
@@ -244,7 +251,7 @@ public class Xml {
     }
 
     private Xml self() {
-        return  this;
+        return this;
     }
 
     public String name() {
@@ -426,6 +433,7 @@ public class Xml {
     public boolean booleanAttrValue(String name, boolean defaultValue) {
         return isTrue(optAttrString(name), defaultValue);
     }
+
     public Boolean booleanAttrValue(String name, Boolean defaultValue) {
         return isTrue(optAttrString(name), defaultValue);
     }
@@ -463,8 +471,17 @@ public class Xml {
             return child.contentToBoolean(defaultValue);
         }
     }
+    public Boolean childToBoolean(String name, Boolean defaultValue) {
+        Xml child = optChild(name);
+        if (child == null) {
+            return defaultValue;
+        } else {
+            return child.contentToBoolean(defaultValue);
+        }
+    }
 
-    public boolean contentToBoolean(boolean defaultValue) {
+
+    public Boolean contentToBoolean(Boolean defaultValue) {
         return isTrue(content, defaultValue);
     }
 
