@@ -9,10 +9,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -161,6 +158,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
         }
         return new InputSource().withSystemId(systemId).withPublicId(publicId);
     }
+
 
     public static List<String> listFiles(String dir, int depth) throws IOException {
         try (Stream<Path> stream = Files.walk(Paths.get(dir), depth)) {

@@ -32,7 +32,7 @@ public class Xml {
         this(rootElement(new InputSource(inputStream), rootName));
     }
 
-    private Xml(Element element) {
+    public Xml(Element element) {
         name = element.getNodeName();
         ns = element.getNamespaceURI();
         content = getTextContentOnly(element);
