@@ -55,6 +55,11 @@ public class Xml {
         }
     }
 
+    public List<Xml> children() {
+        return nameChildren.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+    }
+
+
     public Xml(InputSource input, String rootName) {
         this(rootElement(input, rootName));
     }
@@ -71,8 +76,8 @@ public class Xml {
         content = textContent;
     }
 
-    public Xml(String rootName) {
-        name = rootName;
+    public Xml(String name) {
+        this.name = name;
         ns = null;
     }
 
@@ -233,6 +238,12 @@ public class Xml {
         child.parent = this;
         return self();
     }
+
+    public Xml addLeaf(String name, String value) {
+        addChild(new Xml(name, value));
+        return self();
+    }
+
 
     public Xml setContent(String content) {
         this.content = content;
@@ -471,6 +482,7 @@ public class Xml {
             return child.contentToBoolean(defaultValue);
         }
     }
+
     public Boolean childToBoolean(String name, Boolean defaultValue) {
         Xml child = optChild(name);
         if (child == null) {
