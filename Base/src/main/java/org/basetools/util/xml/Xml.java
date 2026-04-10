@@ -21,6 +21,8 @@ import java.util.stream.Stream;
 //https://argonrain.wordpress.com/2009/10/27/000/
 public class Xml {
 
+    public static final String ATTR_QUOTE = "\"";
+    public String attrQuote = ATTR_QUOTE;
     private final String name;
     private final String ns;
     private final Map<String, String> nameAttributes = new LinkedHashMap<>();
@@ -58,7 +60,6 @@ public class Xml {
     public List<Xml> children() {
         return nameChildren.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
     }
-
 
     public Xml(InputSource input, String rootName) {
         this(rootElement(input, rootName));
@@ -200,6 +201,11 @@ public class Xml {
             return defValue == null ? childToString(propName, defValue) : defValue;
     }
 
+    public Xml withAttrQuotes(String quotes) {
+        attrQuote = quotes;
+        return this;
+    }
+
     public String getTextContentOnly(Element element) {
         StringBuilder textContent = null;
         NodeList childNodes = element.getChildNodes();
@@ -243,7 +249,6 @@ public class Xml {
         addChild(new Xml(name, value));
         return self();
     }
-
 
     public Xml setContent(String content) {
         this.content = content;
@@ -305,7 +310,6 @@ public class Xml {
         ArrayList<Xml> children = nameChildren.get(name);
         return children == null ? new ArrayList<Xml>() : children;
     }
-
 
     public String[] childContent(String name) {
         return children(name).stream().map((xmlev) -> xmlev.content()).toArray(String[]::new);
@@ -492,7 +496,6 @@ public class Xml {
         }
     }
 
-
     public Boolean contentToBoolean(Boolean defaultValue) {
         return isTrue(content, defaultValue);
     }
@@ -576,9 +579,9 @@ public class Xml {
             xml.append(" ");
             xml.append(attrib.getKey());
             xml.append("=");
-            xml.append("\"");
+            xml.append(ATTR_QUOTE);
             xml.append(attrib.getValue());
-            xml.append("\"");
+            xml.append(ATTR_QUOTE);
         }
         xml.append(">");
         for (Map.Entry<String, ArrayList<Xml>> child : nameChildren.entrySet()) {
