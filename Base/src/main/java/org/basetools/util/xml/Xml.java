@@ -27,6 +27,7 @@ public class Xml {
     private final String ns;
     private final Map<String, String> nameAttributes = new LinkedHashMap<>();
     private final Map<String, ArrayList<Xml>> nameChildren = new LinkedHashMap<>();
+    private List<String> pi;
     private String content;
     private Xml parent;
 
@@ -54,7 +55,19 @@ public class Xml {
                 Xml child = (Xml) new Xml((Element) node);
                 addChild(node.getNodeName(), child);
             }
+            if (type == Node.PROCESSING_INSTRUCTION_NODE) {
+                ProcessingInstruction pi = (ProcessingInstruction) node;
+                String piTarget = pi.getTarget();
+                addPi(piTarget);
+            }
         }
+    }
+
+    private void addPi(String piTarget) {
+        if (pi == null) {
+            pi = new ArrayList<>(2);
+        }
+        pi.add(piTarget);
     }
 
     public List<Xml> children() {
@@ -88,7 +101,8 @@ public class Xml {
             DocumentBuilder builder = builderFactory.newDocumentBuilder();
             Document document = builder.parse(inputStream);
             Element rootElement = document.getDocumentElement();
-            if (!rootElement.getNodeName().equals(rootName)) {
+            String[] nodeName = splitNodeName(rootElement.getNodeName());
+            if (!nodeName[1].equals(rootName)) {
                 throw new RuntimeException("Could not find root node: " + rootName);
             }
             return rootElement;
@@ -99,6 +113,21 @@ public class Xml {
         } catch (SAXException exception) {
             throw new RuntimeException(exception);
         }
+    }
+
+    public static String[] splitNodeName(String name) {
+        String[] result = new String[2];
+        int splitAt = name.indexOf(":");
+        if (splitAt == -1) {
+            result[1] = name;
+        } else {
+            String nsPrefix = name.substring(0, splitAt);
+            if (StringUtils.isNotEmpty(nsPrefix)) {
+                result[0] = nsPrefix;
+            }
+            result[1] = name.substring(splitAt + 1);
+        }
+        return result;
     }
 
     public static Xml from(String xmlContent, String rootName) {
@@ -568,6 +597,13 @@ public class Xml {
     }
 
     public Xml toXML(StringBuilder xml) {
+        if (pi != null) {
+            pi.forEach(piStr -> {
+                xml.append("<?");
+                xml.append(piStr);
+                xml.append("?>");
+            });
+        }
         xml.append("<");
         if (StringUtils.isNotEmpty(ns)) {
             xml.append(ns);
