@@ -32,7 +32,11 @@ public class Xml {
     private Xml parent;
 
     public Xml(InputStream inputStream, String rootName) {
-        this(rootElement(new InputSource(inputStream), rootName));
+        this(rootElement(new InputSource(inputStream), null, rootName));
+    }
+
+    public Xml(InputStream inputStream, String ns, String rootName) {
+        this(rootElement(new InputSource(inputStream), ns, rootName));
     }
 
     public Xml(Element element) {
@@ -75,7 +79,11 @@ public class Xml {
     }
 
     public Xml(InputSource input, String rootName) {
-        this(rootElement(input, rootName));
+        this(rootElement(input, null, rootName));
+    }
+
+    public Xml(InputSource input, String ns, String rootName) {
+        this(rootElement(input, ns, rootName));
     }
 
     public Xml(String nodeName, String textContent) {
@@ -95,7 +103,7 @@ public class Xml {
         ns = null;
     }
 
-    private static Element rootElement(InputSource inputStream, String rootName) {
+    private static Element rootElement(InputSource inputStream, String ns, String rootName) {
         try {
             DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = builderFactory.newDocumentBuilder();
@@ -104,6 +112,9 @@ public class Xml {
             String[] nodeName = splitNodeName(rootElement.getNodeName());
             if (!nodeName[1].equals(rootName)) {
                 throw new RuntimeException("Could not find root node: " + rootName);
+            }
+            if (ns != null && nodeName[0] != null && !nodeName[0].equals(ns)) {
+                throw new RuntimeException("NS doesnt match: " + ns);
             }
             return rootElement;
         } catch (IOException exception) {
