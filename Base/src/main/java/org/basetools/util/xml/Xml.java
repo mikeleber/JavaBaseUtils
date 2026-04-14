@@ -42,8 +42,8 @@ public class Xml {
 
     public Xml(Element element) {
         String[] nodeName = splitNodeName(element.getNodeName());
-        name = nodeName[0];
-        String nsPrefix = nodeName[1];
+        name = nodeName[1];
+        String nsPrefix = nodeName[0];
         ns = element.getNamespaceURI();
         if (ns == null) ns = nsPrefix;
         content = getTextContentOnly(element);
