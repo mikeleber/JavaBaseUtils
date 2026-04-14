@@ -326,10 +326,14 @@ public class Xml {
 
     public String qName() {
         if (qName == null) {
-            if (ns != null) qName = ns + ":" + name;
-            else qName = name;
+            qName = createQName(name, ns);
         }
         return qName;
+    }
+
+    public static String createQName(String name, String namespace) {
+        if (namespace != null) return namespace + ":" + name;
+        else return name;
     }
 
     public Xml getChild(String... pathNames) {
@@ -351,6 +355,16 @@ public class Xml {
         return (Xml) child;
     }
 
+    public Xml child(String name, String namespace) {
+        String qName = createQName(name, namespace);
+        return child(qName);
+    }
+
+    public Xml optChild(String name, String namespace) {
+        String qName = createQName(name, namespace);
+        return optChild(qName);
+    }
+
     public Xml optChild(String name) {
         ArrayList<Xml> children = children(name);
         int n = children.size();
@@ -364,9 +378,19 @@ public class Xml {
         return optAttrString(name) != null;
     }
 
+    public ArrayList<Xml> children(String name, String namespace) {
+        String qName = createQName(name, namespace);
+        return children(qName);
+    }
+
     public ArrayList<Xml> children(String name) {
         ArrayList<Xml> children = nameChildren.get(name);
         return children == null ? new ArrayList<Xml>() : children;
+    }
+
+    public String[] childContent(String name, String namespace) {
+        String qName = createQName(name, namespace);
+        return childContent(qName);
     }
 
     public String[] childContent(String name) {
@@ -375,6 +399,11 @@ public class Xml {
 
     public String content() {
         return content;
+    }
+
+    public Stream<Xml> childStream(String name, String namespace) {
+        String qName = createQName(name, namespace);
+        return childStream(qName);
     }
 
     public Stream<Xml> childStream(String name) {
@@ -390,6 +419,11 @@ public class Xml {
         ArrayList<Xml> nameChilds = nameChildren.get(name);
         FastQSort.sortList(nameChilds, comparator);
         return self();
+    }
+
+    public boolean option(String name, String namespace) {
+        String qName = createQName(name, namespace);
+        return option(qName);
     }
 
     public boolean option(String name) {
@@ -523,6 +557,10 @@ public class Xml {
         return childToString(name, null);
     }
 
+    public String childToString(String name, String namespace, String defaultValue) {
+        return childToString(createQName(name, namespace), defaultValue);
+    }
+
     public String childToString(String name, String defaultValue) {
         Xml child = optChild(name);
         if (child == null) {
@@ -536,6 +574,10 @@ public class Xml {
         return content == null ? defaultValue : content;
     }
 
+    public boolean childToBoolean(String name, String namespace, boolean defaultValue) {
+        return childToBoolean(createQName(name, namespace), defaultValue);
+    }
+
     public boolean childToBoolean(String name, boolean defaultValue) {
         Xml child = optChild(name);
         if (child == null) {
@@ -543,6 +585,10 @@ public class Xml {
         } else {
             return child.contentToBoolean(defaultValue);
         }
+    }
+
+    public Boolean childToBoolean(String name, String namespace, Boolean defaultValue) {
+        return childToBoolean(createQName(name, namespace), defaultValue);
     }
 
     public Boolean childToBoolean(String name, Boolean defaultValue) {
@@ -556,6 +602,10 @@ public class Xml {
 
     public Boolean contentToBoolean(Boolean defaultValue) {
         return isTrue(content, defaultValue);
+    }
+
+    public int childToInt(String name, String namespace, int defaultValue) {
+        return childToInt(createQName(name, namespace), defaultValue);
     }
 
     public int childToInt(String name, int defaultValue) {
@@ -579,6 +629,10 @@ public class Xml {
             return defaultValue;
         }
         return Short.parseShort(content);
+    }
+
+    public byte childBooleanToByte(String name, String namespace, byte defaultValue) {
+        return childBooleanToByte(createQName(name, namespace), defaultValue);
     }
 
     public byte childBooleanToByte(String name, byte defaultValue) {
