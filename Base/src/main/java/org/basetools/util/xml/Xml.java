@@ -24,7 +24,8 @@ public class Xml {
     public static final String ATTR_QUOTE = "\"";
     public String attrQuote = ATTR_QUOTE;
     private final String name;
-    private final String ns;
+    private String ns;
+    private String qName;
     private final Map<String, String> nameAttributes = new LinkedHashMap<>();
     private final Map<String, ArrayList<Xml>> nameChildren = new LinkedHashMap<>();
     private List<String> pi;
@@ -40,8 +41,11 @@ public class Xml {
     }
 
     public Xml(Element element) {
-        name = element.getNodeName();
+        String[] nodeName = splitNodeName(element.getNodeName());
+        name = nodeName[0];
+        String nsPrefix = nodeName[1];
         ns = element.getNamespaceURI();
+        if (ns == null) ns = nsPrefix;
         content = getTextContentOnly(element);
         NamedNodeMap namedNodeMap = element.getAttributes();
         int n = namedNodeMap.getLength();
@@ -56,8 +60,8 @@ public class Xml {
             Node node = nodes.item(i);
             int type = node.getNodeType();
             if (type == Node.ELEMENT_NODE) {
-                Xml child = (Xml) new Xml((Element) node);
-                addChild(node.getNodeName(), child);
+                Xml child = new Xml((Element) node);
+                addChild(child.qName(), child);
             } else if (type == Node.PROCESSING_INSTRUCTION_NODE) {
                 ProcessingInstruction pi = (ProcessingInstruction) node;
                 String piTarget = pi.getTarget();
@@ -90,6 +94,7 @@ public class Xml {
         ns = null;
         content = textContent;
     }
+
 
     public Xml(String nodeName, String namespace, String textContent) {
         name = nodeName;
@@ -273,19 +278,24 @@ public class Xml {
         return self();
     }
 
-    private Xml addChild(String name, Xml child) {
-        ArrayList<Xml> children = nameChildren.get(name);
+    private Xml addChild(String qName, Xml child) {
+        ArrayList<Xml> children = nameChildren.get(qName);
         if (children == null) {
             children = new ArrayList<>();
-            nameChildren.put(name, children);
+            nameChildren.put(qName, children);
         }
         children.add(child);
         child.parent = this;
         return self();
     }
 
-    public Xml addLeaf(String name, String value) {
-        addChild(new Xml(name, value));
+    public Xml addLeaf(String qName, String value) {
+        addChild(new Xml(qName, value));
+        return self();
+    }
+
+    public Xml addLeaf(String name, String namespace, String value) {
+        addChild(new Xml(name, namespace, value));
         return self();
     }
 
@@ -295,13 +305,13 @@ public class Xml {
     }
 
     public Xml addChild(Xml xml) {
-        addChild(xml.name(), xml);
+        addChild(xml.qName(), xml);
         return self();
     }
 
     public Xml addChild(boolean ignoreNull, Xml xml) {
         if (ignoreNull && xml == null) return self();
-        addChild(xml.name(), xml);
+        addChild(xml.qName(), xml);
         return self();
     }
 
@@ -311,6 +321,15 @@ public class Xml {
 
     public String name() {
         return name;
+    }
+
+
+    public String qName() {
+        if (qName == null) {
+            if (ns != null) qName = ns + ":" + name;
+            else qName = name;
+        }
+        return qName;
     }
 
     public Xml getChild(String... pathNames) {
@@ -609,6 +628,7 @@ public class Xml {
     public Xml toXML(StringBuilder xml) {
 
         xml.append("<");
+
         if (StringUtils.isNotEmpty(ns)) {
             xml.append(ns);
             xml.append(":");
