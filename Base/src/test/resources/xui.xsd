@@ -1,1373 +1,1465 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com)-->
-<xsd:schema targetNamespace="http://www.model.org/xui" xmlns="http://www.model.org/xui" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
-	<xsd:element name="XUI">
-		<xsd:complexType>
-			<xsd:sequence>
-				<xsd:element name="component" minOccurs="0" maxOccurs="unbounded">
-					<xsd:complexType>
-						<xsd:sequence>
-							<xsd:element name="style" minOccurs="0">
-								<xsd:complexType>
-									<xsd:sequence>
-										<xsd:element name="layout" minOccurs="0">
-											<xsd:annotation>
-												<xsd:appinfo source="http://www.model.org/xui/Annotation">
-													<pi name="visibilityFunction" value="!xuiTargetNode.isSimple()"/>
-												</xsd:appinfo>
-											</xsd:annotation>
-											<xsd:complexType>
-												<xsd:choice minOccurs="0">
-													<xsd:element name="GridLayout">
-														<xsd:complexType>
-															<xsd:sequence>
-																<xsd:element name="row" minOccurs="0" maxOccurs="unbounded">
-																	<xsd:complexType>
-																		<xsd:sequence>
-																			<xsd:element name="col" type="colType" minOccurs="0" maxOccurs="unbounded"/>
-																		</xsd:sequence>
-																	</xsd:complexType>
-																</xsd:element>
-															</xsd:sequence>
-														</xsd:complexType>
-													</xsd:element>
-													<xsd:element name="SerialLayout"/>
-													<xsd:element name="ColumnLayout" type="ColumnLayoutType">
-														<xsd:annotation>
-															<xsd:documentation>Arranges the child in columns respecting
+<xsd:schema targetNamespace="http://www.model.org/xui" xmlns="http://www.model.org/xui"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xsd:element name="XUI">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="component" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="style" minOccurs="0">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="layout" minOccurs="0">
+                                            <xsd:annotation>
+                                                <xsd:appinfo source="http://www.model.org/xui/Annotation">
+                                                    <pi name="visibilityFunction" value="!xuiTargetNode.isSimple()"/>
+                                                </xsd:appinfo>
+                                            </xsd:annotation>
+                                            <xsd:complexType>
+                                                <xsd:choice minOccurs="0">
+                                                    <xsd:element name="GridLayout">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element name="row" minOccurs="0"
+                                                                             maxOccurs="unbounded">
+                                                                    <xsd:complexType>
+                                                                        <xsd:sequence>
+                                                                            <xsd:element name="col" type="colType"
+                                                                                         minOccurs="0"
+                                                                                         maxOccurs="unbounded"/>
+                                                                        </xsd:sequence>
+                                                                    </xsd:complexType>
+                                                                </xsd:element>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                    <xsd:element name="SerialLayout"/>
+                                                    <xsd:element name="ColumnLayout" type="ColumnLayoutType">
+                                                        <xsd:annotation>
+                                                            <xsd:documentation>Arranges the child in columns respecting
                                                                 the child with defined in childs->components->with
                                                                 element
                                                             </xsd:documentation>
-														</xsd:annotation>
-													</xsd:element>
-													<xsd:element name="ListLayout">
-														<xsd:complexType>
-															<xsd:attribute name="useZebra" type="xsd:boolean"/>
-															<xsd:attribute name="columnSelector" type="xsd:string" default="."/>
-															<xsd:attribute name="rowSelector" type="xsd:string"/>
-															<xsd:attribute name="flipped" type="xsd:boolean"/>
-														</xsd:complexType>
-													</xsd:element>
-													<xsd:element name="CarouselLayout">
-														<xsd:complexType>
-															<xsd:attribute name="ignoreErrors" type="xsd:boolean" use="optional" default="false"/>
-														</xsd:complexType>
-													</xsd:element>
-													<xsd:element name="TabLayout">
-														<xsd:complexType>
-															<xsd:sequence>
-																<xsd:element name="childLayout" minOccurs="0">
-																	<xsd:complexType>
-																		<xsd:choice minOccurs="0">
-																			<xsd:element name="ColumnLayout" type="ColumnLayoutType"/>
-																		</xsd:choice>
-																	</xsd:complexType>
-																</xsd:element>
-															</xsd:sequence>
-														</xsd:complexType>
-													</xsd:element>
-													<xsd:element name="CustomLayout">
-														<xsd:complexType>
-															<xsd:sequence>
-																<xsd:element name="name" type="xsd:string"/>
-																<xsd:element name="implementationClass" type="xsd:string"/>
-																<xsd:element name="params">
-																	<xsd:complexType>
-																		<xsd:sequence>
-																			<xsd:element name="param" minOccurs="0" maxOccurs="unbounded">
-																				<xsd:complexType>
-																					<xsd:sequence>
-																						<xsd:element name="name" type="xsd:string"/>
-																						<xsd:element name="value" type="xsd:string"/>
-																					</xsd:sequence>
-																				</xsd:complexType>
-																			</xsd:element>
-																		</xsd:sequence>
-																	</xsd:complexType>
-																</xsd:element>
-															</xsd:sequence>
-														</xsd:complexType>
-													</xsd:element>
-													<xsd:element name="GridStackLayout" type="GridStackLayoutType"/>
-													<xsd:element name="GridStackEditorLayout" type="GridStackLayoutType">
-														<xsd:annotation>
-															<xsd:appinfo source="http://www.model.org/xui/Annotation">
-																<pi name="visibilityFunction" value="false"/>
-															</xsd:appinfo>
-														</xsd:annotation>
-													</xsd:element>
-													<xsd:element name="TimelineLayout">
-														<xsd:complexType>
-															<xsd:sequence>
-																<xsd:element name="dateField" type="xsd:string"/>
-																<xsd:element name="imageLink" type="xsd:string" minOccurs="0"/>
-																<xsd:element name="messageExpression" type="xsd:string" minOccurs="0"/>
-																<xsd:element name="titleExpression" type="xsd:string" minOccurs="0"/>
-															</xsd:sequence>
-														</xsd:complexType>
-													</xsd:element>
-													<xsd:element name="StepLayout">
-														<xsd:complexType>
-															<xsd:attribute name="ignoreErrors" type="xsd:boolean" use="optional" default="false"/>
-														</xsd:complexType>
-													</xsd:element>
-													<?hidden?>
-												</xsd:choice>
-												<xsd:attribute name="showAs" use="optional">
-													<xsd:simpleType>
-														<xsd:restriction base="xsd:string">
-															<xsd:enumeration value="NOT_DEFINED"/>
-															<xsd:enumeration value="DIALOG"/>
-															<xsd:enumeration value="SIDEBAR"/>
-														</xsd:restriction>
-													</xsd:simpleType>
-												</xsd:attribute>
-												<xsd:attribute name="excludeFromParentLayout" type="xsd:boolean" use="optional"/>
-											</xsd:complexType>
-										</xsd:element>
-										<xsd:element name="mode" minOccurs="0">
-											<xsd:complexType>
-												<xsd:sequence>
-													<xsd:element name="visible" type="xsd:boolean" minOccurs="0"/>
-													<xsd:element name="editable" type="xsd:boolean" minOccurs="0"/>
-													<xsd:element name="renderable" type="xsd:boolean" default="true" minOccurs="0"/>
-													<xsd:element name="required" type="xsd:boolean" minOccurs="0"/>
-													<xsd:element name="showErrors" type="xsd:boolean" default="true" minOccurs="0"/>
-													<xsd:element name="serializable" type="xsd:boolean" default="true" minOccurs="0"/>
-													<xsd:element name="locked" type="xsd:boolean" minOccurs="0"/>
-												</xsd:sequence>
-											</xsd:complexType>
-										</xsd:element>
-										<xsd:element name="componentDefinition" minOccurs="0">
-											<xsd:complexType>
-												<xsd:sequence>
-													<xsd:element name="isComponentVisible" type="xsd:boolean" minOccurs="0"/>
-													<xsd:element name="expression" type="expressionType" minOccurs="0"/>
-													<xsd:element name="label" minOccurs="0">
-														<xsd:annotation>
-															<xsd:appinfo source="http://www.model.org/xui/Annotation">
-																<pi name="visibilityFunction" value="xuiTargetNode.isSimple() | xuiTargetNode.isChoice()"/>
-															</xsd:appinfo>
-														</xsd:annotation>
-														<xsd:complexType>
-															<xsd:sequence>
-																<xsd:element name="visible" type="xsd:boolean" minOccurs="0"/>
-																<xsd:element name="hidden" type="xsd:boolean" minOccurs="0"/>
-																<xsd:element name="position" default="LEFT" minOccurs="0">
-																	<xsd:simpleType>
-																		<xsd:restriction base="xsd:string">
-																			<xsd:enumeration value="LEFT"/>
-																			<xsd:enumeration value="RIGHT"/>
-																			<xsd:enumeration value="TOP"/>
-																			<xsd:enumeration value="BOTTOM"/>
-																			<xsd:enumeration value="INLINE"/>
-																			<xsd:enumeration value="BORDER"/>
-																			<xsd:enumeration value="NOT_DEFINED"/>
-																		</xsd:restriction>
-																	</xsd:simpleType>
-																</xsd:element>
-															</xsd:sequence>
-															<xsd:attribute name="colWidth" type="xsd:short" use="optional"/>
-														</xsd:complexType>
-													</xsd:element>
-													<xsd:element name="caption" minOccurs="0">
-														<xsd:annotation>
-															<xsd:documentation>Defines the caption for a node.
+                                                        </xsd:annotation>
+                                                    </xsd:element>
+                                                    <xsd:element name="ListLayout">
+                                                        <xsd:complexType>
+                                                            <xsd:attribute name="useZebra" type="xsd:boolean"/>
+                                                            <xsd:attribute name="columnSelector" type="xsd:string"
+                                                                           default="."/>
+                                                            <xsd:attribute name="rowSelector" type="xsd:string"/>
+                                                            <xsd:attribute name="flipped" type="xsd:boolean"/>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                    <xsd:element name="CarouselLayout">
+                                                        <xsd:complexType>
+                                                            <xsd:attribute name="ignoreErrors" type="xsd:boolean"
+                                                                           use="optional" default="false"/>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                    <xsd:element name="TabLayout">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element name="childLayout" minOccurs="0">
+                                                                    <xsd:complexType>
+                                                                        <xsd:choice minOccurs="0">
+                                                                            <xsd:element name="ColumnLayout"
+                                                                                         type="ColumnLayoutType"/>
+                                                                        </xsd:choice>
+                                                                    </xsd:complexType>
+                                                                </xsd:element>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                    <xsd:element name="CustomLayout">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element name="name" type="xsd:string"/>
+                                                                <xsd:element name="implementationClass"
+                                                                             type="xsd:string"/>
+                                                                <xsd:element name="params">
+                                                                    <xsd:complexType>
+                                                                        <xsd:sequence>
+                                                                            <xsd:element name="param" minOccurs="0"
+                                                                                         maxOccurs="unbounded">
+                                                                                <xsd:complexType>
+                                                                                    <xsd:sequence>
+                                                                                        <xsd:element name="name"
+                                                                                                     type="xsd:string"/>
+                                                                                        <xsd:element name="value"
+                                                                                                     type="xsd:string"/>
+                                                                                    </xsd:sequence>
+                                                                                </xsd:complexType>
+                                                                            </xsd:element>
+                                                                        </xsd:sequence>
+                                                                    </xsd:complexType>
+                                                                </xsd:element>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                    <xsd:element name="GridStackLayout" type="GridStackLayoutType"/>
+                                                    <xsd:element name="GridStackEditorLayout"
+                                                                 type="GridStackLayoutType">
+                                                        <xsd:annotation>
+                                                            <xsd:appinfo source="http://www.model.org/xui/Annotation">
+                                                                <pi name="visibilityFunction" value="false"/>
+                                                            </xsd:appinfo>
+                                                        </xsd:annotation>
+                                                    </xsd:element>
+                                                    <xsd:element name="TimelineLayout">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element name="dateField" type="xsd:string"/>
+                                                                <xsd:element name="imageLink" type="xsd:string"
+                                                                             minOccurs="0"/>
+                                                                <xsd:element name="messageExpression" type="xsd:string"
+                                                                             minOccurs="0"/>
+                                                                <xsd:element name="titleExpression" type="xsd:string"
+                                                                             minOccurs="0"/>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                    <xsd:element name="StepLayout">
+                                                        <xsd:complexType>
+                                                            <xsd:attribute name="ignoreErrors" type="xsd:boolean"
+                                                                           use="optional" default="false"/>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                    <?hidden?>
+                                                </xsd:choice>
+                                                <xsd:attribute name="showAs" use="optional">
+                                                    <xsd:simpleType>
+                                                        <xsd:restriction base="xsd:string">
+                                                            <xsd:enumeration value="NOT_DEFINED"/>
+                                                            <xsd:enumeration value="DIALOG"/>
+                                                            <xsd:enumeration value="SIDEBAR"/>
+                                                        </xsd:restriction>
+                                                    </xsd:simpleType>
+                                                </xsd:attribute>
+                                                <xsd:attribute name="excludeFromParentLayout" type="xsd:boolean"
+                                                               use="optional"/>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="mode" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="visible" type="xsd:boolean" minOccurs="0"/>
+                                                    <xsd:element name="editable" type="xsd:boolean" minOccurs="0"/>
+                                                    <xsd:element name="renderable" type="xsd:boolean" default="true"
+                                                                 minOccurs="0"/>
+                                                    <xsd:element name="required" type="xsd:boolean" minOccurs="0"/>
+                                                    <xsd:element name="showErrors" type="xsd:boolean" default="true"
+                                                                 minOccurs="0"/>
+                                                    <xsd:element name="serializable" type="xsd:boolean" default="true"
+                                                                 minOccurs="0"/>
+                                                    <xsd:element name="locked" type="xsd:boolean" minOccurs="0"/>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="componentDefinition" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="isComponentVisible" type="xsd:boolean"
+                                                                 minOccurs="0"/>
+                                                    <xsd:element name="expression" type="expressionType" minOccurs="0"/>
+                                                    <xsd:element name="label" minOccurs="0">
+                                                        <xsd:annotation>
+                                                            <xsd:appinfo source="http://www.model.org/xui/Annotation">
+                                                                <pi name="visibilityFunction"
+                                                                    value="xuiTargetNode.isSimple() | xuiTargetNode.isChoice()"/>
+                                                            </xsd:appinfo>
+                                                        </xsd:annotation>
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element name="visible" type="xsd:boolean"
+                                                                             minOccurs="0"/>
+                                                                <xsd:element name="hidden" type="xsd:boolean"
+                                                                             minOccurs="0"/>
+                                                                <xsd:element name="position" default="LEFT"
+                                                                             minOccurs="0">
+                                                                    <xsd:simpleType>
+                                                                        <xsd:restriction base="xsd:string">
+                                                                            <xsd:enumeration value="LEFT"/>
+                                                                            <xsd:enumeration value="RIGHT"/>
+                                                                            <xsd:enumeration value="TOP"/>
+                                                                            <xsd:enumeration value="BOTTOM"/>
+                                                                            <xsd:enumeration value="INLINE"/>
+                                                                            <xsd:enumeration value="BORDER"/>
+                                                                            <xsd:enumeration value="NOT_DEFINED"/>
+                                                                        </xsd:restriction>
+                                                                    </xsd:simpleType>
+                                                                </xsd:element>
+                                                            </xsd:sequence>
+                                                            <xsd:attribute name="colWidth" type="xsd:short"
+                                                                           use="optional"/>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                    <xsd:element name="caption" minOccurs="0">
+                                                        <xsd:annotation>
+                                                            <xsd:documentation>Defines the caption for a node.
                                                             </xsd:documentation>
-														</xsd:annotation>
-														<xsd:complexType>
-															<xsd:sequence>
-																<xsd:element name="occurrence" minOccurs="0">
-																	<xsd:annotation>
-																		<xsd:documentation>Defines the occurandy of the
+                                                        </xsd:annotation>
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element name="occurrence" minOccurs="0">
+                                                                    <xsd:annotation>
+                                                                        <xsd:documentation>Defines the occurandy of the
                                                                             defines caption style.
                                                                         </xsd:documentation>
-																	</xsd:annotation>
-																	<xsd:complexType>
-																		<xsd:sequence>
-																			<xsd:element ref="visibility" minOccurs="0"/>
-																			<xsd:element name="applyOnChildDepth" default="1" minOccurs="0">
-																				<xsd:simpleType>
-																					<xsd:restriction base="xsd:int"/>
-																				</xsd:simpleType>
-																				<!--xsd:annotation>
-																					<xsd:appinfo source="http://www.model.org/xui/Annotation">
-																						<pi name="supported" value="no"/>
-																					</xsd:appinfo>
-																				</xsd:annotation-->
-																			</xsd:element>
-																		</xsd:sequence>
-																	</xsd:complexType>
-																</xsd:element>
-																<xsd:element name="collapsible" type="xsd:boolean" minOccurs="0"/>
-																<xsd:element name="type" minOccurs="0">
-																	<xsd:simpleType>
-																		<xsd:restriction base="xsd:string">
-																			<xsd:enumeration value="border"/>
-																			<xsd:enumeration value="accordion"/>
-																			<xsd:enumeration value="header"/>
-																			<xsd:enumeration value="none"/>
-																		</xsd:restriction>
-																	</xsd:simpleType>
-																</xsd:element>
-															</xsd:sequence>
-															<xsd:attribute name="collapsed" type="xsd:boolean" use="optional"/>
-															<xsd:attribute name="expandIfContainsData" type="xsd:boolean" use="optional"/>
-															<xsd:attribute name="lazyBuild" type="xsd:boolean" use="optional" default="false">
-																<xsd:annotation>
-																	<xsd:appinfo source="http://www.model.org/xui/Annotation">
-																		<pi name="supported" value="no"/>
-																	</xsd:appinfo>
-																</xsd:annotation>
-															</xsd:attribute>
-															<xsd:attribute name="colWidth" type="xsd:short" use="optional"/>
-														</xsd:complexType>
-													</xsd:element>
-													<xsd:element ref="customComponentElement" minOccurs="0"/>
-												</xsd:sequence>
-											</xsd:complexType>
-										</xsd:element>
-										<xsd:element name="valueDefinition" minOccurs="0">
-											<xsd:annotation>
-												<xsd:appinfo source="http://www.model.org/xui/Annotation">
-													<pi name="visibilityFunction" value="xuiTargetNode.isSimple()"/>
-												</xsd:appinfo>
-											</xsd:annotation>
-											<xsd:complexType>
-												<xsd:sequence>
-													<xsd:element name="defaultValue" type="xsd:string" minOccurs="0"/>
-													<xsd:element name="maxLength" minOccurs="0"/>
-													<xsd:element name="name" type="xsd:string" minOccurs="0"/>
-													<xsd:element name="value" minOccurs="0">
-														<xsd:annotation>
-															<xsd:documentation>Defines the type of editing the value of
+                                                                    </xsd:annotation>
+                                                                    <xsd:complexType>
+                                                                        <xsd:sequence>
+                                                                            <xsd:element ref="visibility"
+                                                                                         minOccurs="0"/>
+                                                                            <xsd:element name="applyOnChildDepth"
+                                                                                         default="1" minOccurs="0">
+                                                                                <xsd:simpleType>
+                                                                                    <xsd:restriction base="xsd:int"/>
+                                                                                </xsd:simpleType>
+                                                                                <!--xsd:annotation>
+                                                                                    <xsd:appinfo source="http://www.model.org/xui/Annotation">
+                                                                                        <pi name="supported" value="no"/>
+                                                                                    </xsd:appinfo>
+                                                                                </xsd:annotation-->
+                                                                            </xsd:element>
+                                                                        </xsd:sequence>
+                                                                    </xsd:complexType>
+                                                                </xsd:element>
+                                                                <xsd:element name="collapsible" type="xsd:boolean"
+                                                                             minOccurs="0"/>
+                                                                <xsd:element name="type" minOccurs="0">
+                                                                    <xsd:simpleType>
+                                                                        <xsd:restriction base="xsd:string">
+                                                                            <xsd:enumeration value="border"/>
+                                                                            <xsd:enumeration value="accordion"/>
+                                                                            <xsd:enumeration value="header"/>
+                                                                            <xsd:enumeration value="none"/>
+                                                                        </xsd:restriction>
+                                                                    </xsd:simpleType>
+                                                                </xsd:element>
+                                                            </xsd:sequence>
+                                                            <xsd:attribute name="collapsed" type="xsd:boolean"
+                                                                           use="optional"/>
+                                                            <xsd:attribute name="expandIfContainsData"
+                                                                           type="xsd:boolean" use="optional"/>
+                                                            <xsd:attribute name="lazyBuild" type="xsd:boolean"
+                                                                           use="optional" default="false">
+                                                                <xsd:annotation>
+                                                                    <xsd:appinfo
+                                                                            source="http://www.model.org/xui/Annotation">
+                                                                        <pi name="supported" value="no"/>
+                                                                    </xsd:appinfo>
+                                                                </xsd:annotation>
+                                                            </xsd:attribute>
+                                                            <xsd:attribute name="colWidth" type="xsd:short"
+                                                                           use="optional"/>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                    <xsd:element ref="customComponentElement" minOccurs="0"/>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="valueDefinition" minOccurs="0">
+                                            <xsd:annotation>
+                                                <xsd:appinfo source="http://www.model.org/xui/Annotation">
+                                                    <pi name="visibilityFunction" value="xuiTargetNode.isSimple()"/>
+                                                </xsd:appinfo>
+                                            </xsd:annotation>
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="defaultValue" type="xsd:string" minOccurs="0"/>
+                                                    <xsd:element name="maxLength" minOccurs="0"/>
+                                                    <xsd:element name="name" type="xsd:string" minOccurs="0"/>
+                                                    <xsd:element name="value" minOccurs="0">
+                                                        <xsd:annotation>
+                                                            <xsd:documentation>Defines the type of editing the value of
                                                                 leaf type.
                                                             </xsd:documentation>
-														</xsd:annotation>
-														<xsd:complexType>
-															<xsd:choice minOccurs="0">
-																<xsd:element name="singleValue" minOccurs="0">
-																	<xsd:annotation>
-																		<xsd:documentation>Defines this leaf as a simple
+                                                        </xsd:annotation>
+                                                        <xsd:complexType>
+                                                            <xsd:choice minOccurs="0">
+                                                                <xsd:element name="singleValue" minOccurs="0">
+                                                                    <xsd:annotation>
+                                                                        <xsd:documentation>Defines this leaf as a simple
                                                                             data entry.
                                                                         </xsd:documentation>
-																	</xsd:annotation>
-																	<xsd:complexType/>
-																</xsd:element>
-																<xsd:element name="codeSet" minOccurs="0">
-																	<xsd:annotation>
-																		<xsd:documentation>Defines a codeSet to choose
+                                                                    </xsd:annotation>
+                                                                    <xsd:complexType/>
+                                                                </xsd:element>
+                                                                <xsd:element name="codeSet" minOccurs="0">
+                                                                    <xsd:annotation>
+                                                                        <xsd:documentation>Defines a codeSet to choose
                                                                             any value from. A codeSet must be an XML
                                                                             file of the XMLSchema: codes.xsd. A codeSet
                                                                             consists of id/value pairs in different
                                                                             languages. The id will identify a code and
                                                                             will be written to the model.
                                                                         </xsd:documentation>
-																	</xsd:annotation>
-																	<xsd:complexType>
-																		<xsd:choice>
-																			<xsd:element name="url" type="xsd:string">
-																				<xsd:annotation>
-																					<xsd:documentation>Defines the
+                                                                    </xsd:annotation>
+                                                                    <xsd:complexType>
+                                                                        <xsd:choice>
+                                                                            <xsd:element name="url" type="xsd:string">
+                                                                                <xsd:annotation>
+                                                                                    <xsd:documentation>Defines the
                                                                                         location of the codeSet file.
                                                                                     </xsd:documentation>
-																				</xsd:annotation>
-																			</xsd:element>
-																			<xsd:element name="codesetId" type="xsd:string">
-																				<xsd:annotation>
-																					<xsd:documentation>Defines an
+                                                                                </xsd:annotation>
+                                                                            </xsd:element>
+                                                                            <xsd:element name="codesetId"
+                                                                                         type="xsd:string">
+                                                                                <xsd:annotation>
+                                                                                    <xsd:documentation>Defines an
                                                                                         implementation of the interface
                                                                                         CodeSet.
                                                                                     </xsd:documentation>
-																				</xsd:annotation>
-																			</xsd:element>
-																			<xsd:element name="implementation">
-																				<xsd:complexType>
-																					<xsd:sequence>
-																						<xsd:element ref="param" minOccurs="0" maxOccurs="unbounded"/>
-																					</xsd:sequence>
-																					<xsd:attribute name="class">
-																						<xsd:annotation>
-																							<xsd:documentation>Defines a
+                                                                                </xsd:annotation>
+                                                                            </xsd:element>
+                                                                            <xsd:element name="implementation">
+                                                                                <xsd:complexType>
+                                                                                    <xsd:sequence>
+                                                                                        <xsd:element ref="param"
+                                                                                                     minOccurs="0"
+                                                                                                     maxOccurs="unbounded"/>
+                                                                                    </xsd:sequence>
+                                                                                    <xsd:attribute name="class">
+                                                                                        <xsd:annotation>
+                                                                                            <xsd:documentation>Defines a
                                                                                                 class which implements
                                                                                                 the
                                                                                                 SimpleListEnumeration
                                                                                                 interface.
                                                                                             </xsd:documentation>
-																						</xsd:annotation>
-																					</xsd:attribute>
-																				</xsd:complexType>
-																			</xsd:element>
-																			<xsd:element name="local" type="codeSetType"/>
-																		</xsd:choice>
-																		<xsd:attribute name="name" type="xsd:string" use="required"/>
-																		<xsd:attribute name="filtering" type="xsd:string"/>
-																		<xsd:attribute name="allowInvalidCodes" type="xsd:boolean" use="optional" default="false"/>
-																		<xsd:attribute name="showErrorForInvalidCode" type="xsd:boolean" use="optional" default="true"/>
-																		<xsd:attribute name="displayID" type="xsd:boolean" use="optional" default="false"/>
-																		<xsd:attributeGroup ref="sortGroup"/>
-																	</xsd:complexType>
-																</xsd:element>
-																<xsd:element name="nullValue" type="xsd:anySimpleType" minOccurs="0">
-																	<xsd:annotation>
-																		<xsd:documentation>Defines this leaf as a simple
+                                                                                        </xsd:annotation>
+                                                                                    </xsd:attribute>
+                                                                                </xsd:complexType>
+                                                                            </xsd:element>
+                                                                            <xsd:element name="local"
+                                                                                         type="codeSetType"/>
+                                                                        </xsd:choice>
+                                                                        <xsd:attribute name="name" type="xsd:string"
+                                                                                       use="required"/>
+                                                                        <xsd:attribute name="filtering"
+                                                                                       type="xsd:string"/>
+                                                                        <xsd:attribute name="allowInvalidCodes"
+                                                                                       type="xsd:boolean" use="optional"
+                                                                                       default="false"/>
+                                                                        <xsd:attribute name="showErrorForInvalidCode"
+                                                                                       type="xsd:boolean" use="optional"
+                                                                                       default="true"/>
+                                                                        <xsd:attribute name="displayID"
+                                                                                       type="xsd:boolean" use="optional"
+                                                                                       default="false"/>
+                                                                        <xsd:attributeGroup ref="sortGroup"/>
+                                                                    </xsd:complexType>
+                                                                </xsd:element>
+                                                                <xsd:element name="nullValue" type="xsd:anySimpleType"
+                                                                             minOccurs="0">
+                                                                    <xsd:annotation>
+                                                                        <xsd:documentation>Defines this leaf as a simple
                                                                             data entry.
                                                                         </xsd:documentation>
-																	</xsd:annotation>
-																</xsd:element>
-																<xsd:element name="lookup" minOccurs="0">
-																	<xsd:complexType>
-																		<xsd:sequence>
-																			<xsd:element ref="resourceID"/>
-																			<xsd:element name="mapping">
-																				<xsd:complexType>
-																					<xsd:sequence>
-																						<xsd:element name="field" minOccurs="0" maxOccurs="20">
-																							<xsd:complexType>
-																								<xsd:sequence>
-																									<xsd:element name="sourceField" type="xsd:string"/>
-																									<xsd:element name="targetField" type="xsd:string"/>
-																								</xsd:sequence>
-																							</xsd:complexType>
-																						</xsd:element>
-																					</xsd:sequence>
-																				</xsd:complexType>
-																			</xsd:element>
-																			<xsd:element name="sourceField" type="xsd:string"/>
-																		</xsd:sequence>
-																	</xsd:complexType>
-																</xsd:element>
-																<xsd:element name="nodeReference" type="xsd:string" minOccurs="0">
-																	<xsd:annotation>
-																		<xsd:documentation>Defines this leaf as a simple
+                                                                    </xsd:annotation>
+                                                                </xsd:element>
+                                                                <xsd:element name="lookup" minOccurs="0">
+                                                                    <xsd:complexType>
+                                                                        <xsd:sequence>
+                                                                            <xsd:element ref="resourceID"/>
+                                                                            <xsd:element name="mapping">
+                                                                                <xsd:complexType>
+                                                                                    <xsd:sequence>
+                                                                                        <xsd:element name="field"
+                                                                                                     minOccurs="0"
+                                                                                                     maxOccurs="20">
+                                                                                            <xsd:complexType>
+                                                                                                <xsd:sequence>
+                                                                                                    <xsd:element
+                                                                                                            name="sourceField"
+                                                                                                            type="xsd:string"/>
+                                                                                                    <xsd:element
+                                                                                                            name="targetField"
+                                                                                                            type="xsd:string"/>
+                                                                                                </xsd:sequence>
+                                                                                            </xsd:complexType>
+                                                                                        </xsd:element>
+                                                                                    </xsd:sequence>
+                                                                                </xsd:complexType>
+                                                                            </xsd:element>
+                                                                            <xsd:element name="sourceField"
+                                                                                         type="xsd:string"/>
+                                                                        </xsd:sequence>
+                                                                    </xsd:complexType>
+                                                                </xsd:element>
+                                                                <xsd:element name="nodeReference" type="xsd:string"
+                                                                             minOccurs="0">
+                                                                    <xsd:annotation>
+                                                                        <xsd:documentation>Defines this leaf as a simple
                                                                             data entry.
                                                                         </xsd:documentation>
-																	</xsd:annotation>
-																</xsd:element>
-															</xsd:choice>
-															<xsd:attribute name="serializeContentAsCDATA" type="xsd:boolean" use="optional" default="false"/>
-															<xsd:attribute name="dataType" use="optional">
-																<xsd:simpleType>
-																	<xsd:restriction base="xsd:string">
-																		<xsd:enumeration value="boolean"/>
-																		<xsd:enumeration value="numeric"/>
-																		<xsd:enumeration value="date"/>
-																		<xsd:enumeration value="decimal"/>
-																		<xsd:enumeration value="formula"/>
-																		<xsd:enumeration value="time"/>
-																		<xsd:enumeration value="dateTime"/>
-																		<xsd:enumeration value="amount"/>
-																		<xsd:enumeration value="html"/>
-																		<xsd:enumeration value="tel"/>
-																		<xsd:enumeration value="url"/>
-																		<xsd:enumeration value="currency"/>
-																		<xsd:enumeration value="length"/>
-																		<xsd:enumeration value="weight"/>
-																		<xsd:enumeration value="email"/>
-																		<xsd:enumeration value="ipv4"/>
-																		<xsd:enumeration value="mask"/>
-																		<xsd:enumeration value="ipv6"/>
-																		<xsd:enumeration value="serverAdress"/>
-																		<xsd:enumeration value="uri"/>
-																		<xsd:enumeration value="hostname"/>
-																		<xsd:enumeration value="uuid"/>
-																	</xsd:restriction>
-																</xsd:simpleType>
-															</xsd:attribute>
-															<xsd:attribute name="pattern" type="xsd:string" use="optional"/>
-														</xsd:complexType>
-													</xsd:element>
-												</xsd:sequence>
-											</xsd:complexType>
-										</xsd:element>
-										<xsd:element name="customClass" type="xsd:string" minOccurs="0"/>
-										<xsd:element name="renderer" minOccurs="0">
-											<xsd:complexType>
-												<xsd:choice>
-													<xsd:element name="leaf" minOccurs="0">
-														<xsd:complexType>
-															<xsd:choice minOccurs="0">
-																<xsd:element name="color"/>
-																<xsd:element name="qrCode">
-																	<xsd:complexType>
-																		<xsd:sequence>
-																			<xsd:element name="formula" type="xsd:string"/>
-																		</xsd:sequence>
-																	</xsd:complexType>
-																</xsd:element>
-																<xsd:element name="image">
-																	<xsd:complexType>
-																		<xsd:sequence>
-																			<xsd:element name="formula" type="xsd:string"/>
-																		</xsd:sequence>
-																	</xsd:complexType>
-																</xsd:element>
-																<xsd:element name="fileUpload">
-																	<xsd:complexType>
-																		<xsd:attribute name="multiple" type="xsd:boolean"/>
-																		<xsd:attribute name="maxFileSize" type="xsd:int" default="12000"/>
-																		<xsd:attribute name="extensions" type="xsd:string"/>
-																	</xsd:complexType>
-																</xsd:element>
-																<xsd:element name="password"/>
-																<xsd:element name="email"/>
-																<xsd:element name="range">
-																	<xsd:complexType>
-																		<xsd:sequence>
-																			<xsd:element name="min" type="xsd:int" minOccurs="0"/>
-																			<xsd:element name="max" type="xsd:int" minOccurs="0"/>
-																			<xsd:element name="step" type="xsd:float" minOccurs="0"/>
-																		</xsd:sequence>
-																	</xsd:complexType>
-																</xsd:element>
-																<xsd:element name="datePicker"/>
-																<xsd:element ref="implementation"/>
-																<xsd:element name="xPath" type="xPathType"/>
-																<xsd:element name="action">
-																	<xsd:complexType>
-																		<xsd:choice>
-																			<xsd:element name="actionId" type="xsd:string"/>
-																			<xsd:element ref="expression"/>
-																			<xsd:element name="stateHolder" type="xsd:string"/>
-																		</xsd:choice>
-																	</xsd:complexType>
-																</xsd:element>
-																<xsd:element name="starRating">
-																	<xsd:complexType>
-																		<xsd:sequence>
-																			<xsd:element name="min" type="xsd:int" minOccurs="0"/>
-																			<xsd:element name="max" type="xsd:int" minOccurs="0"/>
-																			<xsd:element name="step" type="xsd:float" minOccurs="0"/>
-																		</xsd:sequence>
-																	</xsd:complexType>
-																</xsd:element>
-																<xsd:element name="booleanSwitch">
-																	<xsd:complexType/>
-																</xsd:element>
-																<xsd:element name="serializeSwitch">
-																	<xsd:complexType/>
-																</xsd:element>
-																<xsd:element name="dateTimePicker"/>
-															</xsd:choice>
-															<xsd:attribute name="resizeable" type="xsd:boolean" use="optional" default="true"/>
-															<xsd:attribute name="rows" type="xsd:int" use="optional"/>
-														</xsd:complexType>
-													</xsd:element>
-													<xsd:element name="list" minOccurs="0">
-														<xsd:complexType>
-															<xsd:choice minOccurs="0">
-																<xsd:element name="SimpleListRadioButton">
-																	<xsd:complexType/>
-																</xsd:element>
-																<xsd:element name="Tags">
-																	<xsd:complexType/>
-																</xsd:element>
-																<xsd:element ref="implementation"/>
-															</xsd:choice>
-														</xsd:complexType>
-													</xsd:element>
-													<xsd:element name="codeset" minOccurs="0">
-														<xsd:complexType>
-															<xsd:choice minOccurs="0">
-																<xsd:element name="DataList">
-																	<xsd:complexType/>
-																</xsd:element>
-																<xsd:element name="Dropdown">
-																	<xsd:complexType/>
-																</xsd:element>
-																<xsd:element name="Tags">
-																	<xsd:complexType/>
-																</xsd:element>
-																<xsd:element name="Radio">
-																	<xsd:complexType/>
-																</xsd:element>
-															</xsd:choice>
-															<xsd:attributeGroup ref="sortGroup"/>
-														</xsd:complexType>
-													</xsd:element>
-												</xsd:choice>
-											</xsd:complexType>
-										</xsd:element>
-									</xsd:sequence>
-									<xsd:attribute name="order" type="xsd:double" use="optional"/>
-								</xsd:complexType>
-							</xsd:element>
-							<xsd:element name="behaviour" minOccurs="0">
-								<xsd:complexType>
-									<xsd:sequence>
-										<xsd:element name="rule" type="ruleType" minOccurs="0" maxOccurs="unbounded"/>
-										<xsd:element name="actions">
-											<xsd:complexType>
-												<xsd:sequence>
-													<xsd:element name="action" type="ActionType" minOccurs="0" maxOccurs="unbounded"/>
-													<xsd:element name="list">
-														<xsd:complexType>
-															<xsd:sequence>
-																<xsd:element name="canSort" type="xsd:boolean" minOccurs="0"/>
-																<xsd:element name="autoCreateMinOccurListItems" type="xsd:boolean" minOccurs="0"/>
-																<xsd:element name="autoCreateMaxOccurListItems" type="xsd:boolean" minOccurs="0"/>
-																<xsd:element name="selectionOnly" type="xsd:boolean" default="false" minOccurs="0"/>
-																<xsd:element name="showButtons" type="xsd:boolean" default="true" minOccurs="0"/>
-																<xsd:element name="rights" minOccurs="0" maxOccurs="unbounded">
-																	<xsd:simpleType>
-																		<xsd:restriction base="xsd:string">
-																			<xsd:enumeration value="canAdd"/>
-																			<xsd:enumeration value="canRemove"/>
-																			<xsd:enumeration value="canCopy"/>
-																			<xsd:enumeration value="canSort"/>
-																			<xsd:enumeration value="canEdit"/>
-																			<xsd:enumeration value="canMove"/>
-																			<xsd:enumeration value="selectionOnly"/>
-																		</xsd:restriction>
-																	</xsd:simpleType>
-																</xsd:element>
-																<xsd:element name="addStrategy" minOccurs="0">
-																	<xsd:simpleType>
-																		<xsd:restriction base="xsd:string">
-																			<xsd:enumeration value="START"/>
-																			<xsd:enumeration value="END"/>
-																		</xsd:restriction>
-																	</xsd:simpleType>
-																</xsd:element>
-																<xsd:element name="removeStrategy" minOccurs="0">
-																	<xsd:simpleType>
-																		<xsd:restriction base="xsd:string">
-																			<xsd:enumeration value="START"/>
-																			<xsd:enumeration value="END"/>
-																		</xsd:restriction>
-																	</xsd:simpleType>
-																</xsd:element>
-															</xsd:sequence>
-														</xsd:complexType>
-													</xsd:element>
-												</xsd:sequence>
-											</xsd:complexType>
-										</xsd:element>
-									</xsd:sequence>
-								</xsd:complexType>
-							</xsd:element>
-						</xsd:sequence>
-						<xsd:attribute name="path" type="xsd:string" use="required"/>
-						<xsd:attribute name="uuid" type="xsd:string" use="optional"/>
-						<xsd:attribute name="alias" type="xsd:string" use="optional"/>
-						<xsd:attribute name="namespace" type="xsd:string" use="optional"/>
-						<xsd:attribute name="global" type="xsd:boolean" use="optional" default="false"/>
-						<xsd:attribute name="enabled" type="xsd:boolean" use="optional"/>
-					</xsd:complexType>
-				</xsd:element>
-				<xsd:element name="settings" minOccurs="0">
-					<xsd:complexType>
-						<xsd:sequence>
-							<xsd:element name="types" minOccurs="0">
-								<xsd:complexType>
-									<xsd:sequence>
-										<xsd:element name="list" minOccurs="0">
-											<xsd:complexType>
-												<xsd:sequence>
-													<xsd:element name="initialization">
-														<xsd:complexType>
-															<xsd:choice>
-																<xsd:element name="none"/>
-																<xsd:element name="minOcc"/>
-																<xsd:element name="maxOcc"/>
-																<xsd:element name="one"/>
-																<xsd:element name="custom" type="xsd:int"/>
-															</xsd:choice>
-														</xsd:complexType>
-													</xsd:element>
-												</xsd:sequence>
-											</xsd:complexType>
-										</xsd:element>
-										<xsd:element name="choice" minOccurs="0">
-											<xsd:complexType>
-												<xsd:sequence>
-													<xsd:element name="selectFirst" type="xsd:boolean"/>
-												</xsd:sequence>
-											</xsd:complexType>
-										</xsd:element>
-									</xsd:sequence>
-								</xsd:complexType>
-							</xsd:element>
-							<xsd:element name="serialization" minOccurs="0">
-								<xsd:complexType>
-									<xsd:sequence>
-										<xsd:element name="serializeDefaultValue" type="xsd:boolean" minOccurs="0"/>
-										<xsd:element name="serializeNamespace" type="xsd:boolean" default="false" minOccurs="0"/>
-										<xsd:element name="serializeNamespacePrefix" type="xsd:boolean" default="true" minOccurs="0"/>
-										<xsd:element name="serializeUnnamed" type="xsd:boolean" default="true" minOccurs="0"/>
-									</xsd:sequence>
-								</xsd:complexType>
-							</xsd:element>
-							<xsd:element name="rendering" minOccurs="0">
-								<xsd:complexType>
-									<xsd:sequence>
-										<xsd:element name="time" minOccurs="0">
-											<xsd:complexType>
-												<xsd:sequence>
-													<xsd:element name="visualizer"/>
-												</xsd:sequence>
-											</xsd:complexType>
-										</xsd:element>
-										<xsd:element name="date" minOccurs="0">
-											<xsd:complexType>
-												<xsd:sequence>
-													<xsd:element name="visualizer">
-														<xsd:simpleType>
-															<xsd:restriction base="xsd:string">
-																<xsd:enumeration value="org.model.ui.html.render.actas.DateRenderer"/>
-																<xsd:enumeration value="org.model.ui.html.render.actas.DateTimeRenderer"/>
-															</xsd:restriction>
-														</xsd:simpleType>
-													</xsd:element>
-												</xsd:sequence>
-											</xsd:complexType>
-										</xsd:element>
-										<xsd:element name="dateTime" minOccurs="0">
-											<xsd:complexType>
-												<xsd:sequence>
-													<xsd:element name="visualizer"/>
-												</xsd:sequence>
-											</xsd:complexType>
-										</xsd:element>
-										<xsd:element name="boolean" minOccurs="0">
-											<xsd:complexType>
-												<xsd:sequence>
-													<xsd:element name="visualizer">
-														<xsd:simpleType>
-															<xsd:restriction base="xsd:string">
-																<xsd:enumeration value="org.model.ui.html.render.BooleanRenderer"/>
-																<xsd:enumeration value="org.model.ui.html.render.BooleanSwitchRenderer"/>
-																<xsd:enumeration value="org.model.ui.html.render.SerializeSwitchRenderer"/>
-															</xsd:restriction>
-														</xsd:simpleType>
-													</xsd:element>
-												</xsd:sequence>
-											</xsd:complexType>
-										</xsd:element>
-										<xsd:element name="duration" minOccurs="0">
-											<xsd:complexType>
-												<xsd:sequence>
-													<xsd:element name="visualizer"/>
-												</xsd:sequence>
-											</xsd:complexType>
-										</xsd:element>
-										<xsd:element name="label" minOccurs="0">
-											<xsd:complexType>
-												<xsd:sequence>
-													<xsd:element name="position" default="LEFT" minOccurs="0">
-														<xsd:simpleType>
-															<xsd:restriction base="xsd:string">
-																<xsd:enumeration value="LEFT"/>
-																<xsd:enumeration value="RIGHT"/>
-																<xsd:enumeration value="TOP"/>
-																<xsd:enumeration value="BOTTOM"/>
-																<xsd:enumeration value="INLINE"/>
-																<xsd:enumeration value="BORDER"/>
-																<xsd:enumeration value="NOT_DEFINED"/>
-															</xsd:restriction>
-														</xsd:simpleType>
-													</xsd:element>
-													<xsd:element name="choiceUseLabel" type="xsd:boolean" minOccurs="0"/>
-												</xsd:sequence>
-											</xsd:complexType>
-										</xsd:element>
-										<xsd:element name="caption" minOccurs="0">
-											<xsd:complexType>
-												<xsd:sequence>
-													<xsd:element name="type" minOccurs="0">
-														<xsd:simpleType>
-															<xsd:restriction base="xsd:string">
-																<xsd:enumeration value="border"/>
-																<xsd:enumeration value="header"/>
-																<xsd:enumeration value="accordion"/>
-															</xsd:restriction>
-														</xsd:simpleType>
-													</xsd:element>
-												</xsd:sequence>
-											</xsd:complexType>
-										</xsd:element>
-										<xsd:element name="help" minOccurs="0">
-											<xsd:complexType>
-												<xsd:sequence>
-													<xsd:element name="position" default="LEFT" minOccurs="0">
-														<xsd:simpleType>
-															<xsd:restriction base="xsd:string">
-																<xsd:enumeration value="LEFT"/>
-																<xsd:enumeration value="TOP"/>
-																<xsd:enumeration value="BOTTOM"/>
-																<xsd:enumeration value="NOT_DEFINED"/>
-															</xsd:restriction>
-														</xsd:simpleType>
-													</xsd:element>
-												</xsd:sequence>
-											</xsd:complexType>
-										</xsd:element>
-									</xsd:sequence>
-								</xsd:complexType>
-							</xsd:element>
-							<xsd:element name="resources" minOccurs="0">
-								<xsd:complexType>
-									<xsd:sequence>
-										<xsd:element name="rest" type="httpResourceType" minOccurs="0" maxOccurs="unbounded"/>
-										<xsd:element name="soap" minOccurs="0" maxOccurs="unbounded"/>
-										<xsd:element ref="codes" minOccurs="0"/>
-										<xsd:element name="manual" minOccurs="0">
-											<xsd:complexType>
-												<xsd:sequence>
-													<xsd:element name="jsonConfig" minOccurs="0" maxOccurs="unbounded">
-														<xsd:complexType>
-															<xsd:sequence>
-																<xsd:element ref="resourceID"/>
-																<xsd:element name="config" type="xsd:string"/>
-															</xsd:sequence>
-														</xsd:complexType>
-													</xsd:element>
-												</xsd:sequence>
-											</xsd:complexType>
-										</xsd:element>
-									</xsd:sequence>
-								</xsd:complexType>
-							</xsd:element>
-							<xsd:element name="translations" minOccurs="0" maxOccurs="unbounded">
-								<xsd:complexType>
-									<xsd:sequence>
-										<xsd:element name="nls" minOccurs="0" maxOccurs="unbounded">
-											<xsd:complexType>
-												<xsd:sequence>
-													<xsd:element name="path" type="xsd:string"/>
-													<xsd:element name="context" minOccurs="0">
-														<xsd:simpleType>
-															<xsd:restriction base="xsd:string">
-																<xsd:enumeration value="label"/>
-																<xsd:enumeration value="error"/>
-																<xsd:enumeration value="navbar"/>
-																<xsd:enumeration value="treeEntry"/>
-																<xsd:enumeration value="primitive"/>
-																<xsd:enumeration value="paging"/>
-																<xsd:enumeration value="caption"/>
-																<xsd:enumeration value="help"/>
-																<xsd:enumeration value="watermark"/>
-																<xsd:enumeration value="message"/>
-																<xsd:enumeration value="tooltip"/>
-																<xsd:enumeration value="custom"/>
-																<xsd:enumeration value="textResource"/>
-																<xsd:enumeration value="formula"/>
-																<xsd:enumeration value="lineInfo"/>
-															</xsd:restriction>
-														</xsd:simpleType>
-													</xsd:element>
-													<xsd:element name="subcontext" minOccurs="0">
-														<xsd:simpleType>
-															<xsd:restriction base="xsd:string"/>
-														</xsd:simpleType>
-													</xsd:element>
-													<xsd:element name="isFormula" type="xsd:boolean" minOccurs="0"/>
-													<xsd:element name="isHTML" type="xsd:boolean" minOccurs="0"/>
-													<xsd:element name="value" type="xsd:string"/>
-												</xsd:sequence>
-											</xsd:complexType>
-										</xsd:element>
-										<xsd:element name="component" minOccurs="0" maxOccurs="unbounded">
-											<xsd:complexType>
-												<xsd:sequence>
-													<xsd:element name="path" type="xsd:string"/>
-													<xsd:element name="nls" minOccurs="0" maxOccurs="unbounded">
-														<xsd:complexType>
-															<xsd:sequence>
-																<xsd:element name="context" minOccurs="0">
-																	<xsd:simpleType>
-																		<xsd:restriction base="xsd:string">
-																			<xsd:enumeration value="label"/>
-																			<xsd:enumeration value="error"/>
-																			<xsd:enumeration value="navbar"/>
-																			<xsd:enumeration value="treeEntry"/>
-																			<xsd:enumeration value="primitive"/>
-																			<xsd:enumeration value="paging"/>
-																			<xsd:enumeration value="caption"/>
-																			<xsd:enumeration value="help"/>
-																			<xsd:enumeration value="watermark"/>
-																			<xsd:enumeration value="message"/>
-																			<xsd:enumeration value="tooltip"/>
-																			<xsd:enumeration value="custom"/>
-																			<xsd:enumeration value="textResource"/>
-																			<xsd:enumeration value="formula"/>
-																			<xsd:enumeration value="lineInfo"/>
-																		</xsd:restriction>
-																	</xsd:simpleType>
-																</xsd:element>
-																<xsd:element name="subcontext" minOccurs="0">
-																	<xsd:simpleType>
-																		<xsd:restriction base="xsd:string"/>
-																	</xsd:simpleType>
-																</xsd:element>
-																<xsd:element name="isFormula" type="xsd:boolean" minOccurs="0"/>
-																<xsd:element name="isHTML" type="xsd:boolean" minOccurs="0"/>
-																<xsd:element name="value" type="xsd:string"/>
-															</xsd:sequence>
-														</xsd:complexType>
-													</xsd:element>
-												</xsd:sequence>
-											</xsd:complexType>
-										</xsd:element>
-									</xsd:sequence>
-									<xsd:attribute name="language" type="xsd:string"/>
-								</xsd:complexType>
-							</xsd:element>
-							<xsd:element name="constants" minOccurs="0" maxOccurs="unbounded">
-								<xsd:complexType>
-									<xsd:sequence>
-										<xsd:element name="key">
-											<xsd:simpleType>
-												<xsd:restriction base="xsd:string">
-													<xsd:enumeration value="CLASS_NODE_LABELED_WIDTH_VALUE_HOLDER"/>
-													<xsd:enumeration value="CLASS_NODE_LABEL_LEFT"/>
-												</xsd:restriction>
-											</xsd:simpleType>
-										</xsd:element>
-										<xsd:element name="value" type="xsd:string"/>
-									</xsd:sequence>
-								</xsd:complexType>
-							</xsd:element>
-						</xsd:sequence>
-					</xsd:complexType>
-				</xsd:element>
-				<xsd:element name="fakeNodes" minOccurs="0" maxOccurs="unbounded">
-					<xsd:complexType>
-						<xsd:sequence>
-							<xsd:element name="path">
-								<xsd:simpleType>
-									<xsd:restriction base="xsd:string"/>
-								</xsd:simpleType>
-							</xsd:element>
-							<xsd:element name="type">
-								<xsd:simpleType>
-									<xsd:restriction base="xsd:string">
-										<xsd:enumeration value="simple"/>
-										<xsd:enumeration value="complex"/>
-									</xsd:restriction>
-								</xsd:simpleType>
-							</xsd:element>
-						</xsd:sequence>
-					</xsd:complexType>
-				</xsd:element>
-				<xsd:element name="globalRules">
-					<xsd:complexType>
-						<xsd:sequence>
-							<xsd:element name="rule" minOccurs="0" maxOccurs="unbounded">
-								<xsd:complexType>
-									<xsd:complexContent>
-										<xsd:extension base="ruleType">
-											<xsd:sequence>
-												<xsd:element name="basePath" type="xPathType"/>
-											</xsd:sequence>
-										</xsd:extension>
-									</xsd:complexContent>
-								</xsd:complexType>
-							</xsd:element>
-						</xsd:sequence>
-					</xsd:complexType>
-				</xsd:element>
-			</xsd:sequence>
-		</xsd:complexType>
-	</xsd:element>
-	<xsd:complexType name="formulaExpressionType">
-		<xsd:sequence>
-			<xsd:element name="expression" type="xsd:string"/>
-		</xsd:sequence>
-	</xsd:complexType>
-	<xsd:complexType name="ActionType">
-		<xsd:sequence>
-			<xsd:element name="id" type="xsd:ID" minOccurs="0"/>
-			<xsd:element ref="xPath" minOccurs="0"/>
-			<xsd:element name="enabled" type="xsd:boolean" default="true" minOccurs="0"/>
-			<xsd:element name="useActionTargetAsBase" type="xsd:boolean" default="true" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo source="http://www.model.org/xui/Annotation">
-						<pi name="supported" value="no"/>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="eventSourceIsTarget" type="xsd:boolean" default="false" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo source="http://www.model.org/xui/Annotation">
-						<pi name="supported" value="no"/>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="modelChange" type="xsd:boolean" minOccurs="0"/>
-			<xsd:element name="formulaExpression" type="formulaExpressionType"/>
-		</xsd:sequence>
-	</xsd:complexType>
-	<xsd:complexType name="captionIndentType">
-		<xsd:annotation>
-			<xsd:documentation>Defines the caption indent of a component.</xsd:documentation>
-		</xsd:annotation>
-		<xsd:attribute name="applyCaptionIndentOn" use="optional" default="label">
-			<xsd:simpleType>
-				<xsd:restriction base="xsd:string">
-					<xsd:enumeration value="label"/>
-					<xsd:enumeration value="component"/>
-					<xsd:enumeration value="both"/>
-				</xsd:restriction>
-			</xsd:simpleType>
-		</xsd:attribute>
-		<xsd:attribute name="nestedIndent" type="xsd:float" use="optional"/>
-	</xsd:complexType>
-	<xsd:element name="visibility">
-		<xsd:annotation>
-			<xsd:documentation>Defines the visibility.</xsd:documentation>
-		</xsd:annotation>
-		<xsd:complexType>
-			<xsd:choice minOccurs="0">
-				<xsd:element name="always">
-					<xsd:annotation>
-						<xsd:documentation>Is always visible.</xsd:documentation>
-					</xsd:annotation>
-				</xsd:element>
-				<xsd:element name="never">
-					<xsd:annotation>
-						<xsd:documentation>Is never visible.</xsd:documentation>
-					</xsd:annotation>
-				</xsd:element>
-			</xsd:choice>
-		</xsd:complexType>
-	</xsd:element>
-	<xsd:element name="applyOnDescendants">
-		<xsd:annotation>
-			<xsd:documentation>Defines the type of dependency for the descendant nodes.</xsd:documentation>
-			<xsd:appinfo source="http://www.model.org/xui/Annotation">
-				<pi name="supported" value="no"/>
-			</xsd:appinfo>
-		</xsd:annotation>
-		<xsd:complexType/>
-	</xsd:element>
-	<xsd:complexType name="nlsType">
-		<xsd:sequence>
-			<xsd:element name="text">
-				<xsd:complexType>
-					<xsd:simpleContent>
-						<xsd:extension base="xsd:string">
-							<xsd:attribute name="isFormula" type="xsd:boolean" use="optional"/>
-						</xsd:extension>
-					</xsd:simpleContent>
-				</xsd:complexType>
-			</xsd:element>
-			<xsd:element name="description" type="xsd:string" minOccurs="0"/>
-			<xsd:element name="tooltip" type="xsd:string" minOccurs="0"/>
-		</xsd:sequence>
-	</xsd:complexType>
-	<xsd:attributeGroup name="enumerationType">
-		<xsd:annotation>
-			<xsd:documentation>Defines the type and the orientation of any enumeration.</xsd:documentation>
-		</xsd:annotation>
-		<xsd:attribute name="type" use="optional">
-			<xsd:simpleType>
-				<xsd:restriction base="xsd:string">
-					<xsd:enumeration value="comboBox"/>
-					<xsd:enumeration value="advancedComboBox"/>
-					<xsd:enumeration value="comboBoxSearch"/>
-					<xsd:enumeration value="radioButton"/>
-					<xsd:enumeration value="checkBox"/>
-					<xsd:enumeration value="list"/>
-					<xsd:enumeration value="listMultiselect"/>
-					<xsd:enumeration value="listMultiselectTextBox"/>
-				</xsd:restriction>
-			</xsd:simpleType>
-		</xsd:attribute>
-		<xsd:attribute name="orientation" use="optional">
-			<xsd:simpleType>
-				<xsd:restriction base="xsd:string">
-					<xsd:enumeration value="horizontal"/>
-					<xsd:enumeration value="vertical"/>
-				</xsd:restriction>
-			</xsd:simpleType>
-		</xsd:attribute>
-	</xsd:attributeGroup>
-	<xsd:simpleType name="paramType">
-		<xsd:restriction base="xsd:string">
-			<xsd:enumeration value="Boolean"/>
-			<xsd:enumeration value="String"/>
-			<xsd:enumeration value="String[]"/>
-			<xsd:enumeration value="Integer"/>
-			<xsd:enumeration value="boolean"/>
-			<xsd:enumeration value="int"/>
-			<xsd:enumeration value="Color"/>
-			<xsd:enumeration value="Visualizer"/>
-			<xsd:enumeration value="int[]"/>
-			<xsd:enumeration value="Type"/>
-			<xsd:enumeration value="URL"/>
-			<xsd:enumeration value="SimpleType"/>
-			<xsd:enumeration value="org.json.JSONObject"/>
-		</xsd:restriction>
-	</xsd:simpleType>
-	<xsd:element name="param">
-		<xsd:annotation>
-			<xsd:documentation>Defines a method paramter as an alias(name), type and a value.</xsd:documentation>
-		</xsd:annotation>
-		<xsd:complexType>
-			<xsd:simpleContent>
-				<xsd:extension base="xsd:string">
-					<xsd:attribute name="name" type="xsd:string" use="optional"/>
-					<xsd:attribute name="type" type="paramType" use="required"/>
-					<xsd:attribute name="value" type="xsd:string" use="optional"/>
-				</xsd:extension>
-			</xsd:simpleContent>
-		</xsd:complexType>
-	</xsd:element>
-	<xsd:element name="resourceID" type="xsd:string"/>
-	<xsd:complexType name="httpResourceType">
-		<xsd:sequence>
-			<xsd:element ref="resourceID"/>
-			<xsd:element name="url" type="xsd:anyURI"/>
-			<xsd:element name="method" default="post">
-				<xsd:simpleType>
-					<xsd:restriction base="xsd:string">
-						<xsd:enumeration value="get"/>
-						<xsd:enumeration value="post"/>
-					</xsd:restriction>
-				</xsd:simpleType>
-			</xsd:element>
-			<xsd:element name="header" minOccurs="0" maxOccurs="unbounded">
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element name="key"/>
-						<xsd:element name="value" minOccurs="0"/>
-					</xsd:sequence>
-				</xsd:complexType>
-			</xsd:element>
-			<xsd:element name="body">
-				<xsd:complexType>
-					<xsd:choice minOccurs="0">
-						<xsd:element name="formdata">
-							<xsd:complexType>
-								<xsd:sequence>
-									<xsd:element name="key"/>
-									<xsd:element name="value" minOccurs="0"/>
-								</xsd:sequence>
-							</xsd:complexType>
-						</xsd:element>
-						<xsd:element name="raw" type="xsd:string"/>
-						<xsd:element name="binary" type="xsd:base64Binary"/>
-					</xsd:choice>
-				</xsd:complexType>
-			</xsd:element>
-			<xsd:element name="authorization">
-				<xsd:complexType>
-					<xsd:choice>
-						<xsd:element name="none" type="xsd:string"/>
-						<xsd:element name="basicauth" type="xsd:string"/>
-						<xsd:element name="oauth2" type="xsd:string"/>
-						<xsd:element name="bearer" type="xsd:string"/>
-					</xsd:choice>
-				</xsd:complexType>
-			</xsd:element>
-		</xsd:sequence>
-	</xsd:complexType>
-	<xsd:element name="customComponentElement" type="xsd:string">
-		<xsd:annotation>
-			<xsd:documentation>a custom text element inserted after element</xsd:documentation>
-		</xsd:annotation>
-	</xsd:element>
-	<xsd:element name="codes" type="codesType">
-		<xsd:annotation>
-			<xsd:documentation>Comment describing your root element</xsd:documentation>
-		</xsd:annotation>
-	</xsd:element>
-	<xsd:complexType name="entryType">
-		<xsd:simpleContent>
-			<xsd:extension base="xsd:string">
-				<xsd:attribute name="help" type="xsd:string" use="optional"/>
-				<xsd:attribute name="param" type="xsd:string" use="optional"/>
-			</xsd:extension>
-		</xsd:simpleContent>
-	</xsd:complexType>
-	<xsd:complexType name="codeSetType">
-		<xsd:sequence>
-			<xsd:element name="alias" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
-			<xsd:element name="label" minOccurs="0">
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element name="de" type="xsd:string"/>
-						<xsd:element name="fr" type="xsd:string" minOccurs="0"/>
-						<xsd:element name="it" type="xsd:string" minOccurs="0"/>
-						<xsd:element name="en" minOccurs="0"/>
-					</xsd:sequence>
-				</xsd:complexType>
-			</xsd:element>
-			<xsd:element name="code" maxOccurs="unbounded">
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element name="values">
-							<xsd:complexType>
-								<xsd:sequence>
-									<xsd:element name="all" type="entryType" minOccurs="0"/>
-									<xsd:element name="de" type="entryType" minOccurs="0"/>
-									<xsd:element name="fr" type="entryType" minOccurs="0"/>
-									<xsd:element name="it" type="entryType" minOccurs="0"/>
-									<xsd:element name="en" type="entryType" minOccurs="0"/>
-								</xsd:sequence>
-							</xsd:complexType>
-						</xsd:element>
-						<xsd:element name="codeSetRef" type="codeSetRefType" minOccurs="0"/>
-					</xsd:sequence>
-					<xsd:attribute name="id" type="xsd:string" use="required"/>
-					<xsd:attribute name="status" use="optional" default="valid">
-						<xsd:simpleType>
-							<xsd:restriction base="xsd:string">
-								<xsd:enumeration value="valid"/>
-								<xsd:enumeration value="invalid"/>
-							</xsd:restriction>
-						</xsd:simpleType>
-					</xsd:attribute>
-					<xsd:attribute name="param" type="xsd:string" use="optional"/>
-					<xsd:attribute name="weight" type="xsd:string" use="optional"/>
-				</xsd:complexType>
-			</xsd:element>
-		</xsd:sequence>
-		<xsd:attribute name="name" type="xsd:string" use="required"/>
-		<xsd:attribute name="isHierarchy" type="xsd:boolean" default="false"/>
-		<xsd:attribute name="owner" type="xsd:string" use="optional"/>
-	</xsd:complexType>
-	<xsd:complexType name="codeSetRefType">
-		<xsd:complexContent>
-			<xsd:extension base="codeSetType"/>
-		</xsd:complexContent>
-	</xsd:complexType>
-	<xsd:complexType name="codesType">
-		<xsd:sequence>
-			<xsd:element name="codeSet" minOccurs="0" maxOccurs="unbounded">
-				<xsd:complexType>
-					<xsd:complexContent>
-						<xsd:extension base="codeSetType"/>
-					</xsd:complexContent>
-				</xsd:complexType>
-			</xsd:element>
-		</xsd:sequence>
-		<xsd:attribute name="fileName" type="xsd:string" use="optional"/>
-	</xsd:complexType>
-	<xsd:element name="xPath" type="xPathType"/>
-	<xsd:element name="implementation">
-		<xsd:complexType>
-			<xsd:sequence>
-				<xsd:element name="name" type="xsd:string"/>
-				<xsd:element name="implementationClass" type="xsd:string"/>
-				<xsd:element name="params">
-					<xsd:complexType>
-						<xsd:sequence>
-							<xsd:element name="param" minOccurs="0" maxOccurs="unbounded">
-								<xsd:complexType>
-									<xsd:sequence>
-										<xsd:element name="name" type="xsd:string"/>
-										<xsd:element name="value" type="xsd:string"/>
-									</xsd:sequence>
-								</xsd:complexType>
-							</xsd:element>
-						</xsd:sequence>
-					</xsd:complexType>
-				</xsd:element>
-			</xsd:sequence>
-		</xsd:complexType>
-	</xsd:element>
-	<xsd:complexType name="xPathType">
-		<xsd:simpleContent>
-			<xsd:extension base="xsd:string"/>
-		</xsd:simpleContent>
-	</xsd:complexType>
-	<xsd:complexType name="expressionType">
-		<xsd:simpleContent>
-			<xsd:extension base="xsd:string"/>
-		</xsd:simpleContent>
-	</xsd:complexType>
-	<xsd:complexType name="ruleType">
-		<xsd:sequence>
-			<xsd:element name="id" type="xsd:string" minOccurs="0"/>
-			<xsd:element name="description" type="xsd:string" minOccurs="0"/>
-			<xsd:element name="scope" minOccurs="0" maxOccurs="unbounded">
-				<xsd:simpleType>
-					<xsd:restriction base="xsd:string">
-						<xsd:enumeration value="SOURCE"/>
-						<xsd:enumeration value="REFERENCED"/>
-						<xsd:enumeration value="SIBLINGS"/>
-						<xsd:enumeration value="ALL"/>
-						<xsd:enumeration value="ALLDESCENDANTS"/>
-						<xsd:enumeration value="DIRECTDESCENDANTS"/>
-						<xsd:enumeration value="PARENT"/>
-						<xsd:enumeration value="DIRECTPARENT"/>
-					</xsd:restriction>
-				</xsd:simpleType>
-			</xsd:element>
-			<xsd:element name="enabled" type="xsd:boolean" minOccurs="0"/>
-			<xsd:element name="priority" type="xsd:double" minOccurs="0"/>
-			<xsd:element name="event" minOccurs="0" maxOccurs="unbounded">
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element name="type">
-							<xsd:simpleType>
-								<xsd:restriction base="xsd:string">
-									<xsd:enumeration value="ALL"/>
-									<xsd:enumeration value="BINDING"/>
-									<xsd:enumeration value="INITIALIZATION"/>
-									<xsd:enumeration value="REMOVE"/>
-									<xsd:enumeration value="MOVE"/>
-									<xsd:enumeration value="ADD"/>
-									<xsd:enumeration value="PROPERTY_CHANGE"/>
-									<xsd:enumeration value="GENERIC"/>
-									<xsd:enumeration value="UI_EVENT"/>
-								</xsd:restriction>
-							</xsd:simpleType>
-						</xsd:element>
-						<xsd:element name="arg" type="xsd:string"/>
-					</xsd:sequence>
-				</xsd:complexType>
-			</xsd:element>
-			<xsd:element name="condition">
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element name="useEventSourceAsBase" type="xsd:boolean" minOccurs="0">
-							<xsd:annotation>
-								<xsd:appinfo source="http://www.model.org/xui/Annotation">
-									<pi name="supported" value="no"/>
-								</xsd:appinfo>
-							</xsd:annotation>
-						</xsd:element>
-						<xsd:element name="formulaExpression" type="xsd:string">
-							<xsd:annotation>
-								<xsd:documentation>[NuGet]   GET https://community.chocolatey.org/api/v2/Packages(Id='python3',Version='3.4.1.20140608')
-THIS_VALUE
-CONDITION_VALUE
-confirmDate.getValue()
-style:setCollapsed(Globals,false)
-confirmDate.setVisible(false)
-no.isInSelectionPath(null)
-xpath:evaluateNode("/").toJson()
-xpath:evaluateNode("/").toXML()
-client:sendMessage("a",false,10)
-client:executeScript("playSound('https://download.samplelib.com/mp3/sample-3s.mp3')") developermode-only
-math:sum(xpath:evaluate("//quantity"))
-string:concat(xpath:evaluate("//quantity"))
-string:fillWithDemoData(xpath:evaluate("//"))
-logger:log("error","this is a error")</xsd:documentation>
-							</xsd:annotation>
-						</xsd:element>
-						<xsd:element name="message" minOccurs="0">
-							<xsd:complexType>
-								<xsd:sequence>
-									<xsd:element name="text">
-										<xsd:complexType>
-											<xsd:simpleContent>
-												<xsd:extension base="xsd:string">
-													<xsd:attribute name="isFormula" type="xsd:boolean" default="false"/>
-												</xsd:extension>
-											</xsd:simpleContent>
-										</xsd:complexType>
-									</xsd:element>
-									<xsd:element name="classification" default="error">
-										<xsd:simpleType>
-											<xsd:restriction base="xsd:string">
-												<xsd:enumeration value="error"/>
-												<xsd:enumeration value="fatal"/>
-												<xsd:enumeration value="ok"/>
-												<xsd:enumeration value="question"/>
-												<xsd:enumeration value="hint"/>
-												<xsd:enumeration value="warning"/>
-												<xsd:enumeration value="info"/>
-												<xsd:enumeration value="complete"/>
-											</xsd:restriction>
-										</xsd:simpleType>
-									</xsd:element>
-								</xsd:sequence>
-							</xsd:complexType>
-						</xsd:element>
-					</xsd:sequence>
-				</xsd:complexType>
-			</xsd:element>
-			<xsd:element name="action" minOccurs="0" maxOccurs="unbounded">
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element name="mainAction" type="ActionType" minOccurs="0"/>
-						<xsd:element name="inverseAction" type="ActionType" minOccurs="0"/>
-					</xsd:sequence>
-				</xsd:complexType>
-			</xsd:element>
-		</xsd:sequence>
-	</xsd:complexType>
-	<xsd:complexType name="colType">
-		<xsd:sequence>
-			<xsd:element name="part" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo source="http://www.model.org/xui/Annotation">
-						<pi name="allowInvalid" value="yes"/>
-					</xsd:appinfo>
-				</xsd:annotation>
-				<xsd:simpleType>
-					<xsd:restriction base="xsd:string">
-						<xsd:enumeration value="LABEL"/>
-						<xsd:enumeration value="VALUE"/>
-						<xsd:enumeration value="COMPONENT"/>
-					</xsd:restriction>
-				</xsd:simpleType>
-			</xsd:element>
-			<xsd:element name="ref" type="xPathType"/>
-			<xsd:element name="style" type="xsd:string" minOccurs="0"/>
-			<xsd:element name="expression" type="expressionType" minOccurs="0"/>
-			<xsd:element name="widgetTemplate" type="xsd:string" minOccurs="0"/>
-		</xsd:sequence>
-	</xsd:complexType>
-	<xsd:complexType name="GridStackLayoutType">
-		<xsd:sequence>
-			<xsd:element name="item" minOccurs="0" maxOccurs="unbounded">
-				<xsd:complexType>
-					<xsd:complexContent>
-						<xsd:extension base="colType">
-							<xsd:attribute name="x" type="xsd:int"/>
-							<xsd:attribute name="y" type="xsd:int"/>
-							<xsd:attribute name="h" type="xsd:int"/>
-							<xsd:attribute name="w" type="xsd:int"/>
-							<xsd:attribute name="locked" type="xsd:boolean"/>
-							<xsd:attribute name="movable" type="xsd:boolean"/>
-							<xsd:attribute name="resizeable" type="xsd:boolean"/>
-						</xsd:extension>
-					</xsd:complexContent>
-				</xsd:complexType>
-			</xsd:element>
-		</xsd:sequence>
-	</xsd:complexType>
-	<xsd:complexType name="ColumnLayoutType">
-		<xsd:attribute name="cols" type="xsd:int" default="2"/>
-		<xsd:attribute name="exceptComplex" type="xsd:boolean" default="true"/>
-		<xsd:attribute name="splitted" type="xsd:boolean" default="false"/>
-	</xsd:complexType>
-	<xsd:element name="expression" type="xsd:string"/>
-	<xsd:attributeGroup name="sortGroup">
-		<xsd:attribute name="direction" use="optional">
-			<xsd:simpleType>
-				<xsd:restriction base="xsd:string">
-					<xsd:enumeration value="ASC"/>
-					<xsd:enumeration value="DESC"/>
-				</xsd:restriction>
-			</xsd:simpleType>
-		</xsd:attribute>
-		<xsd:attribute name="orderedBy" use="optional">
-			<xsd:simpleType>
-				<xsd:restriction base="xsd:string">
-					<xsd:enumeration value="KEY"/>
-					<xsd:enumeration value="TEXT"/>
-				</xsd:restriction>
-			</xsd:simpleType>
-		</xsd:attribute>
-	</xsd:attributeGroup>
-	<xsd:complexType name="labelType">
-		<xsd:sequence>
-			<xsd:element name="text">
-				<xsd:complexType>
-					<xsd:attribute name="isFormula" type="xsd:boolean"/>
-				</xsd:complexType>
-			</xsd:element>
-			<xsd:element name="tooltip">
-				<xsd:complexType>
-					<xsd:attribute name="isFormula" type="xsd:boolean"/>
-				</xsd:complexType>
-			</xsd:element>
-		</xsd:sequence>
-	</xsd:complexType>
+                                                                    </xsd:annotation>
+                                                                </xsd:element>
+                                                            </xsd:choice>
+                                                            <xsd:attribute name="serializeContentAsCDATA"
+                                                                           type="xsd:boolean" use="optional"
+                                                                           default="false"/>
+                                                            <xsd:attribute name="dataType" use="optional">
+                                                                <xsd:simpleType>
+                                                                    <xsd:restriction base="xsd:string">
+                                                                        <xsd:enumeration value="boolean"/>
+                                                                        <xsd:enumeration value="numeric"/>
+                                                                        <xsd:enumeration value="date"/>
+                                                                        <xsd:enumeration value="decimal"/>
+                                                                        <xsd:enumeration value="formula"/>
+                                                                        <xsd:enumeration value="time"/>
+                                                                        <xsd:enumeration value="dateTime"/>
+                                                                        <xsd:enumeration value="amount"/>
+                                                                        <xsd:enumeration value="html"/>
+                                                                        <xsd:enumeration value="tel"/>
+                                                                        <xsd:enumeration value="url"/>
+                                                                        <xsd:enumeration value="currency"/>
+                                                                        <xsd:enumeration value="length"/>
+                                                                        <xsd:enumeration value="weight"/>
+                                                                        <xsd:enumeration value="email"/>
+                                                                        <xsd:enumeration value="ipv4"/>
+                                                                        <xsd:enumeration value="mask"/>
+                                                                        <xsd:enumeration value="ipv6"/>
+                                                                        <xsd:enumeration value="serverAdress"/>
+                                                                        <xsd:enumeration value="uri"/>
+                                                                        <xsd:enumeration value="hostname"/>
+                                                                        <xsd:enumeration value="uuid"/>
+                                                                    </xsd:restriction>
+                                                                </xsd:simpleType>
+                                                            </xsd:attribute>
+                                                            <xsd:attribute name="pattern" type="xsd:string"
+                                                                           use="optional"/>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="customClass" type="xsd:string" minOccurs="0"/>
+                                        <xsd:element name="renderer" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:choice>
+                                                    <xsd:element name="leaf" minOccurs="0">
+                                                        <xsd:complexType>
+                                                            <xsd:choice minOccurs="0">
+                                                                <xsd:element name="color"/>
+                                                                <xsd:element name="qrCode">
+                                                                    <xsd:complexType>
+                                                                        <xsd:sequence>
+                                                                            <xsd:element name="formula"
+                                                                                         type="xsd:string"/>
+                                                                        </xsd:sequence>
+                                                                    </xsd:complexType>
+                                                                </xsd:element>
+                                                                <xsd:element name="image">
+                                                                    <xsd:complexType>
+                                                                        <xsd:sequence>
+                                                                            <xsd:element name="formula"
+                                                                                         type="xsd:string"/>
+                                                                        </xsd:sequence>
+                                                                    </xsd:complexType>
+                                                                </xsd:element>
+                                                                <xsd:element name="fileUpload">
+                                                                    <xsd:complexType>
+                                                                        <xsd:attribute name="multiple"
+                                                                                       type="xsd:boolean"/>
+                                                                        <xsd:attribute name="maxFileSize" type="xsd:int"
+                                                                                       default="12000"/>
+                                                                        <xsd:attribute name="extensions"
+                                                                                       type="xsd:string"/>
+                                                                    </xsd:complexType>
+                                                                </xsd:element>
+                                                                <xsd:element name="password"/>
+                                                                <xsd:element name="email"/>
+                                                                <xsd:element name="range">
+                                                                    <xsd:complexType>
+                                                                        <xsd:sequence>
+                                                                            <xsd:element name="min" type="xsd:int"
+                                                                                         minOccurs="0"/>
+                                                                            <xsd:element name="max" type="xsd:int"
+                                                                                         minOccurs="0"/>
+                                                                            <xsd:element name="step" type="xsd:float"
+                                                                                         minOccurs="0"/>
+                                                                        </xsd:sequence>
+                                                                    </xsd:complexType>
+                                                                </xsd:element>
+                                                                <xsd:element name="datePicker"/>
+                                                                <xsd:element ref="implementation"/>
+                                                                <xsd:element name="xPath" type="xPathType"/>
+                                                                <xsd:element name="action">
+                                                                    <xsd:complexType>
+                                                                        <xsd:choice>
+                                                                            <xsd:element name="actionId"
+                                                                                         type="xsd:string"/>
+                                                                            <xsd:element ref="expression"/>
+                                                                            <xsd:element name="stateHolder"
+                                                                                         type="xsd:string"/>
+                                                                        </xsd:choice>
+                                                                    </xsd:complexType>
+                                                                </xsd:element>
+                                                                <xsd:element name="starRating">
+                                                                    <xsd:complexType>
+                                                                        <xsd:sequence>
+                                                                            <xsd:element name="min" type="xsd:int"
+                                                                                         minOccurs="0"/>
+                                                                            <xsd:element name="max" type="xsd:int"
+                                                                                         minOccurs="0"/>
+                                                                            <xsd:element name="step" type="xsd:float"
+                                                                                         minOccurs="0"/>
+                                                                        </xsd:sequence>
+                                                                    </xsd:complexType>
+                                                                </xsd:element>
+                                                                <xsd:element name="booleanSwitch">
+                                                                    <xsd:complexType/>
+                                                                </xsd:element>
+                                                                <xsd:element name="serializeSwitch">
+                                                                    <xsd:complexType/>
+                                                                </xsd:element>
+                                                                <xsd:element name="dateTimePicker"/>
+                                                            </xsd:choice>
+                                                            <xsd:attribute name="resizeable" type="xsd:boolean"
+                                                                           use="optional" default="true"/>
+                                                            <xsd:attribute name="rows" type="xsd:int" use="optional"/>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                    <xsd:element name="list" minOccurs="0">
+                                                        <xsd:complexType>
+                                                            <xsd:choice minOccurs="0">
+                                                                <xsd:element name="SimpleListRadioButton">
+                                                                    <xsd:complexType/>
+                                                                </xsd:element>
+                                                                <xsd:element name="Tags">
+                                                                    <xsd:complexType/>
+                                                                </xsd:element>
+                                                                <xsd:element ref="implementation"/>
+                                                            </xsd:choice>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                    <xsd:element name="codeset" minOccurs="0">
+                                                        <xsd:complexType>
+                                                            <xsd:choice minOccurs="0">
+                                                                <xsd:element name="DataList">
+                                                                    <xsd:complexType/>
+                                                                </xsd:element>
+                                                                <xsd:element name="Dropdown">
+                                                                    <xsd:complexType/>
+                                                                </xsd:element>
+                                                                <xsd:element name="Tags">
+                                                                    <xsd:complexType/>
+                                                                </xsd:element>
+                                                                <xsd:element name="Radio">
+                                                                    <xsd:complexType/>
+                                                                </xsd:element>
+                                                            </xsd:choice>
+                                                            <xsd:attributeGroup ref="sortGroup"/>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                </xsd:choice>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                    </xsd:sequence>
+                                    <xsd:attribute name="order" type="xsd:double" use="optional"/>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="behaviour" minOccurs="0">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="rule" type="ruleType" minOccurs="0" maxOccurs="unbounded"/>
+                                        <xsd:element name="actions">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="action" type="ActionType" minOccurs="0"
+                                                                 maxOccurs="unbounded"/>
+                                                    <xsd:element name="list">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element name="canSort" type="xsd:boolean"
+                                                                             minOccurs="0"/>
+                                                                <xsd:element name="autoCreateMinOccurListItems"
+                                                                             type="xsd:boolean" minOccurs="0"/>
+                                                                <xsd:element name="autoCreateMaxOccurListItems"
+                                                                             type="xsd:boolean" minOccurs="0"/>
+                                                                <xsd:element name="selectionOnly" type="xsd:boolean"
+                                                                             default="false" minOccurs="0"/>
+                                                                <xsd:element name="showButtons" type="xsd:boolean"
+                                                                             default="true" minOccurs="0"/>
+                                                                <xsd:element name="rights" minOccurs="0"
+                                                                             maxOccurs="unbounded">
+                                                                    <xsd:simpleType>
+                                                                        <xsd:restriction base="xsd:string">
+                                                                            <xsd:enumeration value="canAdd"/>
+                                                                            <xsd:enumeration value="canRemove"/>
+                                                                            <xsd:enumeration value="canCopy"/>
+                                                                            <xsd:enumeration value="canSort"/>
+                                                                            <xsd:enumeration value="canEdit"/>
+                                                                            <xsd:enumeration value="canMove"/>
+                                                                            <xsd:enumeration value="selectionOnly"/>
+                                                                        </xsd:restriction>
+                                                                    </xsd:simpleType>
+                                                                </xsd:element>
+                                                                <xsd:element name="addStrategy" minOccurs="0">
+                                                                    <xsd:simpleType>
+                                                                        <xsd:restriction base="xsd:string">
+                                                                            <xsd:enumeration value="START"/>
+                                                                            <xsd:enumeration value="END"/>
+                                                                        </xsd:restriction>
+                                                                    </xsd:simpleType>
+                                                                </xsd:element>
+                                                                <xsd:element name="removeStrategy" minOccurs="0">
+                                                                    <xsd:simpleType>
+                                                                        <xsd:restriction base="xsd:string">
+                                                                            <xsd:enumeration value="START"/>
+                                                                            <xsd:enumeration value="END"/>
+                                                                        </xsd:restriction>
+                                                                    </xsd:simpleType>
+                                                                </xsd:element>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:sequence>
+                        <xsd:attribute name="path" type="xsd:string" use="required"/>
+                        <xsd:attribute name="uuid" type="xsd:string" use="optional"/>
+                        <xsd:attribute name="alias" type="xsd:string" use="optional"/>
+                        <xsd:attribute name="namespace" type="xsd:string" use="optional"/>
+                        <xsd:attribute name="global" type="xsd:boolean" use="optional" default="false"/>
+                        <xsd:attribute name="enabled" type="xsd:boolean" use="optional"/>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="settings" minOccurs="0">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="types" minOccurs="0">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="list" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="initialization">
+                                                        <xsd:complexType>
+                                                            <xsd:choice>
+                                                                <xsd:element name="none"/>
+                                                                <xsd:element name="minOcc"/>
+                                                                <xsd:element name="maxOcc"/>
+                                                                <xsd:element name="one"/>
+                                                                <xsd:element name="custom" type="xsd:int"/>
+                                                            </xsd:choice>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="choice" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="selectFirst" type="xsd:boolean"/>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="serialization" minOccurs="0">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="serializeDefaultValue" type="xsd:boolean" minOccurs="0"/>
+                                        <xsd:element name="serializeNamespace" type="xsd:boolean" default="false"
+                                                     minOccurs="0"/>
+                                        <xsd:element name="serializeNamespacePrefix" type="xsd:boolean" default="true"
+                                                     minOccurs="0"/>
+                                        <xsd:element name="serializeUnnamed" type="xsd:boolean" default="true"
+                                                     minOccurs="0"/>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="rendering" minOccurs="0">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="time" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="visualizer"/>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="date" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="visualizer">
+                                                        <xsd:simpleType>
+                                                            <xsd:restriction base="xsd:string">
+                                                                <xsd:enumeration
+                                                                        value="org.model.ui.html.render.actas.DateRenderer"/>
+                                                                <xsd:enumeration
+                                                                        value="org.model.ui.html.render.actas.DateTimeRenderer"/>
+                                                            </xsd:restriction>
+                                                        </xsd:simpleType>
+                                                    </xsd:element>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="dateTime" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="visualizer"/>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="boolean" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="visualizer">
+                                                        <xsd:simpleType>
+                                                            <xsd:restriction base="xsd:string">
+                                                                <xsd:enumeration
+                                                                        value="org.model.ui.html.render.BooleanRenderer"/>
+                                                                <xsd:enumeration
+                                                                        value="org.model.ui.html.render.BooleanSwitchRenderer"/>
+                                                                <xsd:enumeration
+                                                                        value="org.model.ui.html.render.SerializeSwitchRenderer"/>
+                                                            </xsd:restriction>
+                                                        </xsd:simpleType>
+                                                    </xsd:element>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="duration" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="visualizer"/>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="label" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="position" default="LEFT" minOccurs="0">
+                                                        <xsd:simpleType>
+                                                            <xsd:restriction base="xsd:string">
+                                                                <xsd:enumeration value="LEFT"/>
+                                                                <xsd:enumeration value="RIGHT"/>
+                                                                <xsd:enumeration value="TOP"/>
+                                                                <xsd:enumeration value="BOTTOM"/>
+                                                                <xsd:enumeration value="INLINE"/>
+                                                                <xsd:enumeration value="BORDER"/>
+                                                                <xsd:enumeration value="NOT_DEFINED"/>
+                                                            </xsd:restriction>
+                                                        </xsd:simpleType>
+                                                    </xsd:element>
+                                                    <xsd:element name="choiceUseLabel" type="xsd:boolean"
+                                                                 minOccurs="0"/>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="caption" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="type" minOccurs="0">
+                                                        <xsd:simpleType>
+                                                            <xsd:restriction base="xsd:string">
+                                                                <xsd:enumeration value="border"/>
+                                                                <xsd:enumeration value="header"/>
+                                                                <xsd:enumeration value="accordion"/>
+                                                            </xsd:restriction>
+                                                        </xsd:simpleType>
+                                                    </xsd:element>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="help" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="position" default="LEFT" minOccurs="0">
+                                                        <xsd:simpleType>
+                                                            <xsd:restriction base="xsd:string">
+                                                                <xsd:enumeration value="LEFT"/>
+                                                                <xsd:enumeration value="TOP"/>
+                                                                <xsd:enumeration value="BOTTOM"/>
+                                                                <xsd:enumeration value="NOT_DEFINED"/>
+                                                            </xsd:restriction>
+                                                        </xsd:simpleType>
+                                                    </xsd:element>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="resources" minOccurs="0">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="rest" type="httpResourceType" minOccurs="0"
+                                                     maxOccurs="unbounded"/>
+                                        <xsd:element name="soap" minOccurs="0" maxOccurs="unbounded"/>
+                                        <xsd:element ref="codes" minOccurs="0"/>
+                                        <xsd:element name="manual" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="jsonConfig" minOccurs="0" maxOccurs="unbounded">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element ref="resourceID"/>
+                                                                <xsd:element name="config" type="xsd:string"/>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="translations" minOccurs="0" maxOccurs="unbounded">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="nls" minOccurs="0" maxOccurs="unbounded">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="path" type="xsd:string"/>
+                                                    <xsd:element name="context" minOccurs="0">
+                                                        <xsd:simpleType>
+                                                            <xsd:restriction base="xsd:string">
+                                                                <xsd:enumeration value="label"/>
+                                                                <xsd:enumeration value="error"/>
+                                                                <xsd:enumeration value="navbar"/>
+                                                                <xsd:enumeration value="treeEntry"/>
+                                                                <xsd:enumeration value="primitive"/>
+                                                                <xsd:enumeration value="paging"/>
+                                                                <xsd:enumeration value="caption"/>
+                                                                <xsd:enumeration value="help"/>
+                                                                <xsd:enumeration value="watermark"/>
+                                                                <xsd:enumeration value="message"/>
+                                                                <xsd:enumeration value="tooltip"/>
+                                                                <xsd:enumeration value="custom"/>
+                                                                <xsd:enumeration value="textResource"/>
+                                                                <xsd:enumeration value="formula"/>
+                                                                <xsd:enumeration value="lineInfo"/>
+                                                            </xsd:restriction>
+                                                        </xsd:simpleType>
+                                                    </xsd:element>
+                                                    <xsd:element name="subcontext" minOccurs="0">
+                                                        <xsd:simpleType>
+                                                            <xsd:restriction base="xsd:string"/>
+                                                        </xsd:simpleType>
+                                                    </xsd:element>
+                                                    <xsd:element name="isFormula" type="xsd:boolean" minOccurs="0"/>
+                                                    <xsd:element name="isHTML" type="xsd:boolean" minOccurs="0"/>
+                                                    <xsd:element name="value" type="xsd:string"/>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="component" minOccurs="0" maxOccurs="unbounded">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="path" type="xsd:string"/>
+                                                    <xsd:element name="nls" minOccurs="0" maxOccurs="unbounded">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element name="context" minOccurs="0">
+                                                                    <xsd:simpleType>
+                                                                        <xsd:restriction base="xsd:string">
+                                                                            <xsd:enumeration value="label"/>
+                                                                            <xsd:enumeration value="error"/>
+                                                                            <xsd:enumeration value="navbar"/>
+                                                                            <xsd:enumeration value="treeEntry"/>
+                                                                            <xsd:enumeration value="primitive"/>
+                                                                            <xsd:enumeration value="paging"/>
+                                                                            <xsd:enumeration value="caption"/>
+                                                                            <xsd:enumeration value="help"/>
+                                                                            <xsd:enumeration value="watermark"/>
+                                                                            <xsd:enumeration value="message"/>
+                                                                            <xsd:enumeration value="tooltip"/>
+                                                                            <xsd:enumeration value="custom"/>
+                                                                            <xsd:enumeration value="textResource"/>
+                                                                            <xsd:enumeration value="formula"/>
+                                                                            <xsd:enumeration value="lineInfo"/>
+                                                                        </xsd:restriction>
+                                                                    </xsd:simpleType>
+                                                                </xsd:element>
+                                                                <xsd:element name="subcontext" minOccurs="0">
+                                                                    <xsd:simpleType>
+                                                                        <xsd:restriction base="xsd:string"/>
+                                                                    </xsd:simpleType>
+                                                                </xsd:element>
+                                                                <xsd:element name="isFormula" type="xsd:boolean"
+                                                                             minOccurs="0"/>
+                                                                <xsd:element name="isHTML" type="xsd:boolean"
+                                                                             minOccurs="0"/>
+                                                                <xsd:element name="value" type="xsd:string"/>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                    </xsd:sequence>
+                                    <xsd:attribute name="language" type="xsd:string"/>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="constants" minOccurs="0" maxOccurs="unbounded">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="key">
+                                            <xsd:simpleType>
+                                                <xsd:restriction base="xsd:string">
+                                                    <xsd:enumeration value="CLASS_NODE_LABELED_WIDTH_VALUE_HOLDER"/>
+                                                    <xsd:enumeration value="CLASS_NODE_LABEL_LEFT"/>
+                                                </xsd:restriction>
+                                            </xsd:simpleType>
+                                        </xsd:element>
+                                        <xsd:element name="value" type="xsd:string"/>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="fakeNodes" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="path">
+                                <xsd:simpleType>
+                                    <xsd:restriction base="xsd:string"/>
+                                </xsd:simpleType>
+                            </xsd:element>
+                            <xsd:element name="type">
+                                <xsd:simpleType>
+                                    <xsd:restriction base="xsd:string">
+                                        <xsd:enumeration value="simple"/>
+                                        <xsd:enumeration value="complex"/>
+                                    </xsd:restriction>
+                                </xsd:simpleType>
+                            </xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="globalRules">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="rule" minOccurs="0" maxOccurs="unbounded">
+                                <xsd:complexType>
+                                    <xsd:complexContent>
+                                        <xsd:extension base="ruleType">
+                                            <xsd:sequence>
+                                                <xsd:element name="basePath" type="xPathType"/>
+                                            </xsd:sequence>
+                                        </xsd:extension>
+                                    </xsd:complexContent>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:complexType name="formulaExpressionType">
+        <xsd:sequence>
+            <xsd:element name="expression" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="ActionType">
+        <xsd:sequence>
+            <xsd:element name="id" type="xsd:ID" minOccurs="0"/>
+            <xsd:element ref="xPath" minOccurs="0"/>
+            <xsd:element name="enabled" type="xsd:boolean" default="true" minOccurs="0"/>
+            <xsd:element name="useActionTargetAsBase" type="xsd:boolean" default="true" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo source="http://www.model.org/xui/Annotation">
+                        <pi name="supported" value="no"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="eventSourceIsTarget" type="xsd:boolean" default="false" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo source="http://www.model.org/xui/Annotation">
+                        <pi name="supported" value="no"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="modelChange" type="xsd:boolean" minOccurs="0"/>
+            <xsd:element name="formulaExpression" type="formulaExpressionType"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="captionIndentType">
+        <xsd:annotation>
+            <xsd:documentation>Defines the caption indent of a component.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:attribute name="applyCaptionIndentOn" use="optional" default="label">
+            <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="label"/>
+                    <xsd:enumeration value="component"/>
+                    <xsd:enumeration value="both"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+        </xsd:attribute>
+        <xsd:attribute name="nestedIndent" type="xsd:float" use="optional"/>
+    </xsd:complexType>
+    <xsd:element name="visibility">
+        <xsd:annotation>
+            <xsd:documentation>Defines the visibility.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:choice minOccurs="0">
+                <xsd:element name="always">
+                    <xsd:annotation>
+                        <xsd:documentation>Is always visible.</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="never">
+                    <xsd:annotation>
+                        <xsd:documentation>Is never visible.</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:choice>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="applyOnDescendants">
+        <xsd:annotation>
+            <xsd:documentation>Defines the type of dependency for the descendant nodes.</xsd:documentation>
+            <xsd:appinfo source="http://www.model.org/xui/Annotation">
+                <pi name="supported" value="no"/>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType/>
+    </xsd:element>
+    <xsd:complexType name="nlsType">
+        <xsd:sequence>
+            <xsd:element name="text">
+                <xsd:complexType>
+                    <xsd:simpleContent>
+                        <xsd:extension base="xsd:string">
+                            <xsd:attribute name="isFormula" type="xsd:boolean" use="optional"/>
+                        </xsd:extension>
+                    </xsd:simpleContent>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="description" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="tooltip" type="xsd:string" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:attributeGroup name="enumerationType">
+        <xsd:annotation>
+            <xsd:documentation>Defines the type and the orientation of any enumeration.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:attribute name="type" use="optional">
+            <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="comboBox"/>
+                    <xsd:enumeration value="advancedComboBox"/>
+                    <xsd:enumeration value="comboBoxSearch"/>
+                    <xsd:enumeration value="radioButton"/>
+                    <xsd:enumeration value="checkBox"/>
+                    <xsd:enumeration value="list"/>
+                    <xsd:enumeration value="listMultiselect"/>
+                    <xsd:enumeration value="listMultiselectTextBox"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+        </xsd:attribute>
+        <xsd:attribute name="orientation" use="optional">
+            <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="horizontal"/>
+                    <xsd:enumeration value="vertical"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+        </xsd:attribute>
+    </xsd:attributeGroup>
+    <xsd:simpleType name="paramType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Boolean"/>
+            <xsd:enumeration value="String"/>
+            <xsd:enumeration value="String[]"/>
+            <xsd:enumeration value="Integer"/>
+            <xsd:enumeration value="boolean"/>
+            <xsd:enumeration value="int"/>
+            <xsd:enumeration value="Color"/>
+            <xsd:enumeration value="Visualizer"/>
+            <xsd:enumeration value="int[]"/>
+            <xsd:enumeration value="Type"/>
+            <xsd:enumeration value="URL"/>
+            <xsd:enumeration value="SimpleType"/>
+            <xsd:enumeration value="org.json.JSONObject"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:element name="param">
+        <xsd:annotation>
+            <xsd:documentation>Defines a method paramter as an alias(name), type and a value.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:simpleContent>
+                <xsd:extension base="xsd:string">
+                    <xsd:attribute name="name" type="xsd:string" use="optional"/>
+                    <xsd:attribute name="type" type="paramType" use="required"/>
+                    <xsd:attribute name="value" type="xsd:string" use="optional"/>
+                </xsd:extension>
+            </xsd:simpleContent>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="resourceID" type="xsd:string"/>
+    <xsd:complexType name="httpResourceType">
+        <xsd:sequence>
+            <xsd:element ref="resourceID"/>
+            <xsd:element name="url" type="xsd:anyURI"/>
+            <xsd:element name="method" default="post">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="get"/>
+                        <xsd:enumeration value="post"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="header" minOccurs="0" maxOccurs="unbounded">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="key"/>
+                        <xsd:element name="value" minOccurs="0"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="body">
+                <xsd:complexType>
+                    <xsd:choice minOccurs="0">
+                        <xsd:element name="formdata">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="key"/>
+                                    <xsd:element name="value" minOccurs="0"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                        <xsd:element name="raw" type="xsd:string"/>
+                        <xsd:element name="binary" type="xsd:base64Binary"/>
+                    </xsd:choice>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="authorization">
+                <xsd:complexType>
+                    <xsd:choice>
+                        <xsd:element name="none" type="xsd:string"/>
+                        <xsd:element name="basicauth" type="xsd:string"/>
+                        <xsd:element name="oauth2" type="xsd:string"/>
+                        <xsd:element name="bearer" type="xsd:string"/>
+                    </xsd:choice>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="customComponentElement" type="xsd:string">
+        <xsd:annotation>
+            <xsd:documentation>a custom text element inserted after element</xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+    <xsd:element name="codes" type="codesType">
+        <xsd:annotation>
+            <xsd:documentation>Comment describing your root element</xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+    <xsd:complexType name="entryType">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+                <xsd:attribute name="help" type="xsd:string" use="optional"/>
+                <xsd:attribute name="param" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="codeSetType">
+        <xsd:sequence>
+            <xsd:element name="alias" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="label" minOccurs="0">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="de" type="xsd:string"/>
+                        <xsd:element name="fr" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="it" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="en" minOccurs="0"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="code" maxOccurs="unbounded">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="values">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="all" type="entryType" minOccurs="0"/>
+                                    <xsd:element name="de" type="entryType" minOccurs="0"/>
+                                    <xsd:element name="fr" type="entryType" minOccurs="0"/>
+                                    <xsd:element name="it" type="entryType" minOccurs="0"/>
+                                    <xsd:element name="en" type="entryType" minOccurs="0"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                        <xsd:element name="codeSetRef" type="codeSetRefType" minOccurs="0"/>
+                    </xsd:sequence>
+                    <xsd:attribute name="id" type="xsd:string" use="required"/>
+                    <xsd:attribute name="status" use="optional" default="valid">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:enumeration value="valid"/>
+                                <xsd:enumeration value="invalid"/>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:attribute>
+                    <xsd:attribute name="param" type="xsd:string" use="optional"/>
+                    <xsd:attribute name="weight" type="xsd:string" use="optional"/>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string" use="required"/>
+        <xsd:attribute name="isHierarchy" type="xsd:boolean" default="false"/>
+        <xsd:attribute name="owner" type="xsd:string" use="optional"/>
+    </xsd:complexType>
+    <xsd:complexType name="codeSetRefType">
+        <xsd:complexContent>
+            <xsd:extension base="codeSetType"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="codesType">
+        <xsd:sequence>
+            <xsd:element name="codeSet" minOccurs="0" maxOccurs="unbounded">
+                <xsd:complexType>
+                    <xsd:complexContent>
+                        <xsd:extension base="codeSetType"/>
+                    </xsd:complexContent>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="fileName" type="xsd:string" use="optional"/>
+    </xsd:complexType>
+    <xsd:element name="xPath" type="xPathType"/>
+    <xsd:element name="implementation">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="name" type="xsd:string"/>
+                <xsd:element name="implementationClass" type="xsd:string"/>
+                <xsd:element name="params">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="param" minOccurs="0" maxOccurs="unbounded">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="name" type="xsd:string"/>
+                                        <xsd:element name="value" type="xsd:string"/>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:complexType name="xPathType">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string"/>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="expressionType">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string"/>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="ruleType">
+        <xsd:sequence>
+            <xsd:element name="id" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="description" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="scope" minOccurs="0" maxOccurs="unbounded">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="SOURCE"/>
+                        <xsd:enumeration value="REFERENCED"/>
+                        <xsd:enumeration value="SIBLINGS"/>
+                        <xsd:enumeration value="ALL"/>
+                        <xsd:enumeration value="ALLDESCENDANTS"/>
+                        <xsd:enumeration value="DIRECTDESCENDANTS"/>
+                        <xsd:enumeration value="PARENT"/>
+                        <xsd:enumeration value="DIRECTPARENT"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="enabled" type="xsd:boolean" minOccurs="0"/>
+            <xsd:element name="priority" type="xsd:double" minOccurs="0"/>
+            <xsd:element name="event" minOccurs="0" maxOccurs="unbounded">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="type">
+                            <xsd:simpleType>
+                                <xsd:restriction base="xsd:string">
+                                    <xsd:enumeration value="ALL"/>
+                                    <xsd:enumeration value="BINDING"/>
+                                    <xsd:enumeration value="INITIALIZATION"/>
+                                    <xsd:enumeration value="REMOVE"/>
+                                    <xsd:enumeration value="MOVE"/>
+                                    <xsd:enumeration value="ADD"/>
+                                    <xsd:enumeration value="PROPERTY_CHANGE"/>
+                                    <xsd:enumeration value="GENERIC"/>
+                                    <xsd:enumeration value="UI_EVENT"/>
+                                </xsd:restriction>
+                            </xsd:simpleType>
+                        </xsd:element>
+                        <xsd:element name="arg" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="condition">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="useEventSourceAsBase" type="xsd:boolean" minOccurs="0">
+                            <xsd:annotation>
+                                <xsd:appinfo source="http://www.model.org/xui/Annotation">
+                                    <pi name="supported" value="no"/>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="formulaExpression" type="xsd:string">
+                            <xsd:annotation>
+                                <xsd:documentation>[NuGet] GET
+                                    https://community.chocolatey.org/api/v2/Packages(Id='python3',Version='3.4.1.20140608')
+                                    THIS_VALUE
+                                    CONDITION_VALUE
+                                    confirmDate.getValue()
+                                    style:setCollapsed(Globals,false)
+                                    confirmDate.setVisible(false)
+                                    no.isInSelectionPath(null)
+                                    xpath:evaluateNode("/").toJson()
+                                    xpath:evaluateNode("/").toXML()
+                                    client:sendMessage("a",false,10)
+                                    client:executeScript("playSound('https://download.samplelib.com/mp3/sample-3s.mp3')")
+                                    developermode-only
+                                    math:sum(xpath:evaluate("//quantity"))
+                                    string:concat(xpath:evaluate("//quantity"))
+                                    string:fillWithDemoData(xpath:evaluate("//"))
+                                    logger:log("error","this is a error")
+                                </xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="message" minOccurs="0">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="text">
+                                        <xsd:complexType>
+                                            <xsd:simpleContent>
+                                                <xsd:extension base="xsd:string">
+                                                    <xsd:attribute name="isFormula" type="xsd:boolean" default="false"/>
+                                                </xsd:extension>
+                                            </xsd:simpleContent>
+                                        </xsd:complexType>
+                                    </xsd:element>
+                                    <xsd:element name="classification" default="error">
+                                        <xsd:simpleType>
+                                            <xsd:restriction base="xsd:string">
+                                                <xsd:enumeration value="error"/>
+                                                <xsd:enumeration value="fatal"/>
+                                                <xsd:enumeration value="ok"/>
+                                                <xsd:enumeration value="question"/>
+                                                <xsd:enumeration value="hint"/>
+                                                <xsd:enumeration value="warning"/>
+                                                <xsd:enumeration value="info"/>
+                                                <xsd:enumeration value="complete"/>
+                                            </xsd:restriction>
+                                        </xsd:simpleType>
+                                    </xsd:element>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="action" minOccurs="0" maxOccurs="unbounded">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="mainAction" type="ActionType" minOccurs="0"/>
+                        <xsd:element name="inverseAction" type="ActionType" minOccurs="0"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="colType">
+        <xsd:sequence>
+            <xsd:element name="part" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:appinfo source="http://www.model.org/xui/Annotation">
+                        <pi name="allowInvalid" value="yes"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="LABEL"/>
+                        <xsd:enumeration value="VALUE"/>
+                        <xsd:enumeration value="COMPONENT"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="ref" type="xPathType"/>
+            <xsd:element name="style" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="expression" type="expressionType" minOccurs="0"/>
+            <xsd:element name="widgetTemplate" type="xsd:string" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="GridStackLayoutType">
+        <xsd:sequence>
+            <xsd:element name="item" minOccurs="0" maxOccurs="unbounded">
+                <xsd:complexType>
+                    <xsd:complexContent>
+                        <xsd:extension base="colType">
+                            <xsd:attribute name="x" type="xsd:int"/>
+                            <xsd:attribute name="y" type="xsd:int"/>
+                            <xsd:attribute name="h" type="xsd:int"/>
+                            <xsd:attribute name="w" type="xsd:int"/>
+                            <xsd:attribute name="locked" type="xsd:boolean"/>
+                            <xsd:attribute name="movable" type="xsd:boolean"/>
+                            <xsd:attribute name="resizeable" type="xsd:boolean"/>
+                        </xsd:extension>
+                    </xsd:complexContent>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="ColumnLayoutType">
+        <xsd:attribute name="cols" type="xsd:int" default="2"/>
+        <xsd:attribute name="exceptComplex" type="xsd:boolean" default="true"/>
+        <xsd:attribute name="splitted" type="xsd:boolean" default="false"/>
+    </xsd:complexType>
+    <xsd:element name="expression" type="xsd:string"/>
+    <xsd:attributeGroup name="sortGroup">
+        <xsd:attribute name="direction" use="optional">
+            <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="ASC"/>
+                    <xsd:enumeration value="DESC"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+        </xsd:attribute>
+        <xsd:attribute name="orderedBy" use="optional">
+            <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="KEY"/>
+                    <xsd:enumeration value="TEXT"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+        </xsd:attribute>
+    </xsd:attributeGroup>
+    <xsd:complexType name="labelType">
+        <xsd:sequence>
+            <xsd:element name="text">
+                <xsd:complexType>
+                    <xsd:attribute name="isFormula" type="xsd:boolean"/>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="tooltip">
+                <xsd:complexType>
+                    <xsd:attribute name="isFormula" type="xsd:boolean"/>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
 </xsd:schema>

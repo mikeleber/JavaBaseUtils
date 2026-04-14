@@ -58,8 +58,7 @@ public class Xml {
             if (type == Node.ELEMENT_NODE) {
                 Xml child = (Xml) new Xml((Element) node);
                 addChild(node.getNodeName(), child);
-            }
-            if (type == Node.PROCESSING_INSTRUCTION_NODE) {
+            } else if (type == Node.PROCESSING_INSTRUCTION_NODE) {
                 ProcessingInstruction pi = (ProcessingInstruction) node;
                 String piTarget = pi.getTarget();
                 addPi(piTarget);
@@ -608,13 +607,7 @@ public class Xml {
     }
 
     public Xml toXML(StringBuilder xml) {
-        if (pi != null) {
-            pi.forEach(piStr -> {
-                xml.append("<?");
-                xml.append(piStr);
-                xml.append("?>");
-            });
-        }
+
         xml.append("<");
         if (StringUtils.isNotEmpty(ns)) {
             xml.append(ns);
@@ -630,20 +623,40 @@ public class Xml {
             xml.append(attrib.getValue());
             xml.append(ATTR_QUOTE);
         }
-        xml.append(">");
+
+        boolean closeTagWritten = false;
+
         for (Map.Entry<String, ArrayList<Xml>> child : nameChildren.entrySet()) {
+            if (!closeTagWritten) xml.append(">");
             child.getValue().forEach(xmlEntry -> xmlEntry.toXML(xml));
+            closeTagWritten = true;
         }
         if (content != null && content.length() > 0 && content.trim().length() > 0) {
+            if (!closeTagWritten) xml.append(">");
             xml.append(content);
+            closeTagWritten = true;
         }
-        xml.append("</");
-        if (StringUtils.isNotEmpty(ns)) {
-            xml.append(ns);
-            xml.append(":");
+        if (pi != null) {
+            for (String piStr : pi) {
+                if (!closeTagWritten) xml.append(">");
+                xml.append("<?");
+                xml.append(piStr);
+                xml.append("?>");
+                closeTagWritten = true;
+            }
+
         }
-        xml.append(name);
-        xml.append(">");
+        if (closeTagWritten) {
+            xml.append("</");
+            if (StringUtils.isNotEmpty(ns)) {
+                xml.append(ns);
+                xml.append(":");
+            }
+            xml.append(name);
+            xml.append(">");
+        } else {
+            xml.append("/>");
+        }
         return this;
     }
 }
