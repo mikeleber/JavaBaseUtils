@@ -2,6 +2,7 @@ package org.basetools.util.io;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.basetools.util.StringUtils;
+import org.xml.sax.EntityResolver;
 
 import java.io.*;
 import java.net.URI;
@@ -12,6 +13,7 @@ public class InputSource extends org.xml.sax.InputSource implements AutoCloseabl
     private org.basetools.util.StringUtils.ContentType _contentType;
     private String _language;
     private boolean _cachable = false;
+    private EntityResolver _entityResolver;
 
     public InputSource() {
         super();
@@ -137,6 +139,15 @@ public class InputSource extends org.xml.sax.InputSource implements AutoCloseabl
     public InputSource withPublicId(String id) {
         setPublicId(id);
         return this;
+    }
+
+    public InputSource withEntityResolver(EntityResolver resolver) {
+        _entityResolver = resolver;
+        return this;
+    }
+
+    public EntityResolver getEntityResolver() {
+        return _entityResolver;
     }
 
     public boolean isCachable() {

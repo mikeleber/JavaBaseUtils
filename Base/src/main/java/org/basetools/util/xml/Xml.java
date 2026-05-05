@@ -95,7 +95,6 @@ public class Xml {
         content = textContent;
     }
 
-
     public Xml(String nodeName, String namespace, String textContent) {
         name = nodeName;
         ns = namespace;
@@ -323,7 +322,6 @@ public class Xml {
         return name;
     }
 
-
     public String qName() {
         if (qName == null) {
             qName = createQName(name, ns);
@@ -381,6 +379,21 @@ public class Xml {
     public ArrayList<Xml> children(String name, String namespace) {
         String qName = createQName(name, namespace);
         return children(qName);
+    }
+
+    public void accept(Visitor visitor) {
+        if (!visitor.doBreak(this)) {
+            visitor.visitStart(this);
+            nameAttributes.forEach((s, s2) -> visitor.visitAttr(s, s2));
+            nameChildren.forEach((name, children) -> {
+                for (int c = 0; c < children.size(); c++) {
+                    Xml achild = children.get(c);
+                    achild.accept(visitor);
+                }
+            });
+
+            visitor.visitEnd(this);
+        }
     }
 
     public ArrayList<Xml> children(String name) {
@@ -733,4 +746,20 @@ public class Xml {
         }
         return this;
     }
+
+    public interface Visitor {
+        default void visitStart(Xml aNode) {
+        }
+
+        default void visitEnd(Xml aNode) {
+        }
+
+        default boolean doBreak(Xml aNode) {
+            return false;
+        }
+
+        default void visitAttr(String s, String s2) {
+        }
+    }
+
 }
